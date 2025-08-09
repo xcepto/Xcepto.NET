@@ -28,5 +28,5 @@ jobs:
           # Create a tag and push it
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag "$TAG_NAME"
+          git tag "v$TAG_NAME"
           git push origin "$TAG_NAME"

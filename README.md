@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/xcepto/xceptodotnet/">
+  <a href="https://github.com/xcepto/Xcepto.NET/">
     <img width="180" src="media/logo.png" alt="logo">
   </a>
 </p>
@@ -12,7 +12,7 @@
   </strong>
 </p>
 <p align="center">
-  <a href="https://github.com/xcepto/xceptodotnet/">
+  <a href="https://github.com/xcepto/Xcepto.NET/">
     <img width="80%" src="media/architecture.png" alt="architecture">
   </a>
 </p>

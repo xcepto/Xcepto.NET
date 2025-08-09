@@ -13,7 +13,7 @@ public class ChristmasGiftsTest
     [Test]
     public async Task RunTest1()
     {
-        var config = RabbitMqConfig.CreateRabbitMqConfig();
+        var config = CustomRabbitMqConfig.GetRabbitMqConfig();
 
         var searchForArticleRequest = new SearchForArticleRequest
         {
@@ -21,18 +21,20 @@ public class ChristmasGiftsTest
         };
 
         SearchForArticleRoute articleRoute = new SearchForArticleRoute();
-        
+        var postUrl = new Uri($"http://localhost:8080/{articleRoute.Path}");
+
         await XceptoTest.Given(new ChristmasGiftsScenario(), builder =>
         {
             var rest = builder.RegisterAdapter(new XceptoRestAdapter());
             var rabbitMq = builder.RegisterAdapter(new XceptoRabbitMqAdapter(config));
 
-            var postUrl = new Uri($"http://localhost:8080/{articleRoute.Path}");
-            builder
-                .AddStep(rest.PostRequest<SearchForArticleRequest, SearchForArticleResponse>(
-                    postUrl, searchForArticleRequest,  _ => true))
-                .AddStep(rabbitMq.EventCondition<SearchSearchedForArticle>(
-                    e => e.ArticleName == searchForArticleRequest.ArticleName));
+            // When
+            rest.PostRequest<SearchForArticleRequest, SearchForArticleResponse>(
+                postUrl, searchForArticleRequest,  _ => true);
+            
+            // Then
+            rabbitMq.EventCondition<SearchSearchedForArticle>(
+                e => e.ArticleName == searchForArticleRequest.ArticleName);
         });
     }
 }

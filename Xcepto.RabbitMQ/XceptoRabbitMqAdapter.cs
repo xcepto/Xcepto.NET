@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.RabbitMQ.Config;
 using Xcepto.RabbitMQ.Utils;
@@ -13,14 +14,22 @@ namespace Xcepto.RabbitMQ
     public class XceptoRabbitMqAdapter: XceptoAdapter
     {
         private XceptoRabbitMqConfig _config;
+        private TransitionBuilder? _builder;
 
         public XceptoRabbitMqAdapter(XceptoRabbitMqConfig config)
         {
             _config = config;
         }
-
-        public XceptoState EventCondition<TEvent>(Predicate<TEvent> predicate)
+        
+        public override void AssignBuilder(TransitionBuilder builder)
         {
+            _builder = builder;
+        }
+
+        public void EventCondition<TEvent>(Predicate<TEvent> predicate)
+        {
+            if (_builder is null)
+                throw new AdapterException("Builder was not assigned yet");
             Predicate<IServiceProvider> validation = serviceProvider =>
             {
                 var repository = serviceProvider.GetRequiredService<XceptoRabbitMqRepository>();
@@ -37,7 +46,7 @@ namespace Xcepto.RabbitMQ
                 return false;
             };
             
-            return new XceptoRabbitMqState("EventConditionStep", validation);
+            _builder.AddStep(new XceptoRabbitMqState("EventConditionStep", validation));
         }
 
         protected override async Task Initialize(IServiceProvider serviceProvider)
@@ -62,7 +71,7 @@ namespace Xcepto.RabbitMQ
                     await channel.QueueBindAsync(queue.Name, exchange.Name, queue.RoutingKey);
 
                     var consumer = new AsyncEventingBasicConsumer(channel);
-                    consumer.ReceivedAsync += async (_, args) =>
+                    consumer.ReceivedAsync += (_, args) =>
                     {
                         var message = Encoding.UTF8.GetString(args.Body.ToArray());
                         var schema = queue.Parser(message);
@@ -70,15 +79,17 @@ namespace Xcepto.RabbitMQ
                             throw new ArgumentException($"deserialized object of type {schema.GetType()} was not {queue.SchemaType}");
                         var repository = serviceProvider.GetRequiredService<XceptoRabbitMqRepository>();
                         repository.EnqueueMessage(queue.SchemaType, schema);
+                        return Task.CompletedTask;
                     };
                     await channel.BasicConsumeAsync(queue.Name, true, consumer);
                 }
             }
         }
 
-        protected override async Task AddServices(IServiceCollection serviceCollection)
+        protected override Task AddServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<XceptoRabbitMqRepository>();
+            return Task.CompletedTask;
         }
     }
 }

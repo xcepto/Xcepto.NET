@@ -5,9 +5,9 @@ using Xcepto.RabbitMQ.Config;
 
 namespace Samples.Shopping.Tests.Config;
 
-public class RabbitMqConfig
+public class CustomRabbitMqConfig
 {
-    public static XceptoRabbitMqConfig CreateRabbitMqConfig()
+    public static XceptoRabbitMqConfig GetRabbitMqConfig()
     {
         var config = new XceptoRabbitMqConfig();
         config.SetHostName("localhost");

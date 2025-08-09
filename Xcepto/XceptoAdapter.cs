@@ -6,6 +6,7 @@ namespace Xcepto
 {
     public abstract class XceptoAdapter
     {
+        public abstract void AssignBuilder(TransitionBuilder builder);
         protected abstract Task Initialize(IServiceProvider serviceProvider);
         protected abstract Task AddServices(IServiceCollection serviceCollection);
 

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <Authors>themassiveone</Authors>
+        <Company>Xcepto</Company>
+        <PackageId>Xcepto.RabbitMQ</PackageId>
+        <Description>RabbitMQ adapter for Xcepto testing library</Description>
+        <PackageTags>bdd;tdd;acceptance;testing;RabbitMQ;Xcepto;adapter</PackageTags>
+        <RootNamespace>Xcepto.RabbitMQ</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Xcepto\Xcepto.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
+    </ItemGroup>
+    
+</Project>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <Authors>themassiveone</Authors>
+        <Company>Xcepto</Company>
+        <PackageId>Xcepto.Rest</PackageId>
+        <Description>REST adapter for Xcepto testing library</Description>
+        <PackageTags>bdd;tdd;acceptance;testing;REST;HTTP;Xcepto;adapter</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Xcepto\Xcepto.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+</Project>

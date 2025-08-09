@@ -1,0 +1,15 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Xcepto
+{
+    public abstract class XceptoAdapter
+    {
+        protected abstract Task Initialize(IServiceProvider serviceProvider);
+        protected abstract Task AddServices(IServiceCollection serviceCollection);
+
+        internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
+        internal async Task CallAddServices(IServiceCollection serviceCollection) => await AddServices(serviceCollection);
+    }
+}

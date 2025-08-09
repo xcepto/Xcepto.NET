@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto", "Xcepto\Xcepto.csproj", "{8927C312-F754-408E-B175-39A2C498D460}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto.RabbitMQ", "Xcepto.RabbitMQ\Xcepto.RabbitMQ.csproj", "{4F00379C-9805-4504-B6EB-8BA669F98F98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto.Rest", "Xcepto.Rest\Xcepto.Rest.csproj", "{0D91D55B-0E77-498C-B8FF-56FE33BF4323}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8927C312-F754-408E-B175-39A2C498D460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8927C312-F754-408E-B175-39A2C498D460}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8927C312-F754-408E-B175-39A2C498D460}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8927C312-F754-408E-B175-39A2C498D460}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F00379C-9805-4504-B6EB-8BA669F98F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F00379C-9805-4504-B6EB-8BA669F98F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F00379C-9805-4504-B6EB-8BA669F98F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F00379C-9805-4504-B6EB-8BA669F98F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D91D55B-0E77-498C-B8FF-56FE33BF4323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D91D55B-0E77-498C-B8FF-56FE33BF4323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D91D55B-0E77-498C-B8FF-56FE33BF4323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D91D55B-0E77-498C-B8FF-56FE33BF4323}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

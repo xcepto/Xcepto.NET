@@ -1,0 +1,32 @@
+name: Tag on Merge
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      workflow_mode:
+        description: '[manual_tagging]'
+        required: false
+        default: 'manual_tagging'
+
+jobs:
+  create-tag:
+    if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main') || github.event_name == 'workflow_dispatch'  || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create a new tag
+        run: |
+          # Generate a new tag name
+          TAG_NAME="${GITHUB_RUN_NUMBER}"
+          echo "Creating tag $TAG_NAME"
+          
+          # Create a tag and push it
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"

@@ -31,7 +31,7 @@ jobs:
           cd Samples/Shopping && docker compose -f docker-compose.yaml down
 
   publish:
-    needs: [acceptance-tests]
+    needs: [tests]
     runs-on: ubuntu-latest
     if: github.event.action == 'published' || (contains(github.event.inputs.workflow_mode, 'release'))
 

@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '8.0.404' 
 
       - name: run tests
-        run: dotnet test dotnet/dotnet.sln
+        run: dotnet test
         env:
           RABBITMQ_URL: localhost
 

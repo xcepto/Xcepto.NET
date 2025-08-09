@@ -1,0 +1,9 @@
+@startuml
+[Xcepto] --> [Xcepto.REST]
+[Xcepto] --> [Xcepto.RabbitMQ]
+[Xcepto.REST] --> [Api] : POST
+[Xcepto.RabbitMQ] <-- [RabbitMQ] : Messages
+[Api] --> [RabbitMQ]
+[RabbitMQ] <--> [Cart]
+[RabbitMQ] <--> [Search]
+@enduml

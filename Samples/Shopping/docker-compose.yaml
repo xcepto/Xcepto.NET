@@ -1,0 +1,33 @@
+services:
+  samples.shopping.api:
+    image: samples.shopping.api
+    build:
+      context: .
+      dockerfile: Samples.Shopping.Api/Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - RABBITMQ_URL=rabbitmq
+      
+  samples.shopping.search:
+    image: samples.shopping.search
+    build:
+      context: .
+      dockerfile: Samples.Shopping.Search/Dockerfile
+    environment:
+      - RABBITMQ_URL=rabbitmq
+        
+  samples.shopping.cart:
+    image: samples.shopping.cart
+    build:
+      context: .
+      dockerfile: Samples.Shopping.Cart/Dockerfile
+    environment:
+      - RABBITMQ_URL=rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - '15672:15672'

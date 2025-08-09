@@ -1,5 +1,7 @@
 # Xcepto.NET
 
+[![Xcepto .NET release pipeline](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml/badge.svg)](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml)
+
 Xcepto is a BDD testing framework for distributed systems.
 Tests are specified **declaratively** here. 
 

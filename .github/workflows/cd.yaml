@@ -1,9 +1,8 @@
 name: Xcepto .NET release pipeline
 on:
-  push: 
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   tests:
@@ -31,7 +30,6 @@ jobs:
   publish:
     needs: [tests]
     runs-on: ubuntu-latest
-    if: github.event.action == 'published' || (contains(github.event.inputs.workflow_mode, 'release'))
 
     strategy:
       matrix:
@@ -44,13 +42,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v4
-
       - name: Set Version
         id: vars
         run: echo "VERSION=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+      
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            No release notes
+          draft: false
+          prerelease: false
 
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        
       - name: Restore
         run: dotnet restore ${{ matrix.project }}
 

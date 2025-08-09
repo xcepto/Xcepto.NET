@@ -10,7 +10,18 @@
         <Description>RabbitMQ adapter for Xcepto testing library</Description>
         <PackageTags>bdd;tdd;acceptance;testing;RabbitMQ;Xcepto;adapter</PackageTags>
         <RootNamespace>Xcepto.RabbitMQ</RootNamespace>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageProjectUrl>https://xcepto.org</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/xcepto/Xcepto.NET</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Copyright>Copyright © 2025 themassiveone, Xcepto</Copyright>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Xcepto\Xcepto.csproj" />

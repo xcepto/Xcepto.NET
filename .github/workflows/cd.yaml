@@ -2,7 +2,7 @@ name: Xcepto .NET release pipeline
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
 jobs:
   tests:

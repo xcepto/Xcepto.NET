@@ -24,7 +24,7 @@ namespace Xcepto.Rest
                 typeof(TResponse),
                 url,
                 validator 
-                ));
+            ));
         }
 
         public override void AssignBuilder(TransitionBuilder builder)

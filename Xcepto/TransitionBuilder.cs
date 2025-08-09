@@ -5,13 +5,12 @@ namespace Xcepto
 {
     public class TransitionBuilder
     {
-        private AcceptanceStateMachine _stateMachine = new AcceptanceStateMachine();
-        private HashSet<XceptoAdapter> _adapters = new HashSet<XceptoAdapter>();
+        private AcceptanceStateMachine _stateMachine = new();
+        private HashSet<XceptoAdapter> _adapters = new();
         
-        public TransitionBuilder AddStep(XceptoState newState)
+        public void AddStep(XceptoState newState)
         {
             _stateMachine.AddTransition(newState);
-            return this;
         }
 
         internal AcceptanceStateMachine Build()
@@ -25,6 +24,7 @@ namespace Xcepto
         public TXceptoAdapter RegisterAdapter<TXceptoAdapter>(TXceptoAdapter adapter)
         where TXceptoAdapter: XceptoAdapter
         {
+            adapter.AssignBuilder(this);
             _adapters.Add(adapter);
             return adapter;
         }

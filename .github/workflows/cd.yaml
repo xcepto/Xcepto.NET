@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.run_number }}
-          release_name: Release v$VERSION
+          release_name: Release v${{ env.VERSION }}
           body: |
             No release notes
           draft: false
@@ -90,7 +90,7 @@ jobs:
         run: dotnet restore ${{ matrix.project }}
 
       - name: Build
-        run: dotnet build ${{ matrix.project }} --configuration Release --no-restore -p:Version=$VERSION
+        run: dotnet build ${{ matrix.project }} --configuration Release --no-restore -p:Version=${{ needs.versions.outputs.VERSION }}
 
       - name: Pack
         run: dotnet pack ${{ matrix.project }} --configuration Release --no-build --output ./nupkg -p:Version=${{ needs.versions.outputs.VERSION }}

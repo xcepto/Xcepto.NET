@@ -54,19 +54,6 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git tag "${{ github.run_number }}"
           git push origin "${{ github.run_number }}"
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.run_number }}
-          release_name: Release v${{ env.VERSION }}
-          body: |
-            No release notes
-          draft: false
-          prerelease: false
   
   publish:
     needs: [tests, versions]
@@ -97,3 +84,19 @@ jobs:
 
       - name: Push to NuGet
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        
+  create-release:
+    needs: [ publish, versions ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release v${{ needs.versions.outputs.VERSION }}
+          body: |
+            [https://www.nuget.org/profiles/Xcepto](https://www.nuget.org/profiles/Xcepto)
+          draft: false
+          prerelease: false

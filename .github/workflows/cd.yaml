@@ -37,6 +37,10 @@ jobs:
       VERSION: ${{ steps.set-versions.outputs.VERSION }}
     
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+        
       - name: Set up environment
         id: set-versions
         shell: bash

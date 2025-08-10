@@ -1,8 +1,8 @@
 name: Xcepto .NET release pipeline
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
   tests:

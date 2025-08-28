@@ -1,8 +1,6 @@
 name: Xcepto .NET release pipeline
 on:
   push:
-    branches:
-      - main
 
 jobs:
   tests:
@@ -32,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Determine Versions
     needs: [tests]
+    if: github.ref == 'refs/heads/main'
     
     outputs:
       VERSION: ${{ steps.set-versions.outputs.VERSION }}

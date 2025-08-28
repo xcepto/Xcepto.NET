@@ -15,22 +15,30 @@ namespace Xcepto
         
         public async Task ExecuteTestAsync()
         {
-            // Arrange
-            IServiceCollection serviceCollection = _scenario.Setup();
-            var serviceProvider = await Arrange(serviceCollection);
-
-            // Act
-            DateTime startTime = DateTime.Now;
-            await _stateMachine.Start(serviceProvider);
-            while (DateTime.Now - startTime < _timeout)
+            try
             {
-                await _stateMachine.TryTransition(serviceProvider);
+                // Arrange
+                IServiceCollection serviceCollection = _scenario.Setup();
+                var serviceProvider = await Arrange(serviceCollection);
 
-                await Task.Delay(TimeSpan.FromSeconds(0.1f));
+                // Act
+                DateTime startTime = DateTime.Now;
+                await _stateMachine.Start(serviceProvider);
+                while (DateTime.Now - startTime < _timeout)
+                {
+                    await _stateMachine.TryTransition(serviceProvider);
+
+                    await Task.Delay(TimeSpan.FromSeconds(0.1f));
+                }
+
+                // Assert
+                Assert(_stateMachine);
             }
-
-            // Assert
-            Assert(_stateMachine);
+            finally
+            {
+                await Cleanup();
+            }
+            
         }
     }
 }

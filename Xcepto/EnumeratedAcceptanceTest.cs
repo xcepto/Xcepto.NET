@@ -16,27 +16,35 @@ namespace Xcepto
 
         public IEnumerator ExecuteTestEnumerated()
         {
-            // Arrange
-            var serviceCollection = new ServiceCollection();
-            yield return _enumeratedScenario.Setup(serviceCollection);
-            var providerTask = Arrange(serviceCollection);
-            providerTask.Wait();
-            var serviceProvider = providerTask.Result;
-
-            // Act
-            DateTime startTime = DateTime.Now;
-            var startTask = _stateMachine.Start(serviceProvider);
-            startTask.Wait();
-            while (DateTime.Now - startTime < _timeout)
+            try
             {
-                var transitionTask = _stateMachine.TryTransition(serviceProvider);
-                transitionTask.Wait();
+                // Arrange
+                var serviceCollection = new ServiceCollection();
+                yield return _enumeratedScenario.Setup(serviceCollection);
+                var providerTask = Arrange(serviceCollection);
+                providerTask.Wait();
+                var serviceProvider = providerTask.Result;
 
-                yield return EnumeratedWait();
+                // Act
+                DateTime startTime = DateTime.Now;
+                var startTask = _stateMachine.Start(serviceProvider);
+                startTask.Wait();
+                while (DateTime.Now - startTime < _timeout)
+                {
+                    var transitionTask = _stateMachine.TryTransition(serviceProvider);
+                    transitionTask.Wait();
+
+                    yield return EnumeratedWait();
+                }
+
+                // Assert
+                Assert(_stateMachine);
             }
-
-            // Assert
-            Assert(_stateMachine);
+            finally
+            {
+                var cleanupTask = Cleanup();
+                cleanupTask.Wait();
+            }
         }
 
         protected abstract IEnumerator EnumeratedWait();

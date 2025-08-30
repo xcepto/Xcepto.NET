@@ -16,15 +16,18 @@ namespace Xcepto
 
         public IEnumerator ExecuteTestEnumerated()
         {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+            yield return _enumeratedScenario.Setup(serviceCollection);
+            var arrangeTask = Arrange(serviceCollection);
+            arrangeTask.Wait();
+            var serviceProvider = arrangeTask.Result;
+
+            var initializeTask = _enumeratedScenario.Initialize(serviceProvider);
+            initializeTask.Wait();
+
             try
             {
-                // Arrange
-                var serviceCollection = new ServiceCollection();
-                yield return _enumeratedScenario.Setup(serviceCollection);
-                var providerTask = Arrange(serviceCollection);
-                providerTask.Wait();
-                var serviceProvider = providerTask.Result;
-
                 // Act
                 DateTime startTime = DateTime.Now;
                 var startTask = _stateMachine.Start(serviceProvider);
@@ -42,8 +45,11 @@ namespace Xcepto
             }
             finally
             {
-                var cleanupTask = Cleanup();
+                var cleanupTask = Cleanup(serviceProvider);
                 cleanupTask.Wait();
+
+                var scenarioCleanupTask = _enumeratedScenario.Cleanup(serviceProvider);
+                scenarioCleanupTask.Wait();
             }
         }
 

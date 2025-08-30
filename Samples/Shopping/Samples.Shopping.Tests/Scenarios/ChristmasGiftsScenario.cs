@@ -15,4 +15,8 @@ public class ChristmasGiftsScenario: Scenario
         services.AddSingleton<ILoggingProvider, LoggingProvider>(x => loggingProvider);
         return services;
     }
+
+    public override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+
+    public override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 }

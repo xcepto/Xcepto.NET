@@ -1,7 +1,7 @@
 using Endless.Tests.Scenarios;
 using Xcepto;
 
-namespace Endless.Tests;
+namespace Endless.Tests.Test;
 
 [TestFixture(typeof(LongSetupScenario))]
 [TestFixture(typeof(LongInitializationScenario))]

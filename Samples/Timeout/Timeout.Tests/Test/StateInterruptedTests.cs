@@ -1,9 +1,8 @@
-using Endless.Tests.Adapters;
-using Endless.Tests.Scenarios;
-using Endless.Tests.States;
+using Timeout.Tests.Scenarios;
+using Timeout.Tests.States;
 using Xcepto;
 
-namespace Endless.Tests.Test;
+namespace Timeout.Tests.Test;
 
 [TestFixture(typeof(LongOnEnterState))]
 [TestFixture(typeof(LongEvaluationState))]

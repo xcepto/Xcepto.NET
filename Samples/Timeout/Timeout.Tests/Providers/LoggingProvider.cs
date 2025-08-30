@@ -1,6 +1,6 @@
 using Xcepto.Interfaces;
 
-namespace Endless.Tests.Providers;
+namespace Timeout.Tests.Providers;
 
 public class LoggingProvider: ILoggingProvider
 {

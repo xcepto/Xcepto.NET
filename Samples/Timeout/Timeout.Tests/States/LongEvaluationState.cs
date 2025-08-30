@@ -1,6 +1,6 @@
 using Xcepto;
 
-namespace Endless.Tests.States;
+namespace Timeout.Tests.States;
 
 public class LongEvaluationState: XceptoState
 {

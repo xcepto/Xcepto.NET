@@ -1,8 +1,8 @@
-using Endless.Tests.Adapters;
-using Endless.Tests.Scenarios;
+using Timeout.Tests.Adapters;
+using Timeout.Tests.Scenarios;
 using Xcepto;
 
-namespace Endless.Tests.Test;
+namespace Timeout.Tests.Test;
 
 [TestFixture(typeof(LongInitializationAdapter))]
 [TestFixture(typeof(LongAddServicesAdapter))]

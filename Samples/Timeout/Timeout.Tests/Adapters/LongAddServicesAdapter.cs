@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
 
-namespace Endless.Tests.Adapters;
+namespace Timeout.Tests.Adapters;
 
 public class LongAddServicesAdapter: XceptoAdapter
 {

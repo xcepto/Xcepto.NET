@@ -25,9 +25,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Shopping.Search", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Shopping.Tests", "Samples\Shopping\Samples.Shopping.Tests\Samples.Shopping.Tests.csproj", "{CC41F480-A347-4C80-A970-33E78B7D6F4B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Endless", "Endless", "{BABA2E33-65CD-4EB3-8FDC-3DF7B2DC2EAD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Timeout", "Timeout", "{BABA2E33-65CD-4EB3-8FDC-3DF7B2DC2EAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Endless.Tests", "Samples\Endless.Tests\Endless.Tests.csproj", "{1528411F-7501-47E1-AC05-E1F9443D12A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timeout.Tests", "Samples\Timeout\Timeout.Tests\Timeout.Tests.csproj", "{1528411F-7501-47E1-AC05-E1F9443D12A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

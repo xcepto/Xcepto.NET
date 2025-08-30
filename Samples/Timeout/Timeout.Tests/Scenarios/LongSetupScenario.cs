@@ -1,9 +1,9 @@
-using Endless.Tests.Providers;
 using Microsoft.Extensions.DependencyInjection;
+using Timeout.Tests.Providers;
 using Xcepto;
 using Xcepto.Interfaces;
 
-namespace Endless.Tests.Scenarios;
+namespace Timeout.Tests.Scenarios;
 
 public class LongSetupScenario: Scenario
 {

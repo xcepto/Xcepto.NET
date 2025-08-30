@@ -30,18 +30,18 @@ namespace Xcepto
             {
                 // Act
                 DateTime startTime = DateTime.Now;
-                var startTask = _stateMachine.Start(serviceProvider);
+                var startTask = StateMachine.Start(serviceProvider);
                 startTask.Wait();
-                while (DateTime.Now - startTime < _timeout)
+                while (DateTime.Now - startTime < Timeout)
                 {
-                    var transitionTask = _stateMachine.TryTransition(serviceProvider);
+                    var transitionTask = StateMachine.TryTransition(serviceProvider);
                     transitionTask.Wait();
 
                     yield return EnumeratedWait();
                 }
 
                 // Assert
-                Assert(_stateMachine);
+                Assert(StateMachine);
             }
             finally
             {

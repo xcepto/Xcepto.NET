@@ -21,5 +21,6 @@ namespace Xcepto
         public abstract Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider);
 
         public abstract Task OnEnter(IServiceProvider serviceProvider);
+        public virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
     }
 }

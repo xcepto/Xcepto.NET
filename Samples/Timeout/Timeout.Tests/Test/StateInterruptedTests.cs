@@ -3,7 +3,7 @@ using Timeout.Tests.States;
 using Xcepto;
 
 namespace Timeout.Tests.Test;
-
+[TestFixture(typeof(LongInitializeState))]
 [TestFixture(typeof(LongOnEnterState))]
 [TestFixture(typeof(LongEvaluationState))]
 public class StateInterruptedTests<T> where T: XceptoState

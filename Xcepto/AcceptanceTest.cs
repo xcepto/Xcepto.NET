@@ -8,15 +8,17 @@ namespace Xcepto
 {
     public abstract class AcceptanceTest
     {
-        protected AcceptanceStateMachine _stateMachine;
-        protected TimeSpan _timeout;
-        protected IEnumerable<XceptoAdapter> _adapters;
+        protected readonly AcceptanceStateMachine StateMachine;
+        protected TimeSpan Timeout;
+        private readonly IEnumerable<XceptoAdapter> _adapters;
+        private readonly IEnumerable<XceptoState> _states;
 
-        public AcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder)
+        protected AcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder)
         {
-            _stateMachine = transitionBuilder.Build();
-            _timeout = timeout;
+            StateMachine = transitionBuilder.Build();
+            Timeout = timeout;
             _adapters = transitionBuilder.GetAdapters();
+            _states = transitionBuilder.GetStates();
         }
         
         protected static void Assert(AcceptanceStateMachine stateMachine)
@@ -38,6 +40,11 @@ namespace Xcepto
             foreach (var adapter in xceptoAdapters)
             {
                 await adapter.CallInitialize(serviceProvider);
+            }
+            
+            foreach (var xceptoState in _states)
+            {
+                await xceptoState.Initialize(serviceProvider);
             }
 
             return serviceProvider;

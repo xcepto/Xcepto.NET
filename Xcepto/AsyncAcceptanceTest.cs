@@ -16,9 +16,9 @@ namespace Xcepto
         public async Task ExecuteTestAsync()
         {
             // Arrange
-            IServiceCollection serviceCollection = _scenario.Setup();
+            IServiceCollection serviceCollection = await _scenario.Setup();
             var serviceProvider = await Arrange(serviceCollection);
-            _scenario.Initialize(serviceProvider);
+            await _scenario.Initialize(serviceProvider);
             
             try
             {

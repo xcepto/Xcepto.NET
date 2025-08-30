@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
-using Samples.Shopping.Tests.providers;
+using Samples.Shopping.Tests.Providers;
 using Xcepto;
 using Xcepto.Interfaces;
 
-namespace Samples.Shopping.Tests.scenarios;
+namespace Samples.Shopping.Tests.Scenarios;
 
 public class ChristmasGiftsScenario: Scenario
 {

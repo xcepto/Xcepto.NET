@@ -1,12 +1,12 @@
-using Samples.Shopping.Api.Contracts.routes;
-using Samples.Shopping.Events.backend;
+using Samples.Shopping.Api.Contracts.Routes;
+using Samples.Shopping.Events.Backend;
 using Samples.Shopping.Tests.Config;
-using Samples.Shopping.Tests.scenarios;
+using Samples.Shopping.Tests.Scenarios;
 using Xcepto;
 using Xcepto.RabbitMQ;
 using Xcepto.Rest;
 
-namespace Samples.Shopping.Tests.tests;
+namespace Samples.Shopping.Tests.Tests;
 
 public class ChristmasGiftsTest
 {

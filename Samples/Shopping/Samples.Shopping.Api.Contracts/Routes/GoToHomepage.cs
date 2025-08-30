@@ -1,4 +1,4 @@
-namespace Samples.Shopping.Api.Contracts.routes
+namespace Samples.Shopping.Api.Contracts.Routes
 {
     public class GoToHomepageRoute
     {

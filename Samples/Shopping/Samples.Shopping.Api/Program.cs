@@ -1,6 +1,6 @@
 using MassTransit;
-using Samples.Shopping.Api.Contracts.routes;
-using Samples.Shopping.Events.telemetry;
+using Samples.Shopping.Api.Contracts.Routes;
+using Samples.Shopping.Events.Telemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Xcepto.Interfaces;
 
-namespace Samples.Shopping.Tests.providers;
+namespace Samples.Shopping.Tests.Providers;
 
 public class LoggingProvider: ILoggingProvider, ILogger
 {

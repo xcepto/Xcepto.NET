@@ -1,4 +1,4 @@
-namespace Samples.Shopping.Events.backend
+namespace Samples.Shopping.Events.Backend
 {
     public class CartAddedArticleToCart
     {

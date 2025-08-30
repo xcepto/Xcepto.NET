@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Samples.Shopping.Events.backend;
+using Samples.Shopping.Events.Backend;
 using Xcepto.RabbitMQ.Config;
 
 namespace Samples.Shopping.Tests.Config;

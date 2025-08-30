@@ -24,16 +24,16 @@ namespace Xcepto
             {
                 // Act
                 DateTime startTime = DateTime.Now;
-                await _stateMachine.Start(serviceProvider);
-                while (DateTime.Now - startTime < _timeout)
+                await StateMachine.Start(serviceProvider);
+                while (DateTime.Now - startTime < Timeout)
                 {
-                    await _stateMachine.TryTransition(serviceProvider);
+                    await StateMachine.TryTransition(serviceProvider);
 
                     await Task.Delay(TimeSpan.FromSeconds(0.1f));
                 }
 
                 // Assert
-                Assert(_stateMachine);
+                Assert(StateMachine);
             }
             finally
             {

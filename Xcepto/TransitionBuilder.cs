@@ -7,9 +7,11 @@ namespace Xcepto
     {
         private AcceptanceStateMachine _stateMachine = new();
         private HashSet<XceptoAdapter> _adapters = new();
+        private List<XceptoState> _states = new();
         
         public void AddStep(XceptoState newState)
         {
+            _states.Add(newState);
             _stateMachine.AddTransition(newState);
         }
 
@@ -19,6 +21,7 @@ namespace Xcepto
             return _stateMachine;
         }
 
+        internal IEnumerable<XceptoState> GetStates() => _states;
         internal IEnumerable<XceptoAdapter> GetAdapters() => _adapters;
 
         public TXceptoAdapter RegisterAdapter<TXceptoAdapter>(TXceptoAdapter adapter)

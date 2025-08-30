@@ -42,7 +42,7 @@ namespace Xcepto
             if(_currentXceptoState.NextXceptoState is null)
                 return; // no more transitions
 
-            var allConditionsMet = _currentXceptoState.EvaluateConditionsForTransition(serviceProvider);
+            var allConditionsMet = await _currentXceptoState.EvaluateConditionsForTransition(serviceProvider);
 
             if (allConditionsMet)
             {

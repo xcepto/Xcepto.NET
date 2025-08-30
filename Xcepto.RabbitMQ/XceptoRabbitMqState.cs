@@ -11,10 +11,10 @@ namespace Xcepto.RabbitMQ
             this._validation = validation;
         }
 
-        public override bool EvaluateConditionsForTransition(IServiceProvider serviceProvider)
+        public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
             bool success = _validation(serviceProvider);
-            return success; // || transitionConditions.Evaluate(serviceProvider);
+            return Task.FromResult(success);
         }
 
         public override Task OnEnter(IServiceProvider serviceProvider)

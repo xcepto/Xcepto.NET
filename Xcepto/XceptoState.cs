@@ -18,7 +18,7 @@ namespace Xcepto
         public string Name { get; }
         public XceptoState NextXceptoState { get; set; }
 
-        public abstract bool EvaluateConditionsForTransition(IServiceProvider serviceProvider);
+        public abstract Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider);
 
         public abstract Task OnEnter(IServiceProvider serviceProvider);
     }

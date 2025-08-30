@@ -29,11 +29,11 @@ namespace Xcepto.Rest
         private Uri _url;
         private object _response;
 
-        public override bool EvaluateConditionsForTransition(IServiceProvider serviceProvider)
+        public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
             if (!_responseValidator(_response))
                 throw new Exception("response was not validated successfully");
-            return true;
+            return Task.FromResult(true);
         }
 
         public override async Task OnEnter(IServiceProvider serviceProvider)

@@ -6,7 +6,7 @@ namespace Xcepto
 {
     public abstract class Scenario
     {
-        public abstract IServiceCollection Setup();
+        public abstract Task<IServiceCollection> Setup();
 
         public abstract Task Initialize(IServiceProvider serviceProvider);
 

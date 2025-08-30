@@ -10,10 +10,8 @@ namespace Xcepto
         {
         }
 
-        public override bool EvaluateConditionsForTransition(IServiceProvider serviceProvider)
-        {
-            return true;
-        }
+        public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
+            => Task.FromResult(true);
 
         public override Task OnEnter(IServiceProvider serviceProvider)
         {

@@ -23,9 +23,8 @@ namespace Xcepto
             try
             {
                 // Act
-                DateTime startTime = DateTime.Now;
                 await StateMachine.Start(serviceProvider);
-                while (DateTime.Now - startTime < Timeout)
+                while (!StateMachine.CurrentXceptoState.Equals(StateMachine.FinalXceptoState))
                 {
                     await StateMachine.TryTransition(serviceProvider);
 

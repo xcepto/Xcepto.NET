@@ -18,7 +18,7 @@ namespace Xcepto
 
             AsyncAcceptanceTest runner = new AsyncAcceptanceTest(timeout, transitionBuilder, scenario);
             var task = runner.ExecuteTestAsync();
-            var delayTime = DefaultTimeout + TimeoutShutdownTolerance;
+            var delayTime = timeout + TimeoutShutdownTolerance;
             var finished = await Task.WhenAny(task, Task.Delay(delayTime));
 
             if (finished != task)

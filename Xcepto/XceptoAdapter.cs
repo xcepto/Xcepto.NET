@@ -8,12 +8,12 @@ namespace Xcepto
     {
         public abstract void AssignBuilder(TransitionBuilder builder);
         protected abstract Task Initialize(IServiceProvider serviceProvider);
-        protected abstract Task Cleanup();
+        protected abstract Task Cleanup(IServiceProvider serviceProvider);
         protected abstract Task AddServices(IServiceCollection serviceCollection);
 
         internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
         internal async Task CallAddServices(IServiceCollection serviceCollection) => await AddServices(serviceCollection);
 
-        public async Task CallCleanup() => await Cleanup();
+        public async Task CallCleanup(IServiceProvider serviceProvider) => await Cleanup(serviceProvider);
     }
 }

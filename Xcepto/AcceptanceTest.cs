@@ -43,11 +43,11 @@ namespace Xcepto
             return serviceProvider;
         }
 
-        protected async Task Cleanup()
+        protected async Task Cleanup(IServiceProvider serviceProvider)
         {
             foreach (var xceptoAdapter in _adapters)
             {
-                await xceptoAdapter.CallCleanup();
+                await xceptoAdapter.CallCleanup(serviceProvider);
             }
         }
     }

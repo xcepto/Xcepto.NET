@@ -1,6 +1,6 @@
 using MassTransit;
-using Samples.Shopping.Events.backend;
-using Samples.Shopping.Events.telemetry;
+using Samples.Shopping.Events.Backend;
+using Samples.Shopping.Events.Telemetry;
 
 namespace Samples.Shopping.Search;
 

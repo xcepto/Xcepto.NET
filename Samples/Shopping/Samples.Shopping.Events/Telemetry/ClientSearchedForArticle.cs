@@ -1,4 +1,4 @@
-namespace Samples.Shopping.Events.telemetry
+namespace Samples.Shopping.Events.Telemetry
 {
     public class ClientSearchedForArticle
     {

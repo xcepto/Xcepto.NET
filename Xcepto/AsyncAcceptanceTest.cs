@@ -15,12 +15,13 @@ namespace Xcepto
         
         public async Task ExecuteTestAsync()
         {
+            // Arrange
+            IServiceCollection serviceCollection = _scenario.Setup();
+            var serviceProvider = await Arrange(serviceCollection);
+            _scenario.Initialize(serviceProvider);
+            
             try
             {
-                // Arrange
-                IServiceCollection serviceCollection = _scenario.Setup();
-                var serviceProvider = await Arrange(serviceCollection);
-
                 // Act
                 DateTime startTime = DateTime.Now;
                 await _stateMachine.Start(serviceProvider);
@@ -36,7 +37,8 @@ namespace Xcepto
             }
             finally
             {
-                await Cleanup();
+                await Cleanup(serviceProvider);
+                await _scenario.Cleanup(serviceProvider);
             }
             
         }

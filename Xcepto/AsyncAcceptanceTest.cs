@@ -52,6 +52,14 @@ namespace Xcepto
                 loggingProvider.LogDebug("");
                 await Cleanup(serviceProvider);
                 await _scenario.Cleanup(serviceProvider);
+                
+                loggingProvider.LogDebug("");
+                loggingProvider.LogDebug("");
+                loggingProvider.LogDebug("");
+                loggingProvider.LogDebug("=================================");
+                loggingProvider.LogDebug("");
+                loggingProvider.LogDebug("");
+                loggingProvider.LogDebug("");
             }
             
         }

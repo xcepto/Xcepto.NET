@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Interfaces;
 
 namespace Xcepto
 {
@@ -29,33 +30,50 @@ namespace Xcepto
 
         protected async Task<IServiceProvider> Arrange(IServiceCollection serviceCollection)
         {
+            var loggingProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ILoggingProvider>();
+            loggingProvider.LogDebug("Adding services for adapters:");
             var xceptoAdapters = _adapters as XceptoAdapter[] ?? _adapters.ToArray();
-            foreach (var adapter in xceptoAdapters)
+            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, counter) => (adapter, counter+1)))
             {
                 await adapter.CallAddServices(serviceCollection);
+                loggingProvider.LogDebug($"Added services for {adapter} ({counter}/{_adapters.Count()})");
             }
             
-            IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            loggingProvider.LogDebug($"All {_adapters.Count()} adapters added services successfully ✅");
+            loggingProvider.LogDebug("");
+            loggingProvider.LogDebug("Initializing adapters:");
 
-            foreach (var adapter in xceptoAdapters)
+            IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, i) => (adapter, i+1)))
             {
                 await adapter.CallInitialize(serviceProvider);
-            }
-            
-            foreach (var xceptoState in _states)
-            {
-                await xceptoState.Initialize(serviceProvider);
+                loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
             }
 
+            loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
+            loggingProvider.LogDebug("");
+            loggingProvider.LogDebug("Initializing states:");
+            loggingProvider.LogDebug($"State initialized: Start (1/{_states.Count()+2})");
+            foreach (var (state, counter) in _states.Select((state, counter) => (state, counter+2)))
+            {
+                await state.Initialize(serviceProvider);
+                loggingProvider.LogDebug($"State initialized: {state} ({counter}/{_states.Count()+2})");
+            }
+            loggingProvider.LogDebug($"State initialized: Final ({_states.Count()+2}/{_states.Count()+2})");
+            loggingProvider.LogDebug($"All {_states.Count()+2} states successfully initialized ✅");
             return serviceProvider;
         }
 
         protected async Task Cleanup(IServiceProvider serviceProvider)
         {
-            foreach (var xceptoAdapter in _adapters)
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+            loggingProvider.LogDebug("Cleaning up:");
+            foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i)))
             {
-                await xceptoAdapter.CallCleanup(serviceProvider);
+                await adapter.CallCleanup(serviceProvider);
+                loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
             }
+            loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
         }
     }
 }

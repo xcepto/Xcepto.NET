@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Interfaces;
 
 namespace Xcepto
 {
@@ -17,8 +18,18 @@ namespace Xcepto
         {
             // Arrange
             IServiceCollection serviceCollection = await _scenario.Setup();
+            var loggingProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ILoggingProvider>();
+            loggingProvider.LogDebug("Setting up acceptance test");
+            loggingProvider.LogDebug("");
+            loggingProvider.LogDebug("Added scenario services successfully ✅");
+            loggingProvider.LogDebug("");
             var serviceProvider = await Arrange(serviceCollection);
+            loggingProvider.LogDebug("");
             await _scenario.Initialize(serviceProvider);
+            loggingProvider.LogDebug("Initialized scenario successfully ✅");
+            loggingProvider.LogDebug("");
+            loggingProvider.LogDebug("Setup complete, starting test now:");
+            loggingProvider.LogDebug("---------------------------------");
             
             try
             {
@@ -36,6 +47,9 @@ namespace Xcepto
             }
             finally
             {
+                loggingProvider.LogDebug("---------------------------------");
+                loggingProvider.LogDebug("Test completed ✅");
+                loggingProvider.LogDebug("");
                 await Cleanup(serviceProvider);
                 await _scenario.Cleanup(serviceProvider);
             }

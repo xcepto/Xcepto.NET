@@ -22,7 +22,11 @@ namespace Xcepto
             var finished = await Task.WhenAny(task, Task.Delay(delayTime));
             
             if (finished != task)
-                throw new TimeoutException($"Test exceeded {delayTime.Seconds} seconds (timeout + tolerance).");
+            {
+                var timeoutException = new TimeoutException($"Test exceeded {delayTime.Seconds} seconds (timeout + tolerance).");
+                Console.WriteLine(timeoutException);
+                throw timeoutException;
+            }
 
             await task;
         }

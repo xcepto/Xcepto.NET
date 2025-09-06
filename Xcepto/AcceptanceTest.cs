@@ -41,17 +41,8 @@ namespace Xcepto
             
             loggingProvider.LogDebug($"All {_adapters.Count()} adapters added services successfully ✅");
             loggingProvider.LogDebug("");
-            loggingProvider.LogDebug("Initializing adapters:");
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, i) => (adapter, i+1)))
-            {
-                await adapter.CallInitialize(serviceProvider);
-                loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
-            }
-
-            loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
-            loggingProvider.LogDebug("");
             loggingProvider.LogDebug("Initializing states:");
             loggingProvider.LogDebug($"State initialized: Start (1/{_states.Count()+2})");
             foreach (var (state, counter) in _states.Select((state, counter) => (state, counter+2)))
@@ -61,6 +52,16 @@ namespace Xcepto
             }
             loggingProvider.LogDebug($"State initialized: Final ({_states.Count()+2}/{_states.Count()+2})");
             loggingProvider.LogDebug($"All {_states.Count()+2} states successfully initialized ✅");
+
+            loggingProvider.LogDebug("");
+            loggingProvider.LogDebug("Initializing adapters:");
+            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, i) => (adapter, i+1)))
+            {
+                await adapter.CallInitialize(serviceProvider);
+                loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
+            }
+            loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
+            
             return serviceProvider;
         }
 

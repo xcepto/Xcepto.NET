@@ -46,8 +46,8 @@ jobs:
         id: set-versions
         shell: bash
         run: |
-          echo "VERSION=3.2.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "VERSION=3.2.${{ github.run_number }}" >> $GITHUB_ENV
+          echo "VERSION=4.2.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=4.2.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Create a new tag
         run: |

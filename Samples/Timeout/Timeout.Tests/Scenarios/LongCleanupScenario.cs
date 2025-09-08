@@ -5,7 +5,7 @@ using Xcepto.Interfaces;
 
 namespace Timeout.Tests.Scenarios;
 
-public class LongCleanupScenario: Scenario
+public class LongCleanupScenario: XceptoScenario
 {
     public override Task<IServiceCollection> Setup()
     {

@@ -5,7 +5,7 @@ using Xcepto.Interfaces;
 
 namespace Samples.Shopping.Tests.Scenarios;
 
-public class ChristmasGiftsScenario: Scenario
+public class ChristmasGiftsScenario: XceptoScenario
 {
     public override Task<IServiceCollection> Setup()
     {

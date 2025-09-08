@@ -14,22 +14,13 @@ namespace Xcepto.RabbitMQ
     public class XceptoRabbitMqAdapter: XceptoAdapter
     {
         private XceptoRabbitMqConfig _config;
-        private TransitionBuilder? _builder;
-
         public XceptoRabbitMqAdapter(XceptoRabbitMqConfig config)
         {
             _config = config;
         }
         
-        public override void AssignBuilder(TransitionBuilder builder)
-        {
-            _builder = builder;
-        }
-
         public void EventCondition<TEvent>(Predicate<TEvent> predicate)
         {
-            if (_builder is null)
-                throw new AdapterException("Builder was not assigned yet");
             Predicate<IServiceProvider> validation = serviceProvider =>
             {
                 var repository = serviceProvider.GetRequiredService<XceptoRabbitMqRepository>();
@@ -46,7 +37,7 @@ namespace Xcepto.RabbitMQ
                 return false;
             };
             
-            _builder.AddStep(new XceptoRabbitMqState("EventConditionStep", validation));
+            AddStep(new XceptoRabbitMqState("EventConditionStep", validation));
         }
 
         protected override async Task Initialize(IServiceProvider serviceProvider)

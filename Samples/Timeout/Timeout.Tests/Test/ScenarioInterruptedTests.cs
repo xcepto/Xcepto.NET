@@ -6,9 +6,9 @@ namespace Timeout.Tests.Test;
 [TestFixture(typeof(LongSetupScenario))]
 [TestFixture(typeof(LongInitializationScenario))]
 [TestFixture(typeof(LongCleanupScenario))]
-public class ScenarioInterruptedTests<T> where T: Scenario, new()
+public class ScenarioInterruptedTests<T> where T: XceptoScenario, new()
 {
-    private Scenario _scenario;
+    private XceptoScenario _scenario;
     [SetUp]
     public void SetUp()
     {

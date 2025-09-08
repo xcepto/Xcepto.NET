@@ -16,6 +16,7 @@ namespace Xcepto
             Action<TransitionBuilder> builder)
         {
             var transitionBuilder = new TransitionBuilder();
+            scenario.AssignBuilder(transitionBuilder);
             builder(transitionBuilder);
 
             AsyncAcceptanceTest runner = new AsyncAcceptanceTest(timeout, transitionBuilder, scenario);

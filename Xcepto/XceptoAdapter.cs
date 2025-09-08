@@ -10,7 +10,6 @@ namespace Xcepto
         protected abstract Task Initialize(IServiceProvider serviceProvider);
         protected abstract Task Cleanup(IServiceProvider serviceProvider);
         protected abstract Task AddServices(IServiceCollection serviceCollection);
-
         internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
         internal async Task CallAddServices(IServiceCollection serviceCollection) => await AddServices(serviceCollection);
 

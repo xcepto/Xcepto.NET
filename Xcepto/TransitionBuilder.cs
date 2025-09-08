@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Xcepto
 {
@@ -8,7 +9,9 @@ namespace Xcepto
         private AcceptanceStateMachine _stateMachine = new();
         private HashSet<XceptoAdapter> _adapters = new();
         private List<XceptoState> _states = new();
-        
+        private List<Task> _propagatedTasks = new();
+        internal IEnumerable<Task> PropagatedTasks => _propagatedTasks;
+
         public void AddStep(XceptoState newState)
         {
             _states.Add(newState);
@@ -30,6 +33,11 @@ namespace Xcepto
             adapter.AssignBuilder(this);
             _adapters.Add(adapter);
             return adapter;
+        }
+
+        public void PropagateExeptions(Task task)
+        {
+            _propagatedTasks.Add(task);
         }
     }
 }

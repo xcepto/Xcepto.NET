@@ -69,7 +69,7 @@ namespace Xcepto
         {
             var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
             loggingProvider.LogDebug("Cleaning up:");
-            foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i)))
+            foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i + 1)))
             {
                 await adapter.CallCleanup(serviceProvider);
                 loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");

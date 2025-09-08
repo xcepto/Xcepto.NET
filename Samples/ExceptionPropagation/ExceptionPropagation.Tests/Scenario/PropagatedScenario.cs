@@ -1,11 +1,12 @@
 ﻿using ExceptionPropagation.Tests.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Timeout.Tests.Providers;
+using Xcepto;
 using Xcepto.Interfaces;
 
 namespace ExceptionPropagation.Tests.Scenario;
 
-public class PropagatedScenario: Xcepto.Scenario
+public class PropagatedScenario: XceptoScenario
 {
     public override Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection()
         .AddSingleton<ILoggingProvider, LoggingProvider>());
@@ -19,5 +20,4 @@ public class PropagatedScenario: Xcepto.Scenario
         return Task.CompletedTask;
     }
 
-    public override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 }

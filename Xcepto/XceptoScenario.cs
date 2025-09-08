@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Xcepto
 {
-    public abstract class Scenario
+    public abstract class XceptoScenario
     {
         private TransitionBuilder? _builder;
 
@@ -16,10 +16,11 @@ namespace Xcepto
         {
             _builder = builder;
         }
-        public abstract Task<IServiceCollection> Setup();
 
-        public abstract Task Initialize(IServiceProvider serviceProvider);
+        public virtual Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection());
 
-        public abstract Task Cleanup(IServiceProvider serviceProvider);
+        public virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+
+        public virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
     }
 }

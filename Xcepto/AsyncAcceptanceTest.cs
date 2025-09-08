@@ -7,9 +7,9 @@ namespace Xcepto
 {
     public class AsyncAcceptanceTest: AcceptanceTest
     {
-        private Scenario _scenario;
+        private XceptoScenario _scenario;
 
-        public AsyncAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, Scenario scenario) : base(timeout, transitionBuilder)
+        public AsyncAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, XceptoScenario scenario) : base(timeout, transitionBuilder)
         {
             _scenario = scenario;
         }

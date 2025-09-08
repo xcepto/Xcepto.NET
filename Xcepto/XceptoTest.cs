@@ -12,7 +12,7 @@ namespace Xcepto
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan TimeoutShutdownTolerance = TimeSpan.FromSeconds(2);
 
-        public static async Task Given(Scenario scenario, TimeSpan timeout,
+        public static async Task Given(XceptoScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
             var transitionBuilder = new TransitionBuilder();
@@ -49,7 +49,7 @@ namespace Xcepto
             await task;
         }
 
-        public static async Task Given(Scenario scenario, Action<TransitionBuilder> builder)
+        public static async Task Given(XceptoScenario scenario, Action<TransitionBuilder> builder)
             => await Given(scenario, DefaultTimeout, builder);
         
         public static IEnumerator GivenEnumerated(EnumeratedScenario scenario, TimeSpan timeout, Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,

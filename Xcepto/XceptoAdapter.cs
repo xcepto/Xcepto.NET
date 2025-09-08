@@ -6,9 +6,9 @@ namespace Xcepto
 {
     public abstract class XceptoAdapter
     {
-        protected abstract Task Initialize(IServiceProvider serviceProvider);
-        protected abstract Task Cleanup(IServiceProvider serviceProvider);
-        protected abstract Task AddServices(IServiceCollection serviceCollection);
+        protected virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+        protected virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
+        protected virtual Task AddServices(IServiceCollection serviceCollection) => Task.CompletedTask;
 
         private TransitionBuilder? _builder;
         internal void AssignBuilder(TransitionBuilder builder)

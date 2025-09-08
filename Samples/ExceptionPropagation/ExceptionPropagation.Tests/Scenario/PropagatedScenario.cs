@@ -12,7 +12,7 @@ public class PropagatedScenario: Xcepto.Scenario
 
     public override Task Initialize(IServiceProvider serviceProvider)
     {
-        Propagate(Task.Run(() =>
+        PropagateExceptions(Task.Run(() =>
         {
             throw new PropagatedException();
         }));

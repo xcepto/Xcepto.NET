@@ -6,13 +6,6 @@ namespace ExceptionPropagation.Tests.Adapters;
 
 public class UnpropagatedAdapter: XceptoAdapter
 {
-    private TransitionBuilder? _builder;
-
-    public override void AssignBuilder(TransitionBuilder builder)
-    {
-        _builder = builder;
-    }
-
     protected override Task Initialize(IServiceProvider serviceProvider)
     {
         var task = Task.Run(() =>

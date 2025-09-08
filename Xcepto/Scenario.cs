@@ -8,9 +8,9 @@ namespace Xcepto
     {
         private TransitionBuilder? _builder;
 
-        protected void Propagate(Task task)
+        protected void PropagateExceptions(Task task)
         {
-            _builder.PropagateExeptions(task);
+            _builder!.PropagateExceptions(task);
         }
         internal void AssignBuilder(TransitionBuilder builder)
         {

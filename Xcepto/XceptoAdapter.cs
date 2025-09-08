@@ -6,10 +6,25 @@ namespace Xcepto
 {
     public abstract class XceptoAdapter
     {
-        public abstract void AssignBuilder(TransitionBuilder builder);
         protected abstract Task Initialize(IServiceProvider serviceProvider);
         protected abstract Task Cleanup(IServiceProvider serviceProvider);
         protected abstract Task AddServices(IServiceCollection serviceCollection);
+
+        private TransitionBuilder? _builder;
+        internal void AssignBuilder(TransitionBuilder builder)
+        {
+            _builder = builder;
+        }
+        protected void PropagateExceptions(Task task)
+        {
+            _builder!.PropagateExceptions(task);
+        }
+
+        protected void AddStep(XceptoState state)
+        {
+            _builder!.AddStep(state);
+        }
+
         internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
         internal async Task CallAddServices(IServiceCollection serviceCollection) => await AddServices(serviceCollection);
 

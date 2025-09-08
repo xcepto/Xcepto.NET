@@ -35,7 +35,7 @@ namespace Xcepto
             return adapter;
         }
 
-        public void PropagateExeptions(Task task)
+        internal void PropagateExceptions(Task task)
         {
             _propagatedTasks.Add(task);
         }

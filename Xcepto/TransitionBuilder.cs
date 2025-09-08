@@ -14,6 +14,7 @@ namespace Xcepto
 
         public void AddStep(XceptoState newState)
         {
+            newState.AssignBuilder(this);
             _states.Add(newState);
             _stateMachine.AddTransition(newState);
         }

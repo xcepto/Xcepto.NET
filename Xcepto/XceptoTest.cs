@@ -9,7 +9,7 @@ namespace Xcepto
 {
     public static class XceptoTest
     {
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
         private static readonly TimeSpan TimeoutShutdownTolerance = TimeSpan.FromSeconds(2);
 
         public static async Task Given(XceptoScenario scenario, TimeSpan timeout,

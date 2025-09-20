@@ -28,76 +28,22 @@ jobs:
           cd Samples/Shopping && docker compose -f docker-compose.yaml down
           
           
-  versions:
+  release:
     runs-on: ubuntu-latest
-    name: Determine Versions
-    needs: [tests]
+    needs: [ tests ]
     if: github.ref == 'refs/heads/main'
-    
-    outputs:
-      VERSION: ${{ steps.set-versions.outputs.VERSION }}
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-        
-      - name: Set up environment
-        id: set-versions
-        shell: bash
-        run: |
-          echo "VERSION=5.3.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "VERSION=5.3.${{ github.run_number }}" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/exec
 
-      - name: Create a new tag
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag "${{ github.run_number }}"
-          git push origin "${{ github.run_number }}"
-  
-  publish:
-    needs: [tests, versions]
-    runs-on: ubuntu-latest
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
 
-    strategy:
-      matrix:
-        project:
-          - Xcepto/Xcepto.csproj
-          - Xcepto.Rest/Xcepto.Rest.csproj
-          - Xcepto.RabbitMQ/Xcepto.RabbitMQ.csproj
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v4
-        
-      - name: Restore
-        run: dotnet restore ${{ matrix.project }}
-
-      - name: Build
-        run: dotnet build ${{ matrix.project }} --configuration Release --no-restore -p:Version=${{ needs.versions.outputs.VERSION }}
-
-      - name: Pack
-        run: dotnet pack ${{ matrix.project }} --configuration Release --no-build --output ./nupkg -p:Version=${{ needs.versions.outputs.VERSION }}
-
-      - name: Push to NuGet
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-        
-  create-release:
-    needs: [ publish, versions ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        uses: actions/create-release@v1
+      - run: semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.run_number }}
-          release_name: Release v${{ needs.versions.outputs.VERSION }}
-          body: |
-            [https://www.nuget.org/profiles/Xcepto](https://www.nuget.org/profiles/Xcepto)
-          draft: false
-          prerelease: false
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

@@ -1,0 +1,26 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/github",
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh Xcepto ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh Xcepto.RabbitMQ ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh Xcepto.Rest ${nextRelease.version}"
+      }
+    ]
+  ]
+}

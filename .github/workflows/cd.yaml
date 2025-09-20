@@ -1,6 +1,10 @@
 name: Xcepto .NET release pipeline
 on:
   push:
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   tests:

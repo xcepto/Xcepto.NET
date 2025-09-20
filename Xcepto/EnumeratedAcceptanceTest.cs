@@ -18,12 +18,12 @@ namespace Xcepto
         {
             // Arrange
             var serviceCollection = new ServiceCollection();
-            yield return _enumeratedScenario.Setup(serviceCollection);
-            var arrangeTask = Arrange(serviceCollection);
+            yield return _enumeratedScenario.CallSetup(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var arrangeTask = Arrange(serviceProvider);
             arrangeTask.Wait();
-            var serviceProvider = arrangeTask.Result;
 
-            var initializeTask = _enumeratedScenario.Initialize(serviceProvider);
+            var initializeTask = _enumeratedScenario.CallInitialize(serviceProvider);
             initializeTask.Wait();
 
             try
@@ -48,7 +48,7 @@ namespace Xcepto
                 var cleanupTask = Cleanup(serviceProvider);
                 cleanupTask.Wait();
 
-                var scenarioCleanupTask = _enumeratedScenario.Cleanup(serviceProvider);
+                var scenarioCleanupTask = _enumeratedScenario.CallCleanup(serviceProvider);
                 scenarioCleanupTask.Wait();
             }
         }

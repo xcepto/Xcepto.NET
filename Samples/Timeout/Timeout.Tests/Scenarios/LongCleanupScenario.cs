@@ -7,13 +7,13 @@ namespace Timeout.Tests.Scenarios;
 
 public class LongCleanupScenario: XceptoScenario
 {
-    public override Task<IServiceCollection> Setup()
+    protected override Task<IServiceCollection> Setup()
     {
         return Task.FromResult(new ServiceCollection()
             .AddSingleton<ILoggingProvider, LoggingProvider>());
     }
 
-    public override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+    protected override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
 
-    public override Task Cleanup(IServiceProvider serviceProvider) => Task.Delay(TimeSpan.FromSeconds(10));
+    protected override Task Cleanup(IServiceProvider serviceProvider) => Task.Delay(TimeSpan.FromSeconds(10));
 }

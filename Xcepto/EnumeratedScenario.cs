@@ -7,8 +7,16 @@ namespace Xcepto
 {
     public abstract class EnumeratedScenario
     {
-        public abstract IEnumerator Setup(IServiceCollection serviceCollection);
-        public abstract Task Initialize(IServiceProvider serviceProvider);
-        public abstract Task Cleanup(IServiceProvider serviceProvider);
+        protected abstract IEnumerator Setup(IServiceCollection serviceCollection);
+        protected abstract Task Initialize(IServiceProvider serviceProvider);
+        protected abstract Task Cleanup(IServiceProvider serviceProvider);
+        
+        internal IEnumerator CallSetup(ServiceCollection services)
+        {
+            yield return Setup(services);
+        }
+        internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
+
+        internal async Task CallCleanup(IServiceProvider serviceProvider) => await Cleanup(serviceProvider);
     }
 }

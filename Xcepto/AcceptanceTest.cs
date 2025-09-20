@@ -21,28 +21,10 @@ namespace Xcepto
             _adapters = transitionBuilder.GetAdapters();
             _states = transitionBuilder.GetStates();
         }
-        
-        protected static void Assert(AcceptanceStateMachine stateMachine)
-        {
-            if (!stateMachine.CurrentXceptoState.Equals(stateMachine.FinalXceptoState))
-                throw new Exception($"{stateMachine.CurrentXceptoState} did not equal {stateMachine.FinalXceptoState}");
-        }
 
-        protected async Task<IServiceProvider> Arrange(IServiceCollection serviceCollection)
+        protected async Task Arrange(IServiceProvider serviceProvider)
         {
-            var loggingProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ILoggingProvider>();
-            loggingProvider.LogDebug("Adding services for adapters:");
-            var xceptoAdapters = _adapters as XceptoAdapter[] ?? _adapters.ToArray();
-            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, counter) => (adapter, counter+1)))
-            {
-                await adapter.CallAddServices(serviceCollection);
-                loggingProvider.LogDebug($"Added services for {adapter} ({counter}/{_adapters.Count()})");
-            }
-            
-            loggingProvider.LogDebug($"All {_adapters.Count()} adapters added services successfully ✅");
-            loggingProvider.LogDebug("");
-
-            IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
             loggingProvider.LogDebug("Initializing states:");
             loggingProvider.LogDebug($"State initialized: Start (1/{_states.Count()+2})");
             foreach (var (state, counter) in _states.Select((state, counter) => (state, counter+2)))
@@ -55,14 +37,18 @@ namespace Xcepto
 
             loggingProvider.LogDebug("");
             loggingProvider.LogDebug("Initializing adapters:");
-            foreach (var (adapter, counter) in xceptoAdapters.Select((adapter, i) => (adapter, i+1)))
+            foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i+1)))
             {
                 await adapter.CallInitialize(serviceProvider);
                 loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
             }
             loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
-            
-            return serviceProvider;
+        }
+        
+        protected static void Assert(AcceptanceStateMachine stateMachine)
+        {
+            if (!stateMachine.CurrentXceptoState.Equals(stateMachine.FinalXceptoState))
+                throw new Exception($"{stateMachine.CurrentXceptoState} did not equal {stateMachine.FinalXceptoState}");
         }
 
         protected async Task Cleanup(IServiceProvider serviceProvider)

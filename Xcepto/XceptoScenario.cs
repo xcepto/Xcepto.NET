@@ -1,26 +1,27 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Interfaces;
+using Xcepto.Provider;
 
-namespace Xcepto
+namespace Xcepto;
+
+public class XceptoScenario: BaseScenario
 {
-    public abstract class XceptoScenario
+    protected virtual Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection()
+        .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>());
+
+    protected virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+
+    protected virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
+
+    protected override async Task<IServiceProvider> BaseSetup()
     {
-        private TransitionBuilder? _builder;
-
-        protected void PropagateExceptions(Task task)
-        {
-            _builder!.PropagateExceptions(task);
-        }
-        internal void AssignBuilder(TransitionBuilder builder)
-        {
-            _builder = builder;
-        }
-
-        public virtual Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection());
-
-        public virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
-
-        public virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
+        var serviceCollection = await Setup();
+        return serviceCollection.BuildServiceProvider();
     }
+
+    protected override Task BaseInitialize(IServiceProvider serviceProvider) => Initialize(serviceProvider);
+
+    protected override Task BaseCleanup(IServiceProvider serviceProvider) => Cleanup(serviceProvider);
 }

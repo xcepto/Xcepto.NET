@@ -8,7 +8,6 @@ namespace Xcepto
     {
         protected virtual Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
         protected virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
-        protected virtual Task AddServices(IServiceCollection serviceCollection) => Task.CompletedTask;
 
         private TransitionBuilder? _builder;
         internal void AssignBuilder(TransitionBuilder builder)
@@ -26,8 +25,7 @@ namespace Xcepto
         }
 
         internal async Task CallInitialize(IServiceProvider serviceProvider) => await Initialize(serviceProvider);
-        internal async Task CallAddServices(IServiceCollection serviceCollection) => await AddServices(serviceCollection);
 
-        public async Task CallCleanup(IServiceProvider serviceProvider) => await Cleanup(serviceProvider);
+        internal async Task CallCleanup(IServiceProvider serviceProvider) => await Cleanup(serviceProvider);
     }
 }

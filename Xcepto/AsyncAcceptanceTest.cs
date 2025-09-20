@@ -7,9 +7,9 @@ namespace Xcepto
 {
     public class AsyncAcceptanceTest: AcceptanceTest
     {
-        private XceptoScenario _scenario;
+        private BaseScenario _scenario;
 
-        public AsyncAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, XceptoScenario scenario) : base(timeout, transitionBuilder)
+        public AsyncAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, BaseScenario scenario) : base(timeout, transitionBuilder)
         {
             _scenario = scenario;
         }
@@ -17,15 +17,15 @@ namespace Xcepto
         public async Task ExecuteTestAsync()
         {
             // Arrange
-            IServiceCollection serviceCollection = await _scenario.Setup();
-            var loggingProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ILoggingProvider>();
+            IServiceProvider serviceProvider = await _scenario.CallSetup();
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
             loggingProvider.LogDebug("Setting up acceptance test");
             loggingProvider.LogDebug("");
             loggingProvider.LogDebug("Added scenario services successfully ✅");
             loggingProvider.LogDebug("");
-            var serviceProvider = await Arrange(serviceCollection);
+            await Arrange(serviceProvider);
             loggingProvider.LogDebug("");
-            await _scenario.Initialize(serviceProvider);
+            await _scenario.CallInitialize(serviceProvider);
             loggingProvider.LogDebug("Initialized scenario successfully ✅");
             loggingProvider.LogDebug("");
             loggingProvider.LogDebug("Setup complete, starting test now:");
@@ -51,7 +51,7 @@ namespace Xcepto
                 loggingProvider.LogDebug("Test completed ✅");
                 loggingProvider.LogDebug("");
                 await Cleanup(serviceProvider);
-                await _scenario.Cleanup(serviceProvider);
+                await _scenario.CallCleanup(serviceProvider);
                 
                 loggingProvider.LogDebug("");
                 loggingProvider.LogDebug("");

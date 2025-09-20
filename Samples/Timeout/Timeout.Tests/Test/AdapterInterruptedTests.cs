@@ -5,7 +5,6 @@ using Xcepto;
 namespace Timeout.Tests.Test;
 
 [TestFixture(typeof(LongInitializationAdapter))]
-[TestFixture(typeof(LongAddServicesAdapter))]
 [TestFixture(typeof(LongCleanupAdapter))]
 public class AdapterInterruptedTests<T> where T: XceptoAdapter, new()
 {

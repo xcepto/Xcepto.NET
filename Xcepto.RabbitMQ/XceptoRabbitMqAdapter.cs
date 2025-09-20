@@ -76,13 +76,5 @@ namespace Xcepto.RabbitMQ
                 }
             }
         }
-
-        protected override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
-
-        protected override Task AddServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddSingleton<XceptoRabbitMqRepository>();
-            return Task.CompletedTask;
-        }
     }
 }

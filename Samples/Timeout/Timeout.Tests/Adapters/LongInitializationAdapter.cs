@@ -8,6 +8,4 @@ public class LongInitializationAdapter: XceptoAdapter
     protected override Task Initialize(IServiceProvider serviceProvider) => Task.Delay(TimeSpan.FromSeconds(10));
 
     protected override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
-
-    protected override Task AddServices(IServiceCollection serviceCollection) => Task.CompletedTask;
 }

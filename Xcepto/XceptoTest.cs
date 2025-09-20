@@ -12,13 +12,28 @@ namespace Xcepto
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
         private static readonly TimeSpan TimeoutShutdownTolerance = TimeSpan.FromSeconds(2);
 
-        public static async Task Given(XceptoScenario scenario, TimeSpan timeout,
+        public static async Task Given(BaseScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
             var transitionBuilder = new TransitionBuilder();
             scenario.AssignBuilder(transitionBuilder);
             builder(transitionBuilder);
 
+            await RunAsync(scenario, timeout, transitionBuilder);
+        }
+        
+        public static async Task GivenSequential(BaseScenario scenario, TimeSpan timeout,
+            Action<TransitionBuilder> builder)
+        {
+            var transitionBuilder = new TransitionBuilder();
+            scenario.AssignBuilder(transitionBuilder);
+            builder(transitionBuilder);
+
+            await RunAsync(scenario, timeout, transitionBuilder);
+        }
+
+        private static async Task RunAsync(BaseScenario scenario, TimeSpan timeout, TransitionBuilder transitionBuilder)
+        {
             AsyncAcceptanceTest runner = new AsyncAcceptanceTest(timeout, transitionBuilder, scenario);
             var task = runner.ExecuteTestAsync();
             var delayTime = timeout + TimeoutShutdownTolerance;
@@ -49,7 +64,7 @@ namespace Xcepto
             await task;
         }
 
-        public static async Task Given(XceptoScenario scenario, Action<TransitionBuilder> builder)
+        public static async Task Given(BaseScenario scenario, Action<TransitionBuilder> builder)
             => await Given(scenario, DefaultTimeout, builder);
         
         public static IEnumerator GivenEnumerated(EnumeratedScenario scenario, TimeSpan timeout, Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,

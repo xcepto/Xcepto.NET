@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/exec
+      - run: npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/exec conventional-changelog-conventionalcommits
 
       - uses: actions/setup-dotnet@v3
         with:

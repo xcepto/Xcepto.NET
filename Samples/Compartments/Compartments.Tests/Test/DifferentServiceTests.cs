@@ -1,3 +1,4 @@
+using Compartments.Tests.Dependencies;
 using Compartments.Tests.Scenarios;
 using Compartments.Tests.Service;
 using Xcepto;
@@ -17,13 +18,14 @@ public class DifferentServiceTests
 
             serviceAdapter.ServiceExpectation<Service1>(x => x.GetValue() == 1);
             serviceAdapter.ServiceExpectation<Service2>(x => x.GetValue() == 1);
+            serviceAdapter.ServiceExpectation<SharedDependency>(x => x.Value() == 2);
         };
 
 
     [Test]
     public async Task ServicesDontAffectEachOther()
     {
-        await XceptoTest.Given(new CompartmentalizationScenario(), Definition);
+        await XceptoTest.Given(new CompartmentalizationScenario(), TimeSpan.FromSeconds(3), Definition);
     }
     
     [Test]

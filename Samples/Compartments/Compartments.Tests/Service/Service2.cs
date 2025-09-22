@@ -4,17 +4,20 @@ namespace Compartments.Tests.Service;
 
 public class Service2
 {
-    private Dependency1 _dependency1;
+    private PersonalDependency _personalDependency;
+    private SharedDependency _sharedDependency;
 
-    public Service2(Dependency1 dependency1)
+    public Service2(PersonalDependency personalDependency, SharedDependency sharedDependency)
     {
-        _dependency1 = dependency1;
+        _personalDependency = personalDependency;
+        _sharedDependency = sharedDependency;
     }
 
     public void Act()
     {
-        _dependency1.Increment();
+        _personalDependency.Increment();
+        _sharedDependency.Increment();
     }
 
-    public int GetValue() => _dependency1.Value();
+    public int GetValue() => _personalDependency.Value();
 }

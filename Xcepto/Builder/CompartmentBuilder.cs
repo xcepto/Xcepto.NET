@@ -10,6 +10,7 @@ public class CompartmentBuilder
 {
     private readonly IServiceCollection _serviceCollection;
     private List<Type> _exposed = new();
+    private DependencyProxy _dependencyProxy = new();
 
     internal CompartmentBuilder(IServiceCollection serviceCollection)
     {
@@ -22,9 +23,9 @@ public class CompartmentBuilder
         List<ExposedService> exposedServices = new List<ExposedService>();
         foreach (var type in _exposed)
         {
-            exposedServices.Add(new ExposedService(type, serviceProvider.GetRequiredService(type)));
+            exposedServices.Add(new ExposedService(type, () => serviceProvider.GetRequiredService(type)));
         }
-        return new Compartment(serviceProvider, exposedServices);
+        return new Compartment(serviceProvider, exposedServices, _dependencyProxy);
     }
 
     public CompartmentBuilder ExposeService<TService>()
@@ -32,6 +33,13 @@ public class CompartmentBuilder
         if (_serviceCollection.All(x => x.ServiceType != typeof(TService)))
             throw new ArgumentException($"No service of type {typeof(TService)} was contained in this compartment");
         _exposed.Add(typeof(TService));
+        return this;
+    }
+
+    public CompartmentBuilder DependsOn<TService>()
+    where TService: class
+    {
+        _serviceCollection.AddSingleton<TService>(_ => _dependencyProxy.Get<TService>());
         return this;
     }
 }

@@ -15,7 +15,8 @@ public class SharedScenario: XceptoScenario
             .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
             .AddSingleton<Service2>()
             .AddSingleton<Service1>()
-            .AddSingleton<Dependency1>()
+            .AddSingleton<PersonalDependency>()
+            .AddSingleton<SharedDependency>()
         );
     }
 }

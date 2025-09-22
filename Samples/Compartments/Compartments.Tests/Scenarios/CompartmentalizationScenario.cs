@@ -13,23 +13,27 @@ public class CompartmentalizationScenario: CompartmentalizedXceptoScenario
 {
     protected override Task<IEnumerable<Compartment>> Setup()
     {
-        var service0Compartment = Compartment.From(new ServiceCollection()
+        var shared = Compartment.From(new ServiceCollection()
             .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
+            .AddSingleton<SharedDependency>()
             )
+            .ExposeService<SharedDependency>()
             .ExposeService<ILoggingProvider>()
             .Build();
-        var service1Compartment = Compartment.From(new ServiceCollection()
+        var service1 = Compartment.From(new ServiceCollection()
             .AddSingleton<Service1>()
-            .AddSingleton<Dependency1>()
+            .AddSingleton<PersonalDependency>()
             )
+            .DependsOn<SharedDependency>()
             .ExposeService<Service1>()
             .Build();
-        var service2Compartment = Compartment.From(new ServiceCollection()
+        var service2 = Compartment.From(new ServiceCollection()
             .AddSingleton<Service2>()
-            .AddSingleton<Dependency1>()
+            .AddSingleton<PersonalDependency>()
             )
+            .DependsOn<SharedDependency>()
             .ExposeService<Service2>()
             .Build();
-        return Task.FromResult(new []{service0Compartment, service1Compartment, service2Compartment}.AsEnumerable());
+        return Task.FromResult(new []{shared, service1, service2}.AsEnumerable());
     }
 }

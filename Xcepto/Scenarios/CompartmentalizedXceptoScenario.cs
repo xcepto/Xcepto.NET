@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Builder;
@@ -31,16 +32,23 @@ public class CompartmentalizedXceptoScenario: BaseScenario
     {
         ServiceCollection primaryCollection = new ServiceCollection();
         var compartments = await Setup();
-        foreach (var compartment in compartments)
+        var enumerable = compartments as Compartment[] ?? compartments.ToArray();
+        foreach (var compartment in enumerable)
         {
             _registeredCompartments.Add(compartment);
             var exposedServices = compartment.GetExposedServices();
             foreach (var exposedService in exposedServices)
             {
-                primaryCollection.AddSingleton(exposedService.Type, exposedService.Instance);
+                primaryCollection.AddSingleton(exposedService.Type, _ => exposedService.InstanceSupplier());
             }
         }
-        return primaryCollection.BuildServiceProvider();
+
+        var primaryProvider = primaryCollection.BuildServiceProvider();
+        foreach (var compartment in enumerable)
+        {
+            compartment.Activate(primaryProvider);
+        }
+        return primaryProvider;
     }
 
     protected override Task BaseInitialize(IServiceProvider serviceProvider) => Initialize(serviceProvider);

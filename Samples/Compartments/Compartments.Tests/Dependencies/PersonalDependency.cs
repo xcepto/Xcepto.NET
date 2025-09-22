@@ -1,6 +1,6 @@
 namespace Compartments.Tests.Dependencies;
 
-public class Dependency1
+public class PersonalDependency
 {
     private int _number = 0;
     public void Increment()

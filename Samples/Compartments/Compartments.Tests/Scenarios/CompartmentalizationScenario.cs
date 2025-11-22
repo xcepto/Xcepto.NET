@@ -18,7 +18,7 @@ public class CompartmentalizationScenario: CompartmentalizedXceptoScenario
             .AddSingleton<SharedDependency>()
             )
             .ExposeService<SharedDependency>()
-            .ExposeService<ILoggingProvider>()
+            .ExposeService(typeof(ILoggingProvider))
             .Build();
         var service1 = Compartment.From(new ServiceCollection()
             .AddSingleton<Service1>()
@@ -31,7 +31,7 @@ public class CompartmentalizationScenario: CompartmentalizedXceptoScenario
             .AddSingleton<Service2>()
             .AddSingleton<PersonalDependency>()
             )
-            .DependsOn<SharedDependency>()
+            .DependsOn(typeof(SharedDependency))
             .ExposeService<Service2>()
             .Build();
         return Task.FromResult(new []{shared, service1, service2}.AsEnumerable());

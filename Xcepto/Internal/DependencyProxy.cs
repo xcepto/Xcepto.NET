@@ -9,13 +9,17 @@ internal class DependencyProxy
 
     internal TService Get<TService>()
     {
+        return (TService)Get(typeof(TService));
+    }
+    
+    internal object Get(Type type)
+    {
         if (_serviceProvider is null)
             throw new Exception("Compartment not activated yet");
-        var type = typeof(TService);
         var service = _serviceProvider.GetService(type);
         if (service is null)
             throw new Exception($"External dependency of type {type.Name} not found");
-        return (TService)service;
+        return service;
     }
 
     internal void Register(IServiceProvider serviceProvider)

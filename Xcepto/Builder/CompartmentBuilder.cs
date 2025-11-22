@@ -30,16 +30,26 @@ public class CompartmentBuilder
 
     public CompartmentBuilder ExposeService<TService>()
     {
-        if (_serviceCollection.All(x => x.ServiceType != typeof(TService)))
-            throw new ArgumentException($"No service of type {typeof(TService)} was contained in this compartment");
-        _exposed.Add(typeof(TService));
-        return this;
+        return ExposeService(typeof(TService));
     }
 
+    public CompartmentBuilder ExposeService(Type type)
+    {
+        if (_serviceCollection.All(x => x.ServiceType != type))
+            throw new ArgumentException($"No service of type {type} was contained in this compartment");
+        _exposed.Add(type);
+        return this;
+    }
+    
     public CompartmentBuilder DependsOn<TService>()
     where TService: class
     {
-        _serviceCollection.AddSingleton<TService>(_ => _dependencyProxy.Get<TService>());
+        return DependsOn(typeof(TService));
+    }
+
+    public CompartmentBuilder DependsOn(Type type)
+    {
+        _serviceCollection.AddSingleton(type, _ => _dependencyProxy.Get(type));
         return this;
     }
 }

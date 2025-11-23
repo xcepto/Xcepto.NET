@@ -11,6 +11,7 @@ public class CompartmentBuilder
     private readonly IServiceCollection _serviceCollection;
     private List<Type> _exposed = new();
     private DependencyProxy _dependencyProxy = new();
+    private string _name = String.Empty;
 
     internal CompartmentBuilder(IServiceCollection serviceCollection)
     {
@@ -19,13 +20,22 @@ public class CompartmentBuilder
 
     public Compartment Build()
     {
+        if (_name.Equals(String.Empty))
+            _name = Guid.NewGuid().ToString();
+        
         var serviceProvider = _serviceCollection.BuildServiceProvider();
         List<ExposedService> exposedServices = new List<ExposedService>();
         foreach (var type in _exposed)
         {
             exposedServices.Add(new ExposedService(type, () => serviceProvider.GetRequiredService(type)));
         }
-        return new Compartment(serviceProvider, exposedServices, _dependencyProxy);
+        return new Compartment(serviceProvider, exposedServices, _dependencyProxy, _name);
+    }
+
+    public CompartmentBuilder Identify(string uniqueName)
+    {
+        _name = uniqueName;
+        return this;
     }
 
     public CompartmentBuilder ExposeService<TService>()

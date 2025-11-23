@@ -7,6 +7,7 @@ using Xcepto.Builder;
 using Xcepto.Data;
 using Xcepto.Interfaces;
 using Xcepto.Provider;
+using Xcepto.Repositories;
 
 namespace Xcepto.Scenarios;
 
@@ -26,16 +27,18 @@ public class CompartmentalizedXceptoScenario: BaseScenario
 
     protected virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 
-    private List<Compartment> _registeredCompartments = new(); 
 
     protected override async Task<IServiceProvider> BaseSetup()
     {
         ServiceCollection primaryCollection = new ServiceCollection();
+        CompartmentRepository compartmentRepository = new CompartmentRepository();
+        primaryCollection.AddSingleton<CompartmentRepository>(compartmentRepository);
+        
         var compartments = await Setup();
         var enumerable = compartments as Compartment[] ?? compartments.ToArray();
         foreach (var compartment in enumerable)
         {
-            _registeredCompartments.Add(compartment);
+            compartmentRepository.AddCompartment(compartment);
             var exposedServices = compartment.GetExposedServices();
             foreach (var exposedService in exposedServices)
             {

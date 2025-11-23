@@ -7,16 +7,18 @@ namespace Xcepto.Data;
 
 public class Compartment
 {
-    private IServiceProvider _serviceProvider;
+    public IServiceProvider Services { get; }
     private IEnumerable<ExposedService> _exposedServices;
     private DependencyProxy _dependencyProxy;
+    public string UniqueName { get; }
 
     internal Compartment(IServiceProvider serviceProvider, IEnumerable<ExposedService> exposedServices,
-        DependencyProxy dependencyProxy)
+        DependencyProxy dependencyProxy, String uniqueName)
     {
+        UniqueName = uniqueName;
         _dependencyProxy = dependencyProxy;
         _exposedServices = exposedServices;
-        _serviceProvider = serviceProvider;
+        Services = serviceProvider;
     }
     public static CompartmentBuilder From(IServiceCollection serviceCollection)
     {

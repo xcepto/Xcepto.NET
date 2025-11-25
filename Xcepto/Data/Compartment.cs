@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Builder;
 
@@ -11,11 +12,13 @@ public class Compartment
     private IEnumerable<ExposedService> _exposedServices;
     private DependencyProxy _dependencyProxy;
     public string UniqueName { get; }
+    public Func<IServiceProvider, Task>? EntryPoint { get; } = null;
 
     internal Compartment(IServiceProvider serviceProvider, IEnumerable<ExposedService> exposedServices,
-        DependencyProxy dependencyProxy, String uniqueName)
+        DependencyProxy dependencyProxy, String uniqueName, Func<IServiceProvider, Task>? entryPoint)
     {
         UniqueName = uniqueName;
+        EntryPoint = entryPoint;
         _dependencyProxy = dependencyProxy;
         _exposedServices = exposedServices;
         Services = serviceProvider;

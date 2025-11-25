@@ -50,6 +50,8 @@ public class CompartmentalizedXceptoScenario: BaseScenario
         foreach (var compartment in enumerable)
         {
             compartment.Activate(primaryProvider);
+            if (compartment.EntryPoint is not null)
+                PropagateExceptions(Task.Run(() => compartment.EntryPoint(compartment.Services)));
         }
         return primaryProvider;
     }

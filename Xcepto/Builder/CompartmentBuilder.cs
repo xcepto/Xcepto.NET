@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Data;
+using Xcepto.Interfaces;
 
 namespace Xcepto.Builder;
 
@@ -12,6 +14,7 @@ public class CompartmentBuilder
     private List<Type> _exposed = new();
     private DependencyProxy _dependencyProxy = new();
     private string _name = String.Empty;
+    private Func<IServiceProvider, Task>? _entryPoint = null;
 
     internal CompartmentBuilder(IServiceCollection serviceCollection)
     {
@@ -29,7 +32,18 @@ public class CompartmentBuilder
         {
             exposedServices.Add(new ExposedService(type, () => serviceProvider.GetRequiredService(type)));
         }
-        return new Compartment(serviceProvider, exposedServices, _dependencyProxy, _name);
+        return new Compartment(serviceProvider, exposedServices, _dependencyProxy, _name, _entryPoint);
+    }
+
+    public CompartmentBuilder SetEntryPoint<T>()
+    where T: IEntryPoint
+    {
+        _entryPoint = serviceProvider =>
+        {
+            var entryPoint = serviceProvider.GetRequiredService<T>();
+            return entryPoint.Start();
+        };
+        return this;
     }
 
     public CompartmentBuilder Identify(string uniqueName)

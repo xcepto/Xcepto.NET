@@ -29,7 +29,8 @@ public class EntryPointScenario: CompartmentalizedXceptoScenario
         var workerCompartment = Compartment.From(workerCollection)
             .DependsOn<ResultRepository>()
             .DependsOn<TaskRepository>()
-            .SetEntryPoint<WorkerService>()
+            .SetEntryPoint<WorkerService>() // both options are possible
+            .SetEntryPoint(typeof(WorkerService)) // both options are possible
             .Build();
 
         IServiceCollection clientCollection = new ServiceCollection()

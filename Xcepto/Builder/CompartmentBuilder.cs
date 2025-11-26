@@ -38,9 +38,17 @@ public class CompartmentBuilder
     public CompartmentBuilder SetEntryPoint<T>()
     where T: IEntryPoint
     {
+        SetEntryPoint(typeof(T));
+        return this;
+    }
+    
+    public CompartmentBuilder SetEntryPoint(Type entryPointType)
+    {
         _entryPoint = serviceProvider =>
         {
-            var entryPoint = serviceProvider.GetRequiredService<T>();
+            var entryPointInstance = serviceProvider.GetRequiredService(entryPointType);
+            if (entryPointInstance is not IEntryPoint entryPoint)
+                throw new ArgumentException($"entry point type was not of type {nameof(IEntryPoint)}");
             return entryPoint.Start();
         };
         return this;

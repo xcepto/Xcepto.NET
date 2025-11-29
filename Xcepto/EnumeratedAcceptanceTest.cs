@@ -34,6 +34,9 @@ namespace Xcepto
                 startTask.Wait();
                 while (DateTime.Now - startTime < Timeout)
                 {
+                    if(StateMachine.CurrentXceptoState.Equals(StateMachine.FinalXceptoState))
+                        yield break;
+                    
                     var transitionTask = StateMachine.TryTransition(serviceProvider);
                     transitionTask.Wait();
 

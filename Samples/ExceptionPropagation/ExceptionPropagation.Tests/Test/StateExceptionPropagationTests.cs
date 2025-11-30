@@ -14,7 +14,7 @@ public class StateExceptionPropagationTests
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await XceptoTest.Given(new SimpleSyncScenario(), builder =>
             {
                 builder.AddStep(new UnpropagatedState("unpropagated state"));
             });
@@ -26,7 +26,7 @@ public class StateExceptionPropagationTests
     {
         Assert.ThrowsAsync<PropagatedException>(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await XceptoTest.Given(new SimpleSyncScenario(), builder =>
             {
                 builder.AddStep(new PropagatedState("propagated state"));
             });

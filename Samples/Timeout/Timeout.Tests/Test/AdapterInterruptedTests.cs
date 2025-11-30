@@ -20,7 +20,7 @@ public class AdapterInterruptedTests<T> where T: XceptoAdapter, new()
     {
         Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new InstantaneousScenario(), TimeSpan.FromSeconds(5), builder =>
+            await XceptoTest.Given(new InstantaneousSyncScenario(), TimeSpan.FromSeconds(5), builder =>
             {
                 builder.RegisterAdapter(_adapter);
             });

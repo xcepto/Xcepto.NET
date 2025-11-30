@@ -6,7 +6,7 @@ using Xcepto.Interfaces;
 
 namespace ExceptionPropagation.Tests.Scenario;
 
-public class PropagatedScenario: XceptoScenario
+public class PropagatedScenario: AsyncScenario
 {
     protected override Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection()
         .AddSingleton<ILoggingProvider, LoggingProvider>());

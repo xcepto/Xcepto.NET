@@ -13,7 +13,7 @@ public class AdapterExceptionPropagationTests
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await XceptoTest.Given(new SimpleSyncScenario(), builder =>
             {
                 builder.RegisterAdapter(new UnpropagatedAdapter());
             });
@@ -25,7 +25,7 @@ public class AdapterExceptionPropagationTests
     {
         Assert.ThrowsAsync<PropagatedException>(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await XceptoTest.Given(new SimpleSyncScenario(), builder =>
             {
                 builder.RegisterAdapter(new PropagatedAdapter());
             });

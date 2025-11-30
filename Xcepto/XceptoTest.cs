@@ -10,7 +10,6 @@ namespace Xcepto
     public static class XceptoTest
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
-        private static readonly TimeSpan TimeoutShutdownTolerance = TimeSpan.FromSeconds(2);
 
         public static async Task Given(BaseScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
@@ -36,8 +35,7 @@ namespace Xcepto
         {
             AsyncAcceptanceTest runner = new AsyncAcceptanceTest(timeout, transitionBuilder, scenario);
             var task = runner.ExecuteTestAsync();
-            var delayTime = timeout + TimeoutShutdownTolerance;
-            var finished = await Task.WhenAny(task, Task.Delay(delayTime));
+            var finished = await Task.WhenAny(task, Task.Delay(timeout));
             
             // Log all exceptions
             foreach (var propagatedTask in transitionBuilder.PropagatedTasks)
@@ -57,7 +55,7 @@ namespace Xcepto
             
             if (finished != task)
             {
-                var timeoutException = new TimeoutException($"Test exceeded {delayTime.Seconds} seconds (timeout + tolerance).");
+                var timeoutException = new TimeoutException($"Test exceeded {timeout.Seconds} seconds (timeout).");
                 Console.WriteLine(timeoutException);
                 throw timeoutException;
             }
@@ -67,7 +65,7 @@ namespace Xcepto
         public static async Task Given(BaseScenario scenario, Action<TransitionBuilder> builder)
             => await Given(scenario, DefaultTimeout, builder);
         
-        public static IEnumerator GivenEnumerated(EnumeratedScenario scenario, TimeSpan timeout, Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
+        public static IEnumerator GivenEnumerated(BaseScenario scenario, TimeSpan timeout, Func<TimeSpan, TransitionBuilder, BaseScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
             Action<TransitionBuilder> builder)
         {
             var transitionBuilder = new TransitionBuilder();
@@ -77,8 +75,8 @@ namespace Xcepto
             yield return runner.ExecuteTestEnumerated();
         }
 
-        public static IEnumerator GivenEnumerated(EnumeratedScenario scenario,
-            Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
+        public static IEnumerator GivenEnumerated(BaseScenario scenario,
+            Func<TimeSpan, TransitionBuilder, BaseScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
             Action<TransitionBuilder> builder)
         {
             yield return GivenEnumerated(scenario, DefaultTimeout, acceptanceTestSupplier, builder);

@@ -33,7 +33,7 @@ public class DifferentServiceTests
     {
         Assert.CatchAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new SharedScenario(), TimeSpan.FromSeconds(3), Definition);
+            await XceptoTest.Given(new SharedSyncScenario(), TimeSpan.FromSeconds(3), Definition);
         });
     }
 }

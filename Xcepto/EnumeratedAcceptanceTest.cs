@@ -6,9 +6,9 @@ namespace Xcepto
 {
     public abstract class EnumeratedAcceptanceTest: AcceptanceTest
     {
-        private EnumeratedScenario _enumeratedScenario;
+        private BaseScenario _enumeratedScenario;
 
-        public EnumeratedAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, EnumeratedScenario enumeratedScenario) 
+        public EnumeratedAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, BaseScenario enumeratedScenario) 
             : base(timeout, transitionBuilder)
         {
             _enumeratedScenario = enumeratedScenario;
@@ -17,9 +17,9 @@ namespace Xcepto
         public IEnumerator ExecuteTestEnumerated()
         {
             // Arrange
-            var serviceCollection = new ServiceCollection();
-            yield return _enumeratedScenario.CallSetup(serviceCollection);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var callSetup = _enumeratedScenario.CallSetup();
+            callSetup.Wait();
+            var serviceProvider = callSetup.Result;
             var arrangeTask = Arrange(serviceProvider);
             arrangeTask.Wait();
 

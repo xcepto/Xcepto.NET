@@ -5,7 +5,7 @@ using Xcepto.Interfaces;
 
 namespace Timeout.Tests.Scenarios;
 
-public class LongSetupScenario: XceptoScenario
+public class LongSetupSyncScenario: AsyncScenario
 {
     protected override async Task<IServiceCollection> Setup()
     {
@@ -13,8 +13,4 @@ public class LongSetupScenario: XceptoScenario
         return new ServiceCollection()
             .AddSingleton<ILoggingProvider, LoggingProvider>();
     }
-
-    protected override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
-
-    protected override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 }

@@ -52,7 +52,7 @@ public class AdapterCompartmentAccessTests
     {
         Assert.CatchAsync<InvalidOperationException>(async () =>
         {
-            await XceptoTest.Given(new SharedScenario(), TimeSpan.FromSeconds(3), builder =>
+            await XceptoTest.Given(new SharedSyncScenario(), TimeSpan.FromSeconds(3), builder =>
             {
                 var compartmentAccessAdapter = builder.RegisterAdapter(new CompartmentAccessAdapter());
                 compartmentAccessAdapter.JoinedCompartmentExpectation("service1", "service2",

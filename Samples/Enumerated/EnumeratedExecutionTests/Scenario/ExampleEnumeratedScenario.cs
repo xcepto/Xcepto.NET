@@ -8,19 +8,20 @@ using Xcepto.Provider;
 
 namespace EnumeratedExecutionTests.Scenario;
 
-public class ExampleEnumeratedScenario: EnumeratedScenario
+public class ExampleEnumeratedScenario: AsyncScenario
 {
-    protected override IEnumerator Setup(IServiceCollection serviceCollection)
+    protected override Task<IServiceProvider> BaseSetup()
     {
-        serviceCollection
+        return Task.FromResult<IServiceProvider>(
+            new ServiceCollection()
             .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
             .AddSingleton<ServiceA>()
             .AddSingleton<ServiceB>()
-            .AddSingleton<Repository>();
-        yield return null;
+            .AddSingleton<Repository>()
+            .BuildServiceProvider());
     }
 
-    protected override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
+    protected override Task BaseInitialize(IServiceProvider serviceProvider) => Task.CompletedTask;
 
-    protected override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
+    protected override Task BaseCleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 }

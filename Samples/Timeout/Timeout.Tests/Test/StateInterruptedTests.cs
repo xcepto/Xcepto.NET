@@ -20,7 +20,7 @@ public class StateInterruptedTests<T> where T: XceptoState
     {
         Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new InstantaneousScenario(), TimeSpan.FromSeconds(5), builder =>
+            await XceptoTest.Given(new InstantaneousSyncScenario(), TimeSpan.FromSeconds(5), builder =>
             {
                 builder.AddStep(_state);
             });

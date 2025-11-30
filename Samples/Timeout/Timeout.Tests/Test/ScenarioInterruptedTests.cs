@@ -3,16 +3,16 @@ using Xcepto;
 
 namespace Timeout.Tests.Test;
 
-[TestFixture(typeof(LongSetupScenario))]
-[TestFixture(typeof(LongInitializationScenario))]
-[TestFixture(typeof(LongCleanupScenario))]
-public class ScenarioInterruptedTests<T> where T: XceptoScenario, new()
+[TestFixture(typeof(LongSetupSyncScenario))]
+[TestFixture(typeof(LongInitializationSyncScenario))]
+[TestFixture(typeof(LongCleanupSyncScenario))]
+public class ScenarioInterruptedTests<T> where T: SyncScenario, new()
 {
-    private XceptoScenario _scenario;
+    private SyncScenario _syncScenario;
     [SetUp]
     public void SetUp()
     {
-        _scenario = new T();
+        _syncScenario = new T();
     }
     
     [Test]
@@ -20,7 +20,7 @@ public class ScenarioInterruptedTests<T> where T: XceptoScenario, new()
     {
         Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(_scenario, TimeSpan.FromSeconds(5), _ => { });
+            await XceptoTest.Given(_syncScenario, TimeSpan.FromSeconds(5), _ => { });
         });
     }
 }

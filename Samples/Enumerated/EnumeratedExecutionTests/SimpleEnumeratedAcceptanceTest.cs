@@ -7,7 +7,7 @@ public class SimpleEnumeratedAcceptanceTest: EnumeratedAcceptanceTest
 {
     private TimeSpan _timeout;
 
-    public SimpleEnumeratedAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, EnumeratedScenario enumeratedScenario) : base(timeout, transitionBuilder, enumeratedScenario)
+    public SimpleEnumeratedAcceptanceTest(TimeSpan timeout, TransitionBuilder transitionBuilder, BaseScenario enumeratedScenario) : base(timeout, transitionBuilder, enumeratedScenario)
     {
         _timeout = timeout;
     }

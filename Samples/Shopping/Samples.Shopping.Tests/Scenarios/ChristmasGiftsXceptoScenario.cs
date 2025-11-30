@@ -6,7 +6,7 @@ using Xcepto.RabbitMQ;
 
 namespace Samples.Shopping.Tests.Scenarios;
 
-public class ChristmasGiftsScenario: XceptoScenario
+public class ChristmasGiftsSyncScenario: AsyncScenario
 {
     protected override Task<IServiceCollection> Setup()
     {
@@ -17,8 +17,4 @@ public class ChristmasGiftsScenario: XceptoScenario
         services.AddSingleton<XceptoRabbitMqRepository>();
         return Task.FromResult<IServiceCollection>(services);
     }
-
-    protected override Task Initialize(IServiceProvider serviceProvider) => Task.CompletedTask;
-
-    protected override Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 }

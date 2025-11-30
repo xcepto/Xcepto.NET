@@ -7,16 +7,15 @@ using Xcepto.Provider;
 
 namespace Compartments.Tests.Scenarios;
 
-public class SharedScenario: XceptoScenario
+public class SharedSyncScenario: SyncScenario
 {
-    protected override Task<IServiceCollection> Setup()
+    protected override IServiceCollection Setup()
     {
-        return Task.FromResult(new ServiceCollection()
+        return new ServiceCollection()
             .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
             .AddSingleton<Service2>()
             .AddSingleton<Service1>()
             .AddSingleton<PersonalDependency>()
-            .AddSingleton<SharedDependency>()
-        );
+            .AddSingleton<SharedDependency>();
     }
 }

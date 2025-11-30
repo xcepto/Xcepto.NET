@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Interfaces;
@@ -6,7 +6,7 @@ using Xcepto.Provider;
 
 namespace Xcepto;
 
-public class XceptoScenario: BaseScenario
+public class AsyncScenario: BaseScenario
 {
     protected virtual Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection()
         .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>());

@@ -12,7 +12,7 @@ public class ScenarioExceptionPropagationTests
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), _ => { });
+            await XceptoTest.Given(new SimpleSyncScenario(), _ => { });
         });
     }
     

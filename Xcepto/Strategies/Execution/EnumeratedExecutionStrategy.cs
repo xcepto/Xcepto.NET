@@ -29,7 +29,9 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
             CheckTimeout(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
-        var serviceProvider = init.Result;
+        CheckTimeout(deadline);
+        CheckPropagated(propagatedTasksSupplier);
+        var serviceProvider = init.GetAwaiter().GetResult();
 
         // EXECUTION LOOP
         while (true)
@@ -42,13 +44,14 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
                 CheckTimeout(deadline);
                 CheckPropagated(propagatedTasksSupplier);
             }
+            CheckTimeout(deadline);
+            CheckPropagated(propagatedTasksSupplier);
 
-            if (stepTask.Result == StepResult.Finished)
+            if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
                 break;
 
             // a frame passes
             yield return null;
-
             CheckTimeout(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
@@ -61,6 +64,8 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
             CheckTimeout(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
+        CheckTimeout(deadline);
+        CheckPropagated(propagatedTasksSupplier);
     }
 
     void IPrimeAbleExecutionStrategy.Prime(TestInstance testInstance)

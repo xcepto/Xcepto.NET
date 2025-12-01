@@ -4,25 +4,51 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using EnumeratedExecutionTests;
 using Xcepto.Strategies.Execution;
 using Xcepto.Strategies.Isolation;
 using Xcepto.Strategies.Scheduling;
 
 namespace Xcepto
 {
-    public static class XceptoTest
+    public class XceptoTest
     {
+        private IExecutionStrategy _executionStrategy;
+        private IIsolationStrategy _isolationStrategy;
+        private ISchedulingStrategy _schedulingStrategy;
+
+        public XceptoTest(IExecutionStrategy executionStrategy, IIsolationStrategy isolationStrategy, ISchedulingStrategy schedulingStrategy)
+        {
+            _schedulingStrategy = schedulingStrategy;
+            _isolationStrategy = isolationStrategy;
+            _executionStrategy = executionStrategy;
+        }
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
         public static Task Given(BaseScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
-            var asyncExecutionStrategy = new AsyncExecutionStrategy();
-            XceptoTestRunner testRunner = new XceptoTestRunner(asyncExecutionStrategy,
-                new ParallelSchedulingStrategy(), new NoIsolationStrategy());
-            testRunner.Given(scenario, timeout, builder);
+            var xceptoTest = new XceptoTest(new AsyncExecutionStrategy(), new NoIsolationStrategy(), new ParallelSchedulingStrategy());
+            return xceptoTest.GivenWithStrategies(scenario, timeout, builder);
+        }
 
-            return asyncExecutionStrategy.RunAsync();
+        public Task GivenWithStrategies(BaseScenario scenario, Action<TransitionBuilder> builder) =>
+            GivenWithStrategies(scenario, DefaultTimeout, builder);
+        public Task GivenWithStrategies(BaseScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        {
+            XceptoTestRunner testRunner = new XceptoTestRunner(
+                _executionStrategy,
+                _schedulingStrategy,
+                _isolationStrategy
+            );
+            testRunner.Given(scenario, timeout, builder);
+            
+            if(_executionStrategy is AsyncExecutionStrategy asyncExecutionStrategy)
+                return asyncExecutionStrategy.RunAsync();
+            if (_executionStrategy is EnumeratedExecutionStrategy enumeratedExecutionStrategy)
+                return Task.Run(() => EnumeratedTestRunner.RunEnumerator(enumeratedExecutionStrategy.RunEnumerated()));
+            
+            throw new ArgumentException("Unknown execution strategy");
         }
         
         public static async Task GivenSequential(BaseScenario scenario, TimeSpan timeout,

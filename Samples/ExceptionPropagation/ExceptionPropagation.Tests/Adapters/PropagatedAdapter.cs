@@ -8,10 +8,9 @@ public class PropagatedAdapter: XceptoAdapter
 {
     protected override Task Initialize(IServiceProvider serviceProvider)
     {
-        PropagateExceptions(Task.Run(() =>
-        {
-            throw new PropagatedException();
-        }));
+        var tcs = new TaskCompletionSource();
+        PropagateExceptions(tcs.Task);
+        tcs.SetException(new PropagatedException());
         return Task.CompletedTask;
     }
 

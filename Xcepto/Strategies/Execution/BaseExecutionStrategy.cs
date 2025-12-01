@@ -16,7 +16,8 @@ public abstract class BaseExecutionStrategy
 
     protected static void CheckPropagated(Func<IEnumerable<Task>> propagatedTasksSupplier)
     {
-        var firstFaulted = propagatedTasksSupplier()
+        var tasks = propagatedTasksSupplier();
+        var firstFaulted = tasks
             .FirstOrDefault(t => t.IsFaulted && t.Exception is not null);
 
         if (firstFaulted is null)

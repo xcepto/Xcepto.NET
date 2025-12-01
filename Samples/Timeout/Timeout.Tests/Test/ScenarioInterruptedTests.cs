@@ -6,9 +6,9 @@ namespace Timeout.Tests.Test;
 [TestFixture(typeof(LongSetupSyncScenario))]
 [TestFixture(typeof(LongInitializationSyncScenario))]
 [TestFixture(typeof(LongCleanupSyncScenario))]
-public class ScenarioInterruptedTests<T> where T: SyncScenario, new()
+public class ScenarioInterruptedTests<T> where T: AsyncScenario, new()
 {
-    private SyncScenario _syncScenario;
+    private AsyncScenario _syncScenario;
     [SetUp]
     public void SetUp()
     {

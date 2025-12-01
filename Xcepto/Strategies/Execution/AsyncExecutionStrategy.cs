@@ -30,7 +30,7 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy, IPrimeAbleEx
         }
         CheckTimeout(deadline);
         CheckPropagated(propagatedTasksSupplier);
-        var serviceProvider = init.Result;
+        var serviceProvider = init.GetAwaiter().GetResult();;
 
         // EXECUTION LOOP
         while (true)
@@ -45,7 +45,7 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy, IPrimeAbleEx
             }
             CheckTimeout(deadline);
             CheckPropagated(propagatedTasksSupplier);
-            if (stepTask.Result == StepResult.Finished)
+            if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
                 break;
 
             await Task.Yield();

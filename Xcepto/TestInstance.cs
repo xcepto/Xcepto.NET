@@ -17,12 +17,12 @@ internal class TestInstance
     private AcceptanceStateMachine _stateMachine;
     private IEnumerable<XceptoState> _states;
     private IEnumerable<XceptoAdapter> _adapters;
-    private IEnumerable<Task> _propagatedTasks;
+    private Func<IEnumerable<Task>> _propagatedTasksSupplier;
 
     internal TestInstance(TimeSpan timeout, BaseScenario scenario, TransitionBuilder transitionBuilder)
     {
         _stateMachine = transitionBuilder.Build();
-        _propagatedTasks = transitionBuilder.PropagatedTasks;
+        _propagatedTasksSupplier = () => transitionBuilder.PropagatedTasks;
         _states = transitionBuilder.GetStates();
         _adapters = transitionBuilder.GetAdapters();
         _scenario = scenario;
@@ -111,5 +111,5 @@ internal class TestInstance
 
     internal TimeSpan GetTimeout() => _timeout;
 
-    public IEnumerable<Task> GetPropagatedTasks() => _propagatedTasks;
+    public Func<IEnumerable<Task>> GetPropagatedTasksSupplier() => _propagatedTasksSupplier;
 }

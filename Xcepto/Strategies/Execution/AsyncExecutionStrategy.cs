@@ -7,7 +7,7 @@ using Xcepto.Data;
 
 namespace Xcepto.Strategies.Execution;
 
-public sealed class AsyncExecutionStrategy : IExecutionStrategy
+public sealed class AsyncExecutionStrategy : BaseExecutionStrategy, IPrimeAbleExecutionStrategy
 {
     private TestInstance? _testInstance;
 
@@ -16,7 +16,7 @@ public sealed class AsyncExecutionStrategy : IExecutionStrategy
         if (_testInstance is null)
             throw new Exception("Execution strategy not primed yet");
 
-        var propagatedTasks = _testInstance.GetPropagatedTasks().ToArray();
+        var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
         var timeout = _testInstance.GetTimeout();
         var deadline = DateTime.UtcNow + timeout;
 
@@ -26,8 +26,10 @@ public sealed class AsyncExecutionStrategy : IExecutionStrategy
         {
             await Task.Yield();
             CheckTimeout(deadline);
-            CheckPropagated(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
+        CheckTimeout(deadline);
+        CheckPropagated(propagatedTasksSupplier);
         var serviceProvider = init.Result;
 
         // EXECUTION LOOP
@@ -39,15 +41,16 @@ public sealed class AsyncExecutionStrategy : IExecutionStrategy
             {
                 await Task.Yield();
                 CheckTimeout(deadline);
-                CheckPropagated(propagatedTasks);
+                CheckPropagated(propagatedTasksSupplier);
             }
-
+            CheckTimeout(deadline);
+            CheckPropagated(propagatedTasksSupplier);
             if (stepTask.Result == StepResult.Finished)
                 break;
 
             await Task.Yield();
             CheckTimeout(deadline);
-            CheckPropagated(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
 
         // CLEANUP
@@ -56,30 +59,14 @@ public sealed class AsyncExecutionStrategy : IExecutionStrategy
         {
             await Task.Yield();          
             CheckTimeout(deadline);
-            CheckPropagated(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
+        CheckTimeout(deadline);
+        CheckPropagated(propagatedTasksSupplier);
     }
 
-    internal void Prime(TestInstance testInstance)
+    void IPrimeAbleExecutionStrategy.Prime(TestInstance testInstance)
     {
         _testInstance = testInstance;
-    }
-
-    private static void CheckTimeout(DateTime deadline)
-    {
-        if (DateTime.UtcNow >= deadline)
-            throw new TimeoutException("Test exceeded timeout.");
-    }
-
-    private static void CheckPropagated(IEnumerable<Task> propagatedTasks)
-    {
-        foreach (var tasks in propagatedTasks)
-        {
-            if (tasks.IsFaulted && tasks.Exception != null)
-            {
-                var ex = tasks.Exception.InnerException ?? tasks.Exception;
-                ExceptionDispatchInfo.Capture(ex).Throw();
-            }
-        }
     }
 }

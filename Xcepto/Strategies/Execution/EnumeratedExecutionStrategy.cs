@@ -8,7 +8,7 @@ using Xcepto.Data;
 
 namespace Xcepto.Strategies.Execution;
 
-public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
+public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAbleExecutionStrategy
 {
     private TestInstance? _testExecution;
 
@@ -17,7 +17,7 @@ public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
         if (_testExecution is null)
             throw new Exception("Execution strategy not primed yet");
 
-        var propagatedTasks = _testExecution.GetPropagatedTasks().ToArray();
+        var propagatedTasksSupplier = _testExecution.GetPropagatedTasksSupplier();
         var timeout = _testExecution.GetTimeout();
         var deadline = DateTime.UtcNow + timeout;
 
@@ -27,7 +27,7 @@ public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
         {
             yield return null;
             CheckTimeout(deadline);
-            CheckPropagatedTasks(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
         var serviceProvider = init.Result;
 
@@ -40,7 +40,7 @@ public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
             {
                 yield return null;
                 CheckTimeout(deadline);
-                CheckPropagatedTasks(propagatedTasks);
+                CheckPropagated(propagatedTasksSupplier);
             }
 
             if (stepTask.Result == StepResult.Finished)
@@ -50,7 +50,7 @@ public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
             yield return null;
 
             CheckTimeout(deadline);
-            CheckPropagatedTasks(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
 
         // CLEANUP
@@ -59,29 +59,12 @@ public sealed class EnumeratedExecutionStrategy : IPrimeAbleExecutionStrategy
         {
             yield return null;
             CheckTimeout(deadline);
-            CheckPropagatedTasks(propagatedTasks);
+            CheckPropagated(propagatedTasksSupplier);
         }
     }
 
     void IPrimeAbleExecutionStrategy.Prime(TestInstance testInstance)
     {
         _testExecution = testInstance;
-    }
-
-    private static void CheckTimeout(DateTime deadline)
-    {
-        if (DateTime.UtcNow >= deadline)
-            throw new TimeoutException("Test exceeded timeout.");
-    }
-
-    private static void CheckPropagatedTasks(IEnumerable<Task> propagatedTasks)
-    {
-        foreach (var task in propagatedTasks)
-        {
-            if (task.IsFaulted && task.Exception != null)
-                ExceptionDispatchInfo.Capture(
-                    task.Exception.InnerException ?? task.Exception
-                ).Throw();
-        }
     }
 }

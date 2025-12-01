@@ -4,6 +4,9 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Xcepto.Strategies.Execution;
+using Xcepto.Strategies.Isolation;
+using Xcepto.Strategies.Scheduling;
 
 namespace Xcepto
 {
@@ -11,14 +14,15 @@ namespace Xcepto
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
-        public static async Task Given(BaseScenario scenario, TimeSpan timeout,
+        public static Task Given(BaseScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
-            var transitionBuilder = new TransitionBuilder();
-            scenario.AssignBuilder(transitionBuilder);
-            builder(transitionBuilder);
+            var asyncExecutionStrategy = new AsyncExecutionStrategy();
+            XceptoTestRunner testRunner = new XceptoTestRunner(asyncExecutionStrategy,
+                new ParallelSchedulingStrategy(), new NoIsolationStrategy());
+            testRunner.Given(scenario, timeout, builder);
 
-            await RunAsync(scenario, timeout, transitionBuilder);
+            return asyncExecutionStrategy.RunAsync();
         }
         
         public static async Task GivenSequential(BaseScenario scenario, TimeSpan timeout,

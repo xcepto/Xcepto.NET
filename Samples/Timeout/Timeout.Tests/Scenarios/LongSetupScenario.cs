@@ -5,7 +5,7 @@ using Xcepto.Interfaces;
 
 namespace Timeout.Tests.Scenarios;
 
-public class LongSetupSyncScenario: AsyncScenario
+public class LongSetupScenario: AsyncScenario
 {
     protected override async Task<IServiceCollection> Setup()
     {

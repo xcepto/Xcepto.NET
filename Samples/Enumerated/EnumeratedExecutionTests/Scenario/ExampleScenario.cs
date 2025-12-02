@@ -8,7 +8,7 @@ using Xcepto.Provider;
 
 namespace EnumeratedExecutionTests.Scenario;
 
-public class ExampleEnumeratedScenario: AsyncScenario
+public class ExampleScenario: AsyncScenario
 {
     protected override Task<IServiceProvider> BaseSetup()
     {

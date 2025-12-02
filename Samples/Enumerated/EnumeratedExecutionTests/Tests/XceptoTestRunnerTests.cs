@@ -19,7 +19,7 @@ public class XceptoTestRunnerTests
         XceptoTestRunner testRunner = new XceptoTestRunner(enumeratedExecutionStrategy,
             new ParallelSchedulingStrategy(), new NoIsolationStrategy());
 
-        testRunner.Given(new ExampleEnumeratedScenario(), TimeSpan.FromSeconds(5), builder =>
+        testRunner.Given(new ExampleScenario(), TimeSpan.FromSeconds(5), builder =>
         {
             var serviceAdapter = builder.RegisterAdapter(new GenericServiceAdapter());
                 

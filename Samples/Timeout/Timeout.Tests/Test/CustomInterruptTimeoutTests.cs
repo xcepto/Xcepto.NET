@@ -1,14 +1,26 @@
 using Timeout.Tests.Scenarios;
 using Xcepto;
+using Xcepto.Strategies;
+using Xcepto.Strategies.Execution;
 
 namespace Timeout.Tests.Test;
 
-[TestFixture]
+[Parallelizable]
+[TestFixtureSource(typeof(StrategyCombinations), nameof(StrategyCombinations.AllCombinations))]
 public class CustomInterruptTimeoutTests
 {
+    
+    private XceptoTest _xceptoTest;
+
+    public CustomInterruptTimeoutTests(IExecutionStrategy executionStrategy)
+    {
+        _xceptoTest = new XceptoTest(executionStrategy);
+    }
+
+    
     [Test]
     public async Task LongRunningOperationDoesntFailWithCustomInterrupt()
     {
-        await XceptoTest.Given(new LongInitializationScenario(), TimeSpan.FromSeconds(20), _ => { });
+        await _xceptoTest.GivenWithStrategies(new LongInitializationScenario(), TimeSpan.FromSeconds(3), _ => { });
     }
 }

@@ -3,6 +3,7 @@ using Compartments.Tests.Scenarios;
 using Compartments.Tests.Service;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.Builder;
 
 namespace Compartments.Tests.Test;
 
@@ -33,7 +34,7 @@ public class DifferentServiceTests
     {
         Assert.CatchAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new SharedScenario(), TimeSpan.FromSeconds(3), Definition);
+            await XceptoTest.Given(new SharedSyncScenario(), TimeSpan.FromSeconds(3), Definition);
         });
     }
 }

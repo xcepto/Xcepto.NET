@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Data;
 using Xcepto.Interfaces;
+using Xcepto.Internal;
 
 namespace Xcepto.Builder;
 

@@ -1,18 +1,45 @@
 using Timeout.Tests.Adapters;
 using Timeout.Tests.Scenarios;
 using Xcepto;
+using Xcepto.Adapters;
+using Xcepto.Strategies;
+using Xcepto.Strategies.Execution;
 
 namespace Timeout.Tests.Test;
 
-[TestFixture(typeof(LongInitializationAdapter))]
-[TestFixture(typeof(LongCleanupAdapter))]
-public class AdapterInterruptedTests<T> where T: XceptoAdapter, new()
+[Parallelizable]
+[TestFixtureSource(nameof(AllFixtures))]
+public class AdapterInterruptedTests
 {
+    private readonly Type _adapterType;
+    private XceptoTest _xceptoTest;
+
+    public AdapterInterruptedTests(
+        Type adapterType,
+        IExecutionStrategy executionStrategy)
+    {
+        _adapterType = adapterType;
+        _xceptoTest = new XceptoTest(executionStrategy);
+    }
+    
+    public static IEnumerable<object[]> AllFixtures()
+    {
+        var stateTypes = new[]
+        {
+            typeof(LongInitializationAdapter),
+            typeof(LongCleanupAdapter),
+        };
+
+        foreach (var state in stateTypes)
+        foreach (var combo in StrategyCombinations.AllCombinations())
+            yield return new object[] { state, combo[0] };
+    }
+    
     private XceptoAdapter _adapter;
     [SetUp]
     public void SetUp()
     {
-        _adapter = new T();
+        _adapter = (XceptoAdapter)Activator.CreateInstance(_adapterType)!;
     }
     
     [Test]
@@ -20,7 +47,7 @@ public class AdapterInterruptedTests<T> where T: XceptoAdapter, new()
     {
         Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new InstantaneousScenario(), TimeSpan.FromSeconds(5), builder =>
+            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), TimeSpan.FromSeconds(1), builder =>
             {
                 builder.RegisterAdapter(_adapter);
             });

@@ -18,7 +18,7 @@ public class CompartmentRepository
         return _compartments.Values;
     }
 
-    public void AddCompartment(Compartment compartment)
+    internal void AddCompartment(Compartment compartment)
     {
         if (_compartments.ContainsKey(compartment.UniqueName))
             throw new ArgumentException($"Compartment {compartment.UniqueName} not unique");

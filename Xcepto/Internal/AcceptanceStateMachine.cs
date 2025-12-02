@@ -2,24 +2,25 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Interfaces;
+using Xcepto.States;
 
-namespace Xcepto
+namespace Xcepto.Internal
 {
-    public class AcceptanceStateMachine
+    internal class AcceptanceStateMachine
     {
-        public AcceptanceStateMachine()
+        internal AcceptanceStateMachine()
         {
             _startXceptoState = new UnconditionalXceptoState("Start");
             _currentXceptoState = _startXceptoState;
         }
         
-        public void AddTransition(XceptoState newState)
+        internal void AddTransition(XceptoState newState)
         {
             _currentXceptoState.NextXceptoState = newState;
             _currentXceptoState = newState;
         }
         
-        public string GetStatus()
+        internal string GetStatus()
         {
             return _currentXceptoState.Name;
         }
@@ -28,16 +29,16 @@ namespace Xcepto
         XceptoState _currentXceptoState;
         XceptoState _finalXceptoState;
         
-        public void Seal()
+        internal void Seal()
         {
             _finalXceptoState = new UnconditionalXceptoState("Final");
             _currentXceptoState.NextXceptoState = _finalXceptoState;
             _currentXceptoState = _startXceptoState;
         }
-        public XceptoState CurrentXceptoState => _currentXceptoState;
-        public XceptoState FinalXceptoState => _finalXceptoState;
+        internal XceptoState CurrentXceptoState => _currentXceptoState;
+        internal XceptoState FinalXceptoState => _finalXceptoState;
 
-        public async Task TryTransition(IServiceProvider serviceProvider)
+        internal async Task TryTransition(IServiceProvider serviceProvider)
         {
             if(_currentXceptoState.NextXceptoState is null)
                 return; // no more transitions
@@ -53,7 +54,7 @@ namespace Xcepto
             }
         }
 
-        public async Task Start(IServiceProvider serviceProvider)
+        internal async Task Start(IServiceProvider serviceProvider)
         {
             await _currentXceptoState.OnEnter(serviceProvider);
 

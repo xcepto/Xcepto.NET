@@ -1,18 +1,47 @@
 using Timeout.Tests.Scenarios;
 using Timeout.Tests.States;
 using Xcepto;
+using Xcepto.States;
+using Xcepto.Strategies;
+using Xcepto.Strategies.Execution;
 
 namespace Timeout.Tests.Test;
-[TestFixture(typeof(LongInitializeState))]
-[TestFixture(typeof(LongOnEnterState))]
-[TestFixture(typeof(LongEvaluationState))]
-public class StateInterruptedTests<T> where T: XceptoState
+[Parallelizable]
+[TestFixtureSource(nameof(AllFixtures))]
+public class StateInterruptedTests
 {
+    private readonly Type _stateType;
+
     private XceptoState _state;
+    private XceptoTest _xceptoTest;
+
+    public StateInterruptedTests(
+        Type stateType,
+        IExecutionStrategy executionStrategy)
+    {
+        _stateType = stateType;
+        _xceptoTest = new XceptoTest(executionStrategy);
+    }
+
     [SetUp]
     public void SetUp()
     {
-        _state = (XceptoState)Activator.CreateInstance(typeof(T), "state")!;
+        _state = (XceptoState)Activator.CreateInstance(_stateType, "state")!;
+    }
+
+    
+    public static IEnumerable<object[]> AllFixtures()
+    {
+        var stateTypes = new[]
+        {
+            typeof(LongInitializeState),
+            typeof(LongOnEnterState),
+            typeof(LongEvaluationState)
+        };
+
+        foreach (var state in stateTypes)
+        foreach (var combo in StrategyCombinations.AllCombinations())
+            yield return new object[] { state, combo[0] };
     }
     
     [Test]
@@ -20,7 +49,7 @@ public class StateInterruptedTests<T> where T: XceptoState
     {
         Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new InstantaneousScenario(), TimeSpan.FromSeconds(5), builder =>
+            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), TimeSpan.FromSeconds(1), builder =>
             {
                 builder.AddStep(_state);
             });

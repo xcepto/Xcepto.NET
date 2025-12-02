@@ -1,4 +1,5 @@
 using Xcepto;
+using Xcepto.States;
 
 namespace Timeout.Tests.States;
 

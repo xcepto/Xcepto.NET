@@ -1,5 +1,6 @@
 ﻿using ExceptionPropagation.Tests.Exceptions;
 using Xcepto;
+using Xcepto.States;
 
 namespace ExceptionPropagation.Tests.States;
 

@@ -1,6 +1,6 @@
 using Xcepto.Interfaces;
 
-namespace Timeout.Tests.Providers;
+namespace ExceptionPropagation.Tests.Providers;
 
 public class LoggingProvider: ILoggingProvider
 {

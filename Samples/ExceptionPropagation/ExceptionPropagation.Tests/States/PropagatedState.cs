@@ -1,5 +1,6 @@
 ﻿using ExceptionPropagation.Tests.Exceptions;
 using Xcepto;
+using Xcepto.States;
 
 namespace ExceptionPropagation.Tests.States;
 
@@ -13,10 +14,9 @@ public class PropagatedState: XceptoState
 
     public override Task OnEnter(IServiceProvider serviceProvider)
     {
-        PropagateExceptions(Task.Run(() =>
-        {
-            throw new PropagatedException();
-        }));
+        var tcs = new TaskCompletionSource();
+        PropagateExceptions(tcs.Task);
+        tcs.SetException(new PropagatedException());
         return Task.CompletedTask;
     }
 }

@@ -1,4 +1,5 @@
 using Xcepto;
+using Xcepto.States;
 using Xcepto.Util;
 
 namespace Compartments.Tests.States;

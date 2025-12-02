@@ -3,18 +3,27 @@ using ExceptionPropagation.Tests.Exceptions;
 using ExceptionPropagation.Tests.Scenario;
 using ExceptionPropagation.Tests.States;
 using Xcepto;
+using Xcepto.Strategies;
+using Xcepto.Strategies.Execution;
 
 namespace ExceptionPropagation.Tests.Test;
 
-[TestFixture]
+[TestFixtureSource(typeof(StrategyCombinations), nameof(StrategyCombinations.AllCombinations))]
 public class StateExceptionPropagationTests
 {
+    private XceptoTest _xceptoTest;
+
+    public StateExceptionPropagationTests(IExecutionStrategy executionStrategy)
+    {
+        _xceptoTest = new XceptoTest(executionStrategy);
+    }
+
     [Test]
     public void Unpropagated()
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await _xceptoTest.GivenWithStrategies(new SimpleSyncScenario(), builder =>
             {
                 builder.AddStep(new UnpropagatedState("unpropagated state"));
             });
@@ -26,7 +35,7 @@ public class StateExceptionPropagationTests
     {
         Assert.ThrowsAsync<PropagatedException>(async () =>
         {
-            await XceptoTest.Given(new SimpleScenario(), builder =>
+            await _xceptoTest.GivenWithStrategies(new SimpleSyncScenario(), builder =>
             {
                 builder.AddStep(new PropagatedState("propagated state"));
             });

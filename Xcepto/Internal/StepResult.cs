@@ -1,4 +1,4 @@
-namespace Xcepto.Data;
+namespace Xcepto.Internal;
 
 internal enum StepResult
 {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xcepto.Adapters;
+using Xcepto.Internal;
 using Xcepto.States;
 
 namespace Xcepto.Builder

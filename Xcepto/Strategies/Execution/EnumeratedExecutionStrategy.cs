@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Xcepto.Data;
+using Xcepto.Internal;
 
 namespace Xcepto.Strategies.Execution;
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Xcepto.Internal;
+namespace Xcepto.Data;
 
 public class ScenarioCleanup
 {

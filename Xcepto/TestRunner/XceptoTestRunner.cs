@@ -1,11 +1,12 @@
 using System;
 using Xcepto.Builder;
+using Xcepto.Internal;
 using Xcepto.Scenarios;
 using Xcepto.Strategies.Execution;
 using Xcepto.Strategies.Isolation;
 using Xcepto.Strategies.Scheduling;
 
-namespace Xcepto;
+namespace Xcepto.TestRunner;
 
 public class XceptoTestRunner
 {

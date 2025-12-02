@@ -6,20 +6,20 @@ namespace Xcepto.States
 {
     public abstract class XceptoState
     {
-        private TransitionBuilder _builder;
+        private TransitionBuilder? _builder;
 
         public override string ToString()
         {
             return Name;
         }
 
-        public XceptoState(string name)
+        protected XceptoState(string name)
         {
             Name = name;
         }
 
         public string Name { get; }
-        public XceptoState NextXceptoState { get; set; }
+        public XceptoState? NextXceptoState { get; set; }
 
         public abstract Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider);
 

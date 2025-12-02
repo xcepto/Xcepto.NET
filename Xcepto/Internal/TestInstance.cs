@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Adapters;
 using Xcepto.Builder;
-using Xcepto.Data;
 using Xcepto.Interfaces;
 using Xcepto.Scenarios;
 using Xcepto.States;
 
-namespace Xcepto;
+namespace Xcepto.Internal;
 
 internal class TestInstance
 {
@@ -115,5 +113,5 @@ internal class TestInstance
 
     internal TimeSpan GetTimeout() => _timeout;
 
-    public Func<IEnumerable<Task>> GetPropagatedTasksSupplier() => _propagatedTasksSupplier;
+    internal Func<IEnumerable<Task>> GetPropagatedTasksSupplier() => _propagatedTasksSupplier;
 }

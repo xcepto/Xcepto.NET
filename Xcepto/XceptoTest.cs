@@ -25,18 +25,18 @@ namespace Xcepto
         }
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
-        public static async Task Given(BaseScenario scenario, Action<TransitionBuilder> builder)
+        public static async Task Given(XceptoScenario scenario, Action<TransitionBuilder> builder)
             => await Given(scenario, DefaultTimeout, builder);
-        public static Task Given(BaseScenario scenario, TimeSpan timeout,
+        public static Task Given(XceptoScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
             var xceptoTest = new XceptoTest(new AsyncExecutionStrategy(), new NoIsolationStrategy(), new ParallelSchedulingStrategy());
             return xceptoTest.GivenWithStrategies(scenario, timeout, builder);
         }
 
-        public Task GivenWithStrategies(BaseScenario scenario, Action<TransitionBuilder> builder) =>
+        public Task GivenWithStrategies(XceptoScenario scenario, Action<TransitionBuilder> builder) =>
             GivenWithStrategies(scenario, DefaultTimeout, builder);
-        public Task GivenWithStrategies(BaseScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        public Task GivenWithStrategies(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
         {
             XceptoTestRunner testRunner = new XceptoTestRunner(
                 _executionStrategy,
@@ -53,19 +53,19 @@ namespace Xcepto
             throw new ArgumentException("Unknown execution strategy");
         }
         
-        public static IEnumerator GivenEnumerated(BaseScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        public static IEnumerator GivenEnumerated(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
         {
             var enumeratedExecutionStrategy = new EnumeratedExecutionStrategy();
             var xceptoTest = new XceptoTest(enumeratedExecutionStrategy, new NoIsolationStrategy(), new ParallelSchedulingStrategy());
             return xceptoTest.GivenEnumeratedWithStrategies(scenario, timeout, builder);
         }
 
-        public static IEnumerator GivenEnumerated(BaseScenario scenario, Action<TransitionBuilder> builder) => 
+        public static IEnumerator GivenEnumerated(XceptoScenario scenario, Action<TransitionBuilder> builder) => 
             GivenEnumerated(scenario, DefaultTimeout, builder);
         
-        public IEnumerator GivenEnumeratedWithStrategies(BaseScenario scenario, Action<TransitionBuilder> builder) =>
+        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, Action<TransitionBuilder> builder) =>
             GivenEnumeratedWithStrategies(scenario, DefaultTimeout, builder);
-        public IEnumerator GivenEnumeratedWithStrategies(BaseScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
         {
             if (_executionStrategy is not EnumeratedExecutionStrategy enumeratedExecutionStrategy)
                 throw new ArgumentException("Only enumerated strategy allowed");

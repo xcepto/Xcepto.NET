@@ -1,19 +1,25 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sequential.Tests.Services;
 using Xcepto;
+using Xcepto.Builder;
+using Xcepto.Data;
 using Xcepto.Interfaces;
+using Xcepto.Internal;
 using Xcepto.Provider;
 using Xcepto.Scenarios;
 
 namespace Sequential.Tests.Scenario;
 
-public class SequentialTestScenario: SequentialScenario
+public class SequentialTestScenario: XceptoScenario
 {
-    protected override async Task<IServiceCollection> OneTimeSetup()
-    {
-        var services = await base.OneTimeSetup();
-        services.AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>();
-        services.AddSingleton<StatefulService>();
-        return services;
-    }
+    protected override ScenarioSetup Setup(ScenarioSetupBuilder builder) => builder
+        .AddServices(services => services
+            .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
+            .AddSingleton<StatefulService>()
+        )
+        .Build();
+
+    protected override ScenarioInitialization Initialize(ScenarioInitializationBuilder builder) => builder.Build();
+
+    protected override ScenarioCleanup Cleanup(ScenarioCleanupBuilder builder) => builder.Build();
 }

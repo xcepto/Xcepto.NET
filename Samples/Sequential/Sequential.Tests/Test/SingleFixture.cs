@@ -20,7 +20,7 @@ public class SingleFixture
     [OneTimeTearDown]
     public async Task Teardown()
     {
-        await _scenario.TearDown();
+        await _scenario.Teardown();
     }
 
     [Test]

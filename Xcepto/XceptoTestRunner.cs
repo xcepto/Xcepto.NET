@@ -22,7 +22,7 @@ public class XceptoTestRunner
         _isolationStrategy = isolationStrategy;
     }
 
-    public void Given(BaseScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+    public void Given(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
     {
         TransitionBuilder transitionBuilder = new TransitionBuilder();
         scenario.AssignBuilder(transitionBuilder);

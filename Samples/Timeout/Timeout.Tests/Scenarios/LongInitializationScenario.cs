@@ -1,18 +1,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using Timeout.Tests.Providers;
 using Xcepto;
+using Xcepto.Builder;
+using Xcepto.Data;
 using Xcepto.Interfaces;
+using Xcepto.Internal;
 using Xcepto.Scenarios;
 
 namespace Timeout.Tests.Scenarios;
 
-public class LongInitializationScenario: AsyncScenario
+public class LongInitializationScenario: XceptoScenario
 {
-    protected override Task<IServiceCollection> Setup()
-    {
-        return Task.FromResult(new ServiceCollection()
-            .AddSingleton<ILoggingProvider, LoggingProvider>());
-    }
+    protected override ScenarioSetup Setup(ScenarioSetupBuilder builder) => builder
+        .AddServices(services => services
+            .AddSingleton<ILoggingProvider, LoggingProvider>()
+        )
+        .Build();
 
-    protected override Task Initialize(IServiceProvider serviceProvider) => Task.Delay(TimeSpan.FromSeconds(2));
+    protected override ScenarioInitialization Initialize(ScenarioInitializationBuilder builder) => builder
+        .Do(_ => Task.Delay(TimeSpan.FromSeconds(2)))
+        .Build();
 }

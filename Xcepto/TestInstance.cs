@@ -17,13 +17,13 @@ internal class TestInstance
 {
     private TimeSpan _timeout;
     private DateTime _startTime;
-    private BaseScenario _scenario;
+    private XceptoScenario _scenario;
     private AcceptanceStateMachine _stateMachine;
     private IEnumerable<XceptoState> _states;
     private IEnumerable<XceptoAdapter> _adapters;
     private Func<IEnumerable<Task>> _propagatedTasksSupplier;
 
-    internal TestInstance(TimeSpan timeout, BaseScenario scenario, TransitionBuilder transitionBuilder)
+    internal TestInstance(TimeSpan timeout, XceptoScenario scenario, TransitionBuilder transitionBuilder)
     {
         _stateMachine = transitionBuilder.Build();
         _propagatedTasksSupplier = () => transitionBuilder.PropagatedTasks;
@@ -62,7 +62,7 @@ internal class TestInstance
         
         loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
         loggingProvider.LogDebug("");
-        await _scenario.CallInitialize(serviceProvider);
+        await _scenario.CallInitialize();
         loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         loggingProvider.LogDebug("Setup complete, starting test now:");
@@ -100,7 +100,7 @@ internal class TestInstance
         }
         loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
 
-        await _scenario.CallCleanup(serviceProvider);
+        await _scenario.CallCleanup();
         
         loggingProvider.LogDebug("");
         loggingProvider.LogDebug("");

@@ -8,6 +8,7 @@ using Xcepto.Strategies.Isolation;
 using Xcepto.Strategies.Scheduling;
 
 namespace Timeout.Tests.Test;
+[Parallelizable]
 [TestFixtureSource(nameof(AllFixtures))]
 public class StateInterruptedTests
 {

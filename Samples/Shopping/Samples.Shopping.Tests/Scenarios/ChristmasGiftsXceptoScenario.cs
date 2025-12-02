@@ -1,21 +1,22 @@
 using Microsoft.Extensions.DependencyInjection;
 using Samples.Shopping.Tests.Providers;
 using Xcepto;
+using Xcepto.Builder;
+using Xcepto.Data;
 using Xcepto.Interfaces;
+using Xcepto.Internal;
 using Xcepto.RabbitMQ;
 using Xcepto.Scenarios;
 
 namespace Samples.Shopping.Tests.Scenarios;
 
-public class ChristmasGiftsSyncScenario: AsyncScenario
+public class ChristmasGiftsSyncScenario: XceptoScenario
 {
-    protected override Task<IServiceCollection> Setup()
-    {
-        LoggingProvider loggingProvider = new LoggingProvider();
-        
-        ServiceCollection services = new ServiceCollection();
-        services.AddSingleton<ILoggingProvider, LoggingProvider>(x => loggingProvider);
-        services.AddSingleton<XceptoRabbitMqRepository>();
-        return Task.FromResult<IServiceCollection>(services);
-    }
+    protected override ScenarioSetup Setup(ScenarioSetupBuilder builder) => builder
+        .AddServices(services => services
+            .AddSingleton<ILoggingProvider, LoggingProvider>()
+            .AddSingleton<XceptoRabbitMqRepository>()
+        )
+        .Build();
+
 }

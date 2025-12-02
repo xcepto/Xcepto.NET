@@ -7,6 +7,7 @@ using Xcepto.Strategies.Scheduling;
 
 namespace Timeout.Tests.Test;
 
+[Parallelizable]
 [TestFixtureSource(typeof(StrategyCombinations), nameof(StrategyCombinations.AllCombinations))]
 public class CustomInterruptTimeoutTests
 {

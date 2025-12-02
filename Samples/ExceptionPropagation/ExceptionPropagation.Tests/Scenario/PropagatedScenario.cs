@@ -2,22 +2,26 @@
 using ExceptionPropagation.Tests.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
+using Xcepto.Builder;
+using Xcepto.Data;
 using Xcepto.Interfaces;
+using Xcepto.Internal;
 using Xcepto.Scenarios;
 
 namespace ExceptionPropagation.Tests.Scenario;
 
-public class PropagatedScenario: AsyncScenario
+public class PropagatedScenario: XceptoScenario
 {
-    protected override Task<IServiceCollection> Setup() => Task.FromResult<IServiceCollection>(new ServiceCollection()
-        .AddSingleton<ILoggingProvider, LoggingProvider>());
+    protected override ScenarioSetup Setup(ScenarioSetupBuilder builder) => builder
+        .AddServices(services => services
+            .AddSingleton<ILoggingProvider, LoggingProvider>()
+        )
+        .Build();
 
-    protected override Task Initialize(IServiceProvider serviceProvider)
-    {
+    protected override ScenarioInitialization Initialize(ScenarioInitializationBuilder builder) {
         var tcs = new TaskCompletionSource();
-        PropagateExceptions(tcs.Task);
+        builder.FireAndForget(_ => tcs.Task);
         tcs.SetException(new PropagatedException());
-        return Task.CompletedTask;
+        return builder.Build();
     }
-
 }

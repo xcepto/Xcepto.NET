@@ -10,6 +10,7 @@ using Xcepto.Strategies.Scheduling;
 
 namespace Timeout.Tests.Test;
 
+[Parallelizable]
 [TestFixtureSource(nameof(AllFixtures))]
 public class ScenarioInterruptedTests
 {
@@ -41,13 +42,13 @@ public class ScenarioInterruptedTests
             yield return new object[] { state, combo[0], combo[1], combo[2] };
     }
     
-    private AsyncScenario _syncScenario;
+    private XceptoScenario _syncScenario;
     private XceptoTest _xceptoTest;
 
     [SetUp]
     public void SetUp()
     {
-        _syncScenario = (AsyncScenario)Activator.CreateInstance(_scenario)!;
+        _syncScenario = (XceptoScenario)Activator.CreateInstance(_scenario)!;
     }
     
     [Test]

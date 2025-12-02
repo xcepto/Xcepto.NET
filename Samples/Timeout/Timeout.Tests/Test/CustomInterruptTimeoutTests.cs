@@ -2,8 +2,6 @@ using Timeout.Tests.Scenarios;
 using Xcepto;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
-using Xcepto.Strategies.Isolation;
-using Xcepto.Strategies.Scheduling;
 
 namespace Timeout.Tests.Test;
 
@@ -14,9 +12,9 @@ public class CustomInterruptTimeoutTests
     
     private XceptoTest _xceptoTest;
 
-    public CustomInterruptTimeoutTests(IExecutionStrategy executionStrategy, ISchedulingStrategy schedulingStrategy, IIsolationStrategy isolationStrategy)
+    public CustomInterruptTimeoutTests(IExecutionStrategy executionStrategy)
     {
-        _xceptoTest = new XceptoTest(executionStrategy, isolationStrategy, schedulingStrategy);
+        _xceptoTest = new XceptoTest(executionStrategy);
     }
 
     

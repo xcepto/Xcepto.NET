@@ -4,8 +4,6 @@ using EnumeratedExecutionTests.Services;
 using Xcepto;
 using Xcepto.Adapters;
 using Xcepto.Strategies.Execution;
-using Xcepto.Strategies.Isolation;
-using Xcepto.Strategies.Scheduling;
 using Xcepto.TestRunner;
 
 namespace EnumeratedExecutionTests.Tests;
@@ -17,8 +15,7 @@ public class XceptoTestRunnerTests
     public void EnumeratedTestRunnerRunsProperly()
     {
         var enumeratedExecutionStrategy = new EnumeratedExecutionStrategy();
-        XceptoTestRunner testRunner = new XceptoTestRunner(enumeratedExecutionStrategy,
-            new ParallelSchedulingStrategy(), new NoIsolationStrategy());
+        XceptoTestRunner testRunner = new XceptoTestRunner(enumeratedExecutionStrategy);
 
         testRunner.Given(new ExampleScenario(), TimeSpan.FromSeconds(5), builder =>
         {

@@ -4,8 +4,6 @@ using ExceptionPropagation.Tests.Scenario;
 using Xcepto;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
-using Xcepto.Strategies.Isolation;
-using Xcepto.Strategies.Scheduling;
 
 namespace ExceptionPropagation.Tests.Test;
 
@@ -14,9 +12,9 @@ public class AdapterExceptionPropagationTests
 {
     private XceptoTest _xceptoTest;
 
-    public AdapterExceptionPropagationTests(IExecutionStrategy executionStrategy, ISchedulingStrategy schedulingStrategy, IIsolationStrategy isolationStrategy)
+    public AdapterExceptionPropagationTests(IExecutionStrategy executionStrategy)
     {
-        _xceptoTest = new XceptoTest(executionStrategy, isolationStrategy, schedulingStrategy);
+        _xceptoTest = new XceptoTest(executionStrategy);
     }
     
     [Test]

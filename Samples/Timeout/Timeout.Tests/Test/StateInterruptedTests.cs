@@ -4,8 +4,6 @@ using Xcepto;
 using Xcepto.States;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
-using Xcepto.Strategies.Isolation;
-using Xcepto.Strategies.Scheduling;
 
 namespace Timeout.Tests.Test;
 [Parallelizable]
@@ -19,12 +17,10 @@ public class StateInterruptedTests
 
     public StateInterruptedTests(
         Type stateType,
-        IExecutionStrategy executionStrategy,
-        ISchedulingStrategy schedulingStrategy,
-        IIsolationStrategy isolationStrategy)
+        IExecutionStrategy executionStrategy)
     {
         _stateType = stateType;
-        _xceptoTest = new XceptoTest(executionStrategy, isolationStrategy, schedulingStrategy);
+        _xceptoTest = new XceptoTest(executionStrategy);
     }
 
     [SetUp]
@@ -45,7 +41,7 @@ public class StateInterruptedTests
 
         foreach (var state in stateTypes)
         foreach (var combo in StrategyCombinations.AllCombinations())
-            yield return new object[] { state, combo[0], combo[1], combo[2] };
+            yield return new object[] { state, combo[0] };
     }
     
     [Test]

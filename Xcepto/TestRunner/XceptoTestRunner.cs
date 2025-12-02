@@ -3,24 +3,18 @@ using Xcepto.Builder;
 using Xcepto.Internal;
 using Xcepto.Scenarios;
 using Xcepto.Strategies.Execution;
-using Xcepto.Strategies.Isolation;
-using Xcepto.Strategies.Scheduling;
 
 namespace Xcepto.TestRunner;
 
 public class XceptoTestRunner
 {
     private IPrimeAbleExecutionStrategy _executionStrategy;
-    private ISchedulingStrategy _schedulingStrategy;
-    private IIsolationStrategy _isolationStrategy;
 
-    public XceptoTestRunner(IExecutionStrategy executionStrategy, ISchedulingStrategy schedulingStrategy, IIsolationStrategy isolationStrategy)
+    public XceptoTestRunner(IExecutionStrategy executionStrategy)
     {
         if (executionStrategy is not IPrimeAbleExecutionStrategy primeAbleExecutionStrategy)
             throw new ArgumentException("Unofficial execution strategy");
         _executionStrategy = primeAbleExecutionStrategy;
-        _schedulingStrategy = schedulingStrategy;
-        _isolationStrategy = isolationStrategy;
     }
 
     public void Given(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)

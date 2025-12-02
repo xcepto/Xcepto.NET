@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Timeout.Tests.Providers;
 using Xcepto;
 using Xcepto.Interfaces;
+using Xcepto.Scenarios;
 
 namespace Timeout.Tests.Scenarios;
 

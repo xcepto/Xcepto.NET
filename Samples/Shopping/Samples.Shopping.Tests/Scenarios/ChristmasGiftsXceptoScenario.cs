@@ -3,6 +3,7 @@ using Samples.Shopping.Tests.Providers;
 using Xcepto;
 using Xcepto.Interfaces;
 using Xcepto.RabbitMQ;
+using Xcepto.Scenarios;
 
 namespace Samples.Shopping.Tests.Scenarios;
 

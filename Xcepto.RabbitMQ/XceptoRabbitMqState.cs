@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Xcepto.States;
 
 namespace Xcepto.RabbitMQ
 {

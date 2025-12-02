@@ -3,6 +3,7 @@ using EnumeratedExecutionTests.Scenario;
 using EnumeratedExecutionTests.Services;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.TestRunner;
 
 namespace EnumeratedExecutionTests.Tests;
 

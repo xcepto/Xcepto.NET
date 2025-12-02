@@ -1,6 +1,7 @@
 ﻿using ExceptionPropagation.Tests.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
+using Xcepto.Adapters;
 
 namespace ExceptionPropagation.Tests.Adapters;
 

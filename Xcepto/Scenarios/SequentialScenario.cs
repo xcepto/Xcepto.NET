@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Xcepto;
+namespace Xcepto.Scenarios;
 
 public abstract class SequentialScenario: BaseScenario
 {

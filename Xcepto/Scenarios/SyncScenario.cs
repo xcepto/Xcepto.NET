@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Interfaces;
 using Xcepto.Provider;
 
-namespace Xcepto;
+namespace Xcepto.Scenarios;
 
 public class SyncScenario: BaseScenario
 {

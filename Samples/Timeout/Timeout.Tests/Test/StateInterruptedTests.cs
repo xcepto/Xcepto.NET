@@ -1,6 +1,7 @@
 using Timeout.Tests.Scenarios;
 using Timeout.Tests.States;
 using Xcepto;
+using Xcepto.States;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
 using Xcepto.Strategies.Isolation;

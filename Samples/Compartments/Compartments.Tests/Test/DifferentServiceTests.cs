@@ -3,6 +3,7 @@ using Compartments.Tests.Scenarios;
 using Compartments.Tests.Service;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.Builder;
 
 namespace Compartments.Tests.Test;
 

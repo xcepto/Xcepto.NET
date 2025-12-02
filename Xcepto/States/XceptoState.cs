@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using Xcepto.Builder;
 
-namespace Xcepto
+namespace Xcepto.States
 {
     public abstract class XceptoState
     {

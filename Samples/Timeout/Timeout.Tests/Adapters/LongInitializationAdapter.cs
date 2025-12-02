@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
+using Xcepto.Adapters;
 
 namespace Timeout.Tests.Adapters;
 

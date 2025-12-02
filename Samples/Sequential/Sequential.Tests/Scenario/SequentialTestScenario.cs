@@ -3,6 +3,7 @@ using Sequential.Tests.Services;
 using Xcepto;
 using Xcepto.Interfaces;
 using Xcepto.Provider;
+using Xcepto.Scenarios;
 
 namespace Sequential.Tests.Scenario;
 

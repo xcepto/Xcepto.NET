@@ -1,10 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Xcepto.Interfaces;
-using Xcepto.Provider;
+using Xcepto.Builder;
 
-namespace Xcepto
+namespace Xcepto.Scenarios
 {
     public abstract class BaseScenario
     {

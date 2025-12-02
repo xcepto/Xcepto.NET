@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xcepto.Data;
+namespace Xcepto.Internal;
 
 internal class ExposedService
 {

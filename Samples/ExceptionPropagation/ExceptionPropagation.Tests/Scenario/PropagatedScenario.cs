@@ -1,8 +1,9 @@
 ﻿using ExceptionPropagation.Tests.Exceptions;
+using ExceptionPropagation.Tests.Providers;
 using Microsoft.Extensions.DependencyInjection;
-using Timeout.Tests.Providers;
 using Xcepto;
 using Xcepto.Interfaces;
+using Xcepto.Scenarios;
 
 namespace ExceptionPropagation.Tests.Scenario;
 

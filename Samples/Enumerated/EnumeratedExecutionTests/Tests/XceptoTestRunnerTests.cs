@@ -6,6 +6,7 @@ using Xcepto.Adapters;
 using Xcepto.Strategies.Execution;
 using Xcepto.Strategies.Isolation;
 using Xcepto.Strategies.Scheduling;
+using Xcepto.TestRunner;
 
 namespace EnumeratedExecutionTests.Tests;
 

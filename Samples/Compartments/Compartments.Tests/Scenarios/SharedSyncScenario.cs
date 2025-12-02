@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
 using Xcepto.Interfaces;
 using Xcepto.Provider;
+using Xcepto.Scenarios;
 
 namespace Compartments.Tests.Scenarios;
 

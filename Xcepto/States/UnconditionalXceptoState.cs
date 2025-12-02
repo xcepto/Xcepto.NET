@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Xcepto
+namespace Xcepto.States
 {
     public class UnconditionalXceptoState : XceptoState
 

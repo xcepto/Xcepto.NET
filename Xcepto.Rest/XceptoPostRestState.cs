@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Xcepto.Interfaces;
+using Xcepto.States;
 
 namespace Xcepto.Rest
 {

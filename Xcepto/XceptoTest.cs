@@ -1,87 +1,73 @@
 using System;
 using System.Collections;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Xcepto.Builder;
+using Xcepto.Scenarios;
+using Xcepto.Strategies.Execution;
+using Xcepto.TestRunner;
 
 namespace Xcepto
 {
-    public static class XceptoTest
+    public class XceptoTest
     {
+        private IExecutionStrategy _executionStrategy;
+
+        public XceptoTest(IExecutionStrategy executionStrategy)
+        {
+            _executionStrategy = executionStrategy;
+        }
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
-        private static readonly TimeSpan TimeoutShutdownTolerance = TimeSpan.FromSeconds(2);
 
-        public static async Task Given(BaseScenario scenario, TimeSpan timeout,
-            Action<TransitionBuilder> builder)
-        {
-            var transitionBuilder = new TransitionBuilder();
-            scenario.AssignBuilder(transitionBuilder);
-            builder(transitionBuilder);
-
-            await RunAsync(scenario, timeout, transitionBuilder);
-        }
-        
-        public static async Task GivenSequential(BaseScenario scenario, TimeSpan timeout,
-            Action<TransitionBuilder> builder)
-        {
-            var transitionBuilder = new TransitionBuilder();
-            scenario.AssignBuilder(transitionBuilder);
-            builder(transitionBuilder);
-
-            await RunAsync(scenario, timeout, transitionBuilder);
-        }
-
-        private static async Task RunAsync(BaseScenario scenario, TimeSpan timeout, TransitionBuilder transitionBuilder)
-        {
-            AsyncAcceptanceTest runner = new AsyncAcceptanceTest(timeout, transitionBuilder, scenario);
-            var task = runner.ExecuteTestAsync();
-            var delayTime = timeout + TimeoutShutdownTolerance;
-            var finished = await Task.WhenAny(task, Task.Delay(delayTime));
-            
-            // Log all exceptions
-            foreach (var propagatedTask in transitionBuilder.PropagatedTasks)
-            {
-                if(propagatedTask.IsFaulted && propagatedTask.Exception is not null)
-                    Console.WriteLine(propagatedTask.Exception);
-            }
-
-            // throw first exception
-            var firstException = transitionBuilder.PropagatedTasks
-                .FirstOrDefault(x => x.IsFaulted && x.Exception is not null);
-            if (firstException?.Exception is not null)
-            {
-                var inner = firstException.Exception.InnerException ?? firstException.Exception;
-                ExceptionDispatchInfo.Capture(inner).Throw();
-            }
-            
-            if (finished != task)
-            {
-                var timeoutException = new TimeoutException($"Test exceeded {delayTime.Seconds} seconds (timeout + tolerance).");
-                Console.WriteLine(timeoutException);
-                throw timeoutException;
-            }
-            await task;
-        }
-
-        public static async Task Given(BaseScenario scenario, Action<TransitionBuilder> builder)
+        public static async Task Given(XceptoScenario scenario, Action<TransitionBuilder> builder)
             => await Given(scenario, DefaultTimeout, builder);
-        
-        public static IEnumerator GivenEnumerated(EnumeratedScenario scenario, TimeSpan timeout, Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
+        public static Task Given(XceptoScenario scenario, TimeSpan timeout,
             Action<TransitionBuilder> builder)
         {
-            var transitionBuilder = new TransitionBuilder();
-            builder(transitionBuilder);
-        
-            EnumeratedAcceptanceTest runner = acceptanceTestSupplier(timeout, transitionBuilder, scenario);
-            yield return runner.ExecuteTestEnumerated();
+            var xceptoTest = new XceptoTest(new AsyncExecutionStrategy());
+            return xceptoTest.GivenWithStrategies(scenario, timeout, builder);
         }
 
-        public static IEnumerator GivenEnumerated(EnumeratedScenario scenario,
-            Func<TimeSpan, TransitionBuilder, EnumeratedScenario, EnumeratedAcceptanceTest> acceptanceTestSupplier,
-            Action<TransitionBuilder> builder)
+        public Task GivenWithStrategies(XceptoScenario scenario, Action<TransitionBuilder> builder) =>
+            GivenWithStrategies(scenario, DefaultTimeout, builder);
+        public Task GivenWithStrategies(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
         {
-            yield return GivenEnumerated(scenario, DefaultTimeout, acceptanceTestSupplier, builder);
+            XceptoTestRunner testRunner = new XceptoTestRunner(
+                _executionStrategy
+            );
+            testRunner.Given(scenario, timeout, builder);
+            
+            if(_executionStrategy is AsyncExecutionStrategy asyncExecutionStrategy)
+                return asyncExecutionStrategy.RunAsync();
+            if (_executionStrategy is EnumeratedExecutionStrategy enumeratedExecutionStrategy)
+                return Task.Run(() => EnumeratedTestRunner.RunEnumerator(enumeratedExecutionStrategy.RunEnumerated()));
+            
+            throw new ArgumentException("Unknown execution strategy");
+        }
+        
+        public static IEnumerator GivenEnumerated(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        {
+            var enumeratedExecutionStrategy = new EnumeratedExecutionStrategy();
+            var xceptoTest = new XceptoTest(enumeratedExecutionStrategy);
+            return xceptoTest.GivenEnumeratedWithStrategies(scenario, timeout, builder);
+        }
+
+        public static IEnumerator GivenEnumerated(XceptoScenario scenario, Action<TransitionBuilder> builder) => 
+            GivenEnumerated(scenario, DefaultTimeout, builder);
+        
+        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, Action<TransitionBuilder> builder) =>
+            GivenEnumeratedWithStrategies(scenario, DefaultTimeout, builder);
+        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+        {
+            if (_executionStrategy is not EnumeratedExecutionStrategy enumeratedExecutionStrategy)
+                throw new ArgumentException("Only enumerated strategy allowed");
+            
+            XceptoTestRunner testRunner = new XceptoTestRunner(
+                _executionStrategy
+            );
+            testRunner.Given(scenario, timeout, builder);
+
+            return enumeratedExecutionStrategy.RunEnumerated();
         }
     }
 }

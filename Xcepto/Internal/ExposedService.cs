@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace Xcepto.Data;
+namespace Xcepto.Internal;
 
 internal class ExposedService
 {
-    public ExposedService(Type type, Func<object> instanceSupplier)
+    internal ExposedService(Type type, Func<object> instanceSupplier)
     {
         Type = type;
         InstanceSupplier = instanceSupplier;
     }
 
-    public Type Type { get; }
-    public Func<object> InstanceSupplier { get; }
+    internal Type Type { get; }
+    internal Func<object> InstanceSupplier { get; }
 }

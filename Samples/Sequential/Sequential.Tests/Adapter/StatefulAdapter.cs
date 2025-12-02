@@ -1,6 +1,7 @@
 ﻿using Sequential.Tests.Services;
 using Sequential.Tests.States;
 using Xcepto;
+using Xcepto.Adapters;
 
 namespace Sequential.Tests.Adapter;
 

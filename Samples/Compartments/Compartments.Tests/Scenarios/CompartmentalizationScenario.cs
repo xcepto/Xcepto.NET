@@ -14,11 +14,9 @@ public class CompartmentalizationScenario: CompartmentalizedXceptoScenario
     protected override Task<IEnumerable<Compartment>> Setup()
     {
         var shared = Compartment.From(new ServiceCollection()
-                .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
                 .AddSingleton<SharedDependency>()
             )
             .ExposeService<SharedDependency>()
-            .ExposeService(typeof(ILoggingProvider))
             .Identify("outer")
             .Build();
         var service1 = Compartment.From(new ServiceCollection()

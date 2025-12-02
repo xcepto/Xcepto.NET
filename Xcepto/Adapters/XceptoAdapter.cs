@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Builder;
+using Xcepto.States;
 
-namespace Xcepto
+namespace Xcepto.Adapters
 {
     public abstract class XceptoAdapter
     {

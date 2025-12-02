@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
 using Xcepto.Data;
 using Xcepto.Repositories;
+using Xcepto.States;
 
 namespace Compartments.Tests.States;
 

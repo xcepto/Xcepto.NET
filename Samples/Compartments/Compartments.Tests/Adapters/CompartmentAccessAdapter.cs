@@ -2,6 +2,7 @@ using Compartments.Tests.States;
 using Compartments.Tests.Test;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
+using Xcepto.Adapters;
 using Xcepto.Data;
 using Xcepto.Repositories;
 

@@ -3,6 +3,7 @@ using EnumeratedExecutionTests.Scenario;
 using EnumeratedExecutionTests.Services;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.TestRunner;
 
 namespace EnumeratedExecutionTests.Tests;
 
@@ -12,8 +13,7 @@ public class EnumeratedTests
     [Test]
     public void GivenEnumerated()
     {
-        var enumerator = XceptoTest.GivenEnumerated(new ExampleEnumeratedScenario(), TimeSpan.FromSeconds(5),
-            (timeout, builder, scenario) => new SimpleEnumeratedAcceptanceTest(timeout, builder, scenario),
+        var enumerator = XceptoTest.GivenEnumerated(new ExampleScenario(), TimeSpan.FromSeconds(5),
             builder =>
             {
                 var serviceAdapter = builder.RegisterAdapter(new GenericServiceAdapter());

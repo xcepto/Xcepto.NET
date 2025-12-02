@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Adapters;
 using Xcepto.Exceptions;
 
 namespace Xcepto.Rest

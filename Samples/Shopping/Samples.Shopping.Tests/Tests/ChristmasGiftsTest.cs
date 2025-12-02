@@ -23,7 +23,7 @@ public class ChristmasGiftsTest
         SearchForArticleRoute articleRoute = new SearchForArticleRoute();
         var postUrl = new Uri($"http://localhost:8080/{articleRoute.Path}");
 
-        await XceptoTest.Given(new ChristmasGiftsScenario(), builder =>
+        await XceptoTest.Given(new ChristmasGiftsSyncScenario(), builder =>
         {
             var rest = builder.RegisterAdapter(new XceptoRestAdapter());
             var rabbitMq = builder.RegisterAdapter(new XceptoRabbitMqAdapter(config));

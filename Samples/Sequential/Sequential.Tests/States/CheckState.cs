@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sequential.Tests.Services;
 using Xcepto;
+using Xcepto.States;
 
 namespace Sequential.Tests.States;
 

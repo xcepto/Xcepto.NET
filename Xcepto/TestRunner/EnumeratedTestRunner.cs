@@ -1,6 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
-namespace EnumeratedExecutionTests;
+namespace Xcepto.TestRunner;
 
 public class EnumeratedTestRunner
 {

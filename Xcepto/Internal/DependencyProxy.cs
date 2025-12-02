@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Xcepto.Data;
+namespace Xcepto.Internal;
 
 internal class DependencyProxy
 {

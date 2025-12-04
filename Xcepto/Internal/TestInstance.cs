@@ -36,8 +36,10 @@ internal class TestInstance
         IServiceProvider serviceProvider = await _scenario.CallSetup();
         var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
         loggingProvider.LogDebug("Setting up acceptance test");
+        
         loggingProvider.LogDebug("");
-        loggingProvider.LogDebug("Added scenario services successfully ✅");
+        await _scenario.CallInitialize();
+        loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         
         loggingProvider.LogDebug("Initializing states:");
@@ -59,9 +61,6 @@ internal class TestInstance
         }
         
         loggingProvider.LogDebug($"All {_adapters.Count()} adapters successfully initialized ✅");
-        loggingProvider.LogDebug("");
-        await _scenario.CallInitialize();
-        loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         loggingProvider.LogDebug("Setup complete, starting test now:");
         loggingProvider.LogDebug("---------------------------------");

@@ -28,6 +28,11 @@ public class CompartmentAccessAdapter: XceptoAdapter
             $"Compartment expectation state of type {typeof(TService)}", compartment, expectation));
     }
 
+    public void CompartmentStepInitializationExpectation(string compartment, int expectedValue)
+    {
+        AddStep(new CompartmentAsyncExpectationStep($"Compartment Step Initialization Expectation", compartment, expectedValue));
+    }
+
     public void CompartmentServiceAction<TService>(string compartmentIdentifier, Action<TService> action)
     where TService: notnull
     {

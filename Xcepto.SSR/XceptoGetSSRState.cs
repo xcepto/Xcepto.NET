@@ -5,21 +5,18 @@ using Xcepto.States;
 
 namespace Xcepto.SSR
 {
-    public class XceptoPostSSRState : XceptoState
+    public class XceptoGetSSRState : XceptoState
     {
-        public XceptoPostSSRState(string name, 
-            HttpContent request,
+        public XceptoGetSSRState(string name, 
             Uri url,
             Func<HttpContent,Task<bool>> responseValidator
             ) : base(name)
         {
             _url = url;
-            _request = request;
             _responseValidator = responseValidator;
         }
 
         private Func<HttpContent,Task<bool>> _responseValidator;
-        private HttpContent _request;
         private Uri _url;
         private HttpContent _response;
 
@@ -42,7 +39,7 @@ namespace Xcepto.SSR
                 Timeout = TimeSpan.FromSeconds(1)
             };
 
-            var responseMessage = await client.PostAsync(_url, _request);
+            var responseMessage = await client.GetAsync(_url);
         
             if (!responseMessage.IsSuccessStatusCode)
                 throw new Exception($"http request to {_url} faulted");

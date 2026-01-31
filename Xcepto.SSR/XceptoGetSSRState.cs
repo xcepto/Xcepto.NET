@@ -30,7 +30,11 @@ namespace Xcepto.SSR
                 return false;
 
             if (!await _responseValidator(_response))
+            {
+                // rerun request if first validation failed
+                _response = null;
                 throw new Exception("response was not validated successfully");
+            }
             return true;
         }
 

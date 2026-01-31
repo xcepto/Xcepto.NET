@@ -8,10 +8,8 @@ using Xcepto.Internal;
 
 namespace Xcepto.Strategies.Execution;
 
-public sealed class AsyncExecutionStrategy : BaseExecutionStrategy, IPrimeAbleExecutionStrategy
+public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
 {
-    private TestInstance? _testInstance;
-
     public async Task RunAsync()
     {
         if (_testInstance is null)
@@ -64,10 +62,5 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy, IPrimeAbleEx
         }
         CheckTimeout(deadline);
         CheckPropagated(propagatedTasksSupplier);
-    }
-
-    void IPrimeAbleExecutionStrategy.Prime(TestInstance testInstance)
-    {
-        _testInstance = testInstance;
     }
 }

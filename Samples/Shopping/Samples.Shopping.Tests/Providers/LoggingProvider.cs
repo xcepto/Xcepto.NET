@@ -10,6 +10,8 @@ public class LoggingProvider: ILoggingProvider, ILogger
         TestContext.Out.WriteLine(message);
     }
 
+    public void Flush() { }
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         if(logLevel == LogLevel.Debug)

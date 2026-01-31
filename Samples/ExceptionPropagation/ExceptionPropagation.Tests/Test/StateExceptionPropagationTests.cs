@@ -13,7 +13,7 @@ public class StateExceptionPropagationTests
 {
     private XceptoTest _xceptoTest;
 
-    public StateExceptionPropagationTests(IExecutionStrategy executionStrategy)
+    public StateExceptionPropagationTests(BaseExecutionStrategy executionStrategy)
     {
         _xceptoTest = new XceptoTest(executionStrategy);
     }

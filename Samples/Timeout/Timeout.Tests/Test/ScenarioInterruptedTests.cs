@@ -18,7 +18,7 @@ public class ScenarioInterruptedTests
 
     public ScenarioInterruptedTests(
         Type scenario,
-        IExecutionStrategy executionStrategy)
+        BaseExecutionStrategy executionStrategy)
     {
         _scenario = scenario;
         _xceptoTest = new XceptoTest(executionStrategy);

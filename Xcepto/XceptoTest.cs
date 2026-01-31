@@ -11,9 +11,9 @@ namespace Xcepto
 {
     public class XceptoTest
     {
-        private IExecutionStrategy _executionStrategy;
+        private BaseExecutionStrategy _executionStrategy;
 
-        public XceptoTest(IExecutionStrategy executionStrategy)
+        public XceptoTest(BaseExecutionStrategy executionStrategy)
         {
             _executionStrategy = executionStrategy;
         }

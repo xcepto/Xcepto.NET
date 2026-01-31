@@ -12,7 +12,7 @@ public class AdapterExceptionPropagationTests
 {
     private XceptoTest _xceptoTest;
 
-    public AdapterExceptionPropagationTests(IExecutionStrategy executionStrategy)
+    public AdapterExceptionPropagationTests(BaseExecutionStrategy executionStrategy)
     {
         _xceptoTest = new XceptoTest(executionStrategy);
     }

@@ -11,7 +11,7 @@ public class ScenarioExceptionPropagationTests
 {
     private XceptoTest _xceptoTest;
 
-    public ScenarioExceptionPropagationTests(IExecutionStrategy executionStrategy)
+    public ScenarioExceptionPropagationTests(BaseExecutionStrategy executionStrategy)
     {
         _xceptoTest = new XceptoTest(executionStrategy);
     }

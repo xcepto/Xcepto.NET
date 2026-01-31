@@ -16,7 +16,7 @@ public class AdapterInterruptedTests
 
     public AdapterInterruptedTests(
         Type adapterType,
-        IExecutionStrategy executionStrategy)
+        BaseExecutionStrategy executionStrategy)
     {
         _adapterType = adapterType;
         _xceptoTest = new XceptoTest(executionStrategy);

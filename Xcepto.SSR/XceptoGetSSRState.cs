@@ -11,9 +11,11 @@ namespace Xcepto.SSR
     {
         public XceptoGetSSRState(string name, 
             Uri url,
-            Func<HttpContent,Task<bool>> responseValidator
+            Func<HttpContent,Task<bool>> responseValidator,
+            bool retry
             ) : base(name)
         {
+            _retry = retry;
             _url = url;
             _responseValidator = responseValidator;
         }
@@ -21,28 +23,29 @@ namespace Xcepto.SSR
         private Func<HttpContent,Task<bool>> _responseValidator;
         private Uri _url;
         private HttpContent? _response;
+        private bool _retry;
 
         public override async Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
-            if(_response is null)
-                await Execute(serviceProvider);
-            if (_response is null)
-                return false;
-
-            if (!await _responseValidator(_response))
+            if (_retry)
             {
-                // rerun request if first validation failed
+                if(_response is null)
+                    await Execute(serviceProvider);
+                if (_response is null)
+                    return false;
+                if (await _responseValidator(_response)) 
+                    return true;
                 _response = null;
-                throw new Exception("response was not validated successfully");
+                return false;
             }
+
+            await Execute(serviceProvider);
+            if (_response is null || await _responseValidator(_response))
+                throw new Exception($"Request did not validate successfully: {_response}");
             return true;
         }
 
-        public override async Task OnEnter(IServiceProvider serviceProvider)
-        {
-            await Execute(serviceProvider);
-        }
-        
+        public override Task OnEnter(IServiceProvider serviceProvider) => Task.FromResult(true);
         private async Task Execute(IServiceProvider serviceProvider)
         {
             var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();

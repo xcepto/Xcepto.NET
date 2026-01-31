@@ -21,7 +21,7 @@ public class HomeTests
             var ssr = builder.RegisterAdapter(new XceptoSSRAdapter());
 
             var guiBaseUrl = new Uri($"http://localhost:8082/");
-            ssr.GetRequest(guiBaseUrl, async response =>
+            ssr.Get(guiBaseUrl, async response =>
             {
                 var content = await response.ReadAsStringAsync();
                 return content.Contains("Welcome");

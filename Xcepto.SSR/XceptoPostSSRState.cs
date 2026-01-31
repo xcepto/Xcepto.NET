@@ -1,6 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Interfaces;
 using Xcepto.States;
 
 namespace Xcepto.SSR
@@ -10,9 +12,11 @@ namespace Xcepto.SSR
         public XceptoPostSSRState(string name, 
             HttpContent request,
             Uri url,
-            Func<HttpContent,Task<bool>> responseValidator
+            Func<HttpContent,Task<bool>> responseValidator,
+            bool retry
             ) : base(name)
         {
+            _retry = retry;
             _url = url;
             _request = request;
             _responseValidator = responseValidator;
@@ -21,35 +25,54 @@ namespace Xcepto.SSR
         private Func<HttpContent,Task<bool>> _responseValidator;
         private HttpContent _request;
         private Uri _url;
-        private HttpContent _response;
+        private HttpContent? _response;
+        private bool _retry;
 
         public override async Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
-            if (!await _responseValidator(_response))
-                throw new Exception("response was not validated successfully");
+            if (_retry)
+            {
+                if(_response is null)
+                    await Execute(serviceProvider);
+                if (_response is null)
+                    return false;
+                if (await _responseValidator(_response)) 
+                    return true;
+                _response = null;
+                return false;
+            }
+
+            await Execute(serviceProvider);
+            if (_response is null || await _responseValidator(_response))
+                throw new Exception($"Request did not validate successfully: {_response}");
             return true;
         }
 
-        public override async Task OnEnter(IServiceProvider serviceProvider)
-        {
-            await Execute(serviceProvider);
-        }
-        
+        public override Task OnEnter(IServiceProvider serviceProvider) => Task.FromResult(true);
         private async Task Execute(IServiceProvider serviceProvider)
         {
-            HttpClient client = new HttpClient()
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+
+            try
             {
-                Timeout = TimeSpan.FromSeconds(1)
-            };
+                HttpClient client = new HttpClient()
+                {
+                    Timeout = TimeSpan.FromSeconds(1)
+                };
 
-            var responseMessage = await client.PostAsync(_url, _request);
+                var responseMessage = await client.PostAsync(_url, _request);
         
-            if (!responseMessage.IsSuccessStatusCode)
-                throw new Exception($"http request to {_url} faulted");
+                if (!responseMessage.IsSuccessStatusCode)
+                    throw new Exception($"http request to {_url} faulted");
 
-            _response = responseMessage.Content;
-            if (_response == null) 
-                throw new Exception($"http request to {_url} did not return a proper response");
+                _response = responseMessage.Content;
+                if (_response == null) 
+                    throw new Exception($"http request to {_url} did not return a proper response");
+            }
+            catch (Exception e)
+            {
+                loggingProvider.LogDebug(e.Message);
+            }
         }
     }
 }

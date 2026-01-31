@@ -7,20 +7,22 @@ namespace Xcepto.SSR;
 
 public class XceptoSSRAdapter: XceptoAdapter
 {
-    public void GetRequest(Uri url, Func<HttpContent,Task<bool>> responseValidator)
+    public void Get(Uri url, Func<HttpContent,Task<bool>> responseValidator, bool retry = true)
     {
         AddStep(new XceptoGetSSRState("GetSSRState", 
             url,
-            responseValidator 
+            responseValidator,
+            retry
         ));
     }
     
-    public void PostRequest(Uri url, HttpContent request, Func<HttpContent,Task<bool>> responseValidator)
+    public void Post(Uri url, HttpContent request, Func<HttpContent,Task<bool>> responseValidator, bool retry = false)
     {
         AddStep(new XceptoPostSSRState("PostSSRState", 
             request,
             url,
-            responseValidator 
+            responseValidator,
+            retry
         ));
     }
 }

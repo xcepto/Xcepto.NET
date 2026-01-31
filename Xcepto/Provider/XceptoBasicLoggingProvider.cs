@@ -6,7 +6,7 @@ namespace Xcepto.Provider;
 
 public class XceptoBasicLoggingProvider: ILoggingProvider
 {
-    private ConcurrentQueue<string> _logMessages = new ConcurrentQueue<string>();
+    private ConcurrentQueue<string> _logMessages = new();
     public void LogDebug(string message)
     {
         _logMessages.Enqueue(message);
@@ -14,11 +14,11 @@ public class XceptoBasicLoggingProvider: ILoggingProvider
 
     public void Flush()
     {
-        // while (!_logMessages.IsEmpty)
-        // {
-        //     if (!_logMessages.TryDequeue(out string message))
-        //         throw new InvalidOperationException("Log messages are not consumed correctly");
-        //     Console.WriteLine(message);
-        // }
+        while (!_logMessages.IsEmpty)
+        {
+            if (!_logMessages.TryDequeue(out string message))
+                throw new InvalidOperationException("Log messages are not consumed correctly");
+            Console.WriteLine(message);
+        }
     }
 }

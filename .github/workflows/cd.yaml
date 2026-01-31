@@ -16,11 +16,11 @@ jobs:
 
       - name: start shopping services
         run: |
-          cd Samples/Shopping && docker compose -f docker-compose.yaml up -d
+          cd Samples/Shopping && docker compose -f docker-compose.yaml up -d --wait
           
       - name: start ssr services
         run: |
-          cd Samples/SSR && docker compose -f docker-compose.yaml up -d
+          cd Samples/SSR && docker compose -f docker-compose.yaml up -d --wait
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4

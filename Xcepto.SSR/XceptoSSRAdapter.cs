@@ -7,7 +7,10 @@ namespace Xcepto.SSR;
 
 public class XceptoSSRAdapter: XceptoAdapter
 {
-    public void Get(Uri url, Func<HttpContent,Task<bool>> responseValidator, bool retry = true)
+    public void Get(Uri url, Func<HttpResponseMessage, bool> responseValidator, bool retry = true) =>
+        Get(url, response => Task.FromResult(responseValidator(response)), retry);
+
+    public void Get(Uri url, Func<HttpResponseMessage,Task<bool>> responseValidator, bool retry = true)
     {
         AddStep(new XceptoGetSSRState("GetSSRState", 
             url,
@@ -16,7 +19,29 @@ public class XceptoSSRAdapter: XceptoAdapter
         ));
     }
     
-    public void Post(Uri url, HttpContent request, Func<HttpContent,Task<bool>> responseValidator, bool retry = false)
+    public void Post(Uri url, HttpContent request, Func<HttpResponseMessage,bool> responseValidator, bool retry = false) =>
+        Post(url, request, response => Task.FromResult(responseValidator(response)), retry);
+
+    public void PostAssertions(Uri url, HttpContent request, Func<HttpResponseMessage, Task<Action[]>> responseValidator, bool retry = false) =>
+        Post(url, request, async response =>
+        {
+            var assertions = await responseValidator(response);
+            foreach (var assertion in assertions)
+            {
+                try
+                {
+                    assertion();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }, retry);
+
+    
+    public void Post(Uri url, HttpContent request, Func<HttpResponseMessage,Task<bool>> responseValidator, bool retry = false)
     {
         AddStep(new XceptoPostSSRState("PostSSRState", 
             request,

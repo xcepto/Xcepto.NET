@@ -12,7 +12,7 @@ namespace Xcepto.SSR
         public XceptoPostSSRState(string name, 
             HttpContent request,
             Uri url,
-            Func<HttpContent,Task<bool>> responseValidator,
+            Func<HttpResponseMessage,Task<bool>> responseValidator,
             bool retry
             ) : base(name)
         {
@@ -22,10 +22,10 @@ namespace Xcepto.SSR
             _responseValidator = responseValidator;
         }
 
-        private Func<HttpContent,Task<bool>> _responseValidator;
+        private Func<HttpResponseMessage,Task<bool>> _responseValidator;
         private HttpContent _request;
         private Uri _url;
-        private HttpContent? _response;
+        private HttpResponseMessage? _response;
         private bool _retry;
 
         public override async Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
@@ -43,7 +43,7 @@ namespace Xcepto.SSR
             }
 
             await Execute(serviceProvider);
-            if (_response is null || await _responseValidator(_response))
+            if (_response is null || !await _responseValidator(_response))
                 throw new Exception($"Request did not validate successfully: {_response}");
             return true;
         }
@@ -60,14 +60,7 @@ namespace Xcepto.SSR
                     Timeout = TimeSpan.FromSeconds(1)
                 };
 
-                var responseMessage = await client.PostAsync(_url, _request);
-        
-                if (!responseMessage.IsSuccessStatusCode)
-                    throw new Exception($"http request to {_url} faulted");
-
-                _response = responseMessage.Content;
-                if (_response == null) 
-                    throw new Exception($"http request to {_url} did not return a proper response");
+                _response = await client.PostAsync(_url, _request);
             }
             catch (Exception e)
             {

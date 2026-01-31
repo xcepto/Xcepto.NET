@@ -23,7 +23,7 @@ public class HomeTests
             var guiBaseUrl = new Uri($"http://localhost:8082/");
             ssr.Get(guiBaseUrl, async response =>
             {
-                var content = await response.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync();
                 return content.Contains("Welcome");
             });
         });

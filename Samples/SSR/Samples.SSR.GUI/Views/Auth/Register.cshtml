@@ -21,7 +21,7 @@ ViewData["Title"] = "Register";
 
     @if (!ViewData.ModelState.IsValid)
     {
-    <div style="color: red;">
+    <div id="errors" style="color: red;">
         @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
         {
         <div>@err.ErrorMessage</div>

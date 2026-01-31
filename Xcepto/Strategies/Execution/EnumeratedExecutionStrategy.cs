@@ -9,21 +9,19 @@ using Xcepto.Internal;
 
 namespace Xcepto.Strategies.Execution;
 
-public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAbleExecutionStrategy
+public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 {
-    private TestInstance? _testExecution;
-
     public IEnumerator RunEnumerated()
     {
-        if (_testExecution is null)
+        if (_testInstance is null)
             throw new Exception("Execution strategy not primed yet");
 
-        var propagatedTasksSupplier = _testExecution.GetPropagatedTasksSupplier();
-        var timeout = _testExecution.GetTimeout();
+        var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
+        var timeout = _testInstance.GetTimeout();
         var deadline = DateTime.UtcNow + timeout;
 
         // INIT
-        var init = _testExecution.InitializeAsync();
+        var init = _testInstance.InitializeAsync();
         while (!init.IsCompleted)
         {
             yield return null;
@@ -37,7 +35,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
         // EXECUTION LOOP
         while (true)
         {
-            var stepTask = _testExecution.StepAsync(serviceProvider);
+            var stepTask = _testInstance.StepAsync(serviceProvider);
 
             while (!stepTask.IsCompleted)
             {
@@ -58,7 +56,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
         }
 
         // CLEANUP
-        var cleanup = _testExecution.CleanupAsync(serviceProvider);
+        var cleanup = _testInstance.CleanupAsync(serviceProvider);
         while (!cleanup.IsCompleted)
         {
             yield return null;
@@ -67,10 +65,5 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy, IPrimeAb
         }
         CheckTimeout(deadline);
         CheckPropagated(propagatedTasksSupplier);
-    }
-
-    void IPrimeAbleExecutionStrategy.Prime(TestInstance testInstance)
-    {
-        _testExecution = testInstance;
     }
 }

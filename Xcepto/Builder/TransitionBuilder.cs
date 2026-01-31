@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xcepto.Adapters;
@@ -12,6 +13,13 @@ namespace Xcepto.Builder
         private HashSet<XceptoAdapter> _adapters = new();
         private List<XceptoState> _states = new();
         private List<Task> _propagatedTasks = new();
+        private Action<TransitionBuilder> _arrange;
+
+        public TransitionBuilder(Action<TransitionBuilder> arrange)
+        {
+            _arrange = arrange;
+        }
+
         internal IEnumerable<Task> PropagatedTasks => _propagatedTasks;
 
         public void AddStep(XceptoState newState)
@@ -23,6 +31,7 @@ namespace Xcepto.Builder
 
         internal AcceptanceStateMachine Build()
         {
+            _arrange(this);
             _stateMachine.Seal();
             return _stateMachine;
         }

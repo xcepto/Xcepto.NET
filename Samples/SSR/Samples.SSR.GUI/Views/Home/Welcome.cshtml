@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Xcepto sample GUI";
+}
+
+<div>
+    <h1>Welcome @User.Identity?.Name to the Xcepto sample GUI!</h1>
+    @if (User.Identity is null || !User.Identity.IsAuthenticated)
+    {
+        <div><a asp-controller="Auth" asp-action="Login">Login</a></div>
+        <div><a asp-controller="Auth" asp-action="Register">Register</a></div>   
+    }
+    else
+    {
+        <div><form asp-controller="Auth" asp-action="Logout"><input type="submit" value="Logout"></form></div>
+    }
+</div>

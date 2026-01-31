@@ -7,7 +7,7 @@ public static class StrategyCombinations
 {
     public static IEnumerable<object[]> AllCombinations()
     {
-        var executionStrategies = new IExecutionStrategy[] { new AsyncExecutionStrategy(), new EnumeratedExecutionStrategy() };
+        var executionStrategies = new BaseExecutionStrategy[] { new AsyncExecutionStrategy(), new EnumeratedExecutionStrategy() };
 
         foreach (var e in executionStrategies)
             yield return new object[] { e };

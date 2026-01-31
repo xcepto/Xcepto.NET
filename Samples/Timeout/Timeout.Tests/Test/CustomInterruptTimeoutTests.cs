@@ -12,7 +12,7 @@ public class CustomInterruptTimeoutTests
     
     private XceptoTest _xceptoTest;
 
-    public CustomInterruptTimeoutTests(IExecutionStrategy executionStrategy)
+    public CustomInterruptTimeoutTests(BaseExecutionStrategy executionStrategy)
     {
         _xceptoTest = new XceptoTest(executionStrategy);
     }

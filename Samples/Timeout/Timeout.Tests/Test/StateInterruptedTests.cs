@@ -17,7 +17,7 @@ public class StateInterruptedTests
 
     public StateInterruptedTests(
         Type stateType,
-        IExecutionStrategy executionStrategy)
+        BaseExecutionStrategy executionStrategy)
     {
         _stateType = stateType;
         _xceptoTest = new XceptoTest(executionStrategy);

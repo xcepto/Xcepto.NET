@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: testdb
+      
+      
+  gui:
+    image: samples-ssr-gui:test
+    build:
+      context: .
+      dockerfile: Samples.SSR.GUI/Dockerfile
+    ports:
+      - "8082:8080"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fs http://localhost:8080/ || exit 1" ]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: testdb
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432

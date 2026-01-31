@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+<form method="post" action="/auth/login">
+    <div>
+        <label>Email</label><br />
+        <input type="email" name="Email" required />
+    </div>
+
+    <div>
+        <label>Password</label><br />
+        <input type="password" name="Password" required />
+    </div>
+
+    <div>
+        <button type="submit">Login</button>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div style="color: red;">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+</form>
+
+<p>
+    No account? <a href="/auth/register">Register</a>
+</p>

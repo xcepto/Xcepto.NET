@@ -7,7 +7,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         
         var postgresHost = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
-        var postgresPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
+        var postgresPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5433";
         var dbUser       = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "test";
         var dbPassword   = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "test";
         var dbName       = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "testdb";

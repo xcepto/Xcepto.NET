@@ -1,9 +1,22 @@
 services:
   postgres:
     image: postgres:16
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
       POSTGRES_DB: testdb
+      
+      
+  gui:
+    image: samples-ssr-gui:test
+    build:
+      context: .
+      dockerfile: Samples.SSR.GUI/Dockerfile
+    ports:
+      - "8082:8080"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: testdb
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432

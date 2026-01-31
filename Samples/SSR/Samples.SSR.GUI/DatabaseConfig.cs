@@ -21,7 +21,6 @@ public static class DatabaseConfig
     public static void RunMigrations(IServiceProvider services, string contentRoot)
     {
         var config = services.GetRequiredService<DatabaseCredentials>();
-
         var migrationsPath = Path.Combine(contentRoot, "Migrations");
 
         var upgrader = DeployChanges.To
@@ -29,8 +28,26 @@ public static class DatabaseConfig
             .WithScriptsFromFileSystem(migrationsPath)
             .Build();
 
-        var result = upgrader.PerformUpgrade();
-        if (!result.Successful)
-            throw result.Error;
+        var retries = 20;
+
+        while (true)
+        {
+            try
+            {
+                var result = upgrader.PerformUpgrade();
+                if (!result.Successful)
+                    throw result.Error;
+
+                return;
+            }
+            catch(Exception e)
+            {
+                if (--retries == 0)
+                    throw;
+                Console.WriteLine($"Failed running migrations due to {e}, retrying in 1s");
+                Thread.Sleep(1000);
+            }
+        }
     }
+
 }

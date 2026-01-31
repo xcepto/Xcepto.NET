@@ -1,5 +1,10 @@
-﻿using Samples.SSR.GUI.Tests.Scenarios;
+﻿using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
+using Microsoft.Extensions.DependencyInjection;
+using Samples.SSR.GUI.Tests.Scenarios;
+using Testcontainers.PostgreSql;
 using Xcepto;
+using Xcepto.Interfaces;
 using Xcepto.SSR;
 
 namespace Samples.SSR.GUI.Tests.Xcepto;
@@ -7,7 +12,6 @@ namespace Samples.SSR.GUI.Tests.Xcepto;
 [TestFixture]
 public class HomeTests
 {
-
     [Test]
     public async Task GET_Root_Returns_Welcome()
     {
@@ -16,7 +20,7 @@ public class HomeTests
         {
             var ssr = builder.RegisterAdapter(new XceptoSSRAdapter());
 
-            var guiBaseUrl = new Uri($"https://localhost:{scenario.RuntimeService.GuiPort}/");
+            var guiBaseUrl = new Uri($"http://localhost:8082/");
             ssr.GetRequest(guiBaseUrl, async response =>
             {
                 var content = await response.ReadAsStringAsync();

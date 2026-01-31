@@ -14,9 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: start services
+      - name: start shopping services
         run: |
           cd Samples/Shopping && docker compose -f docker-compose.yaml up -d
+          
+      - name: start ssr services
+        run: |
+          cd Samples/SSR && docker compose -f docker-compose.yaml up -d
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4

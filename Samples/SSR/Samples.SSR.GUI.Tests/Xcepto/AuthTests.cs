@@ -35,6 +35,12 @@ public class AuthTests
             
             ssr.PostAssertions(new Uri($"http://localhost:8082/auth/login"), 
                 new LoginRequest(username, password).ToForm(), responseValidator);
+            
+            ssr.Get(new Uri($"http://localhost:8082/"), async response =>
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return content.Contains("Welcome") && content.Contains(username);
+            });
         });
     }
 }

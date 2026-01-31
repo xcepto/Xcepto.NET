@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,14 +13,16 @@ namespace Xcepto.SSR
         public XceptoGetSSRState(string name, 
             Uri url,
             Func<HttpResponseMessage,Task<bool>> responseValidator,
-            bool retry
-            ) : base(name)
+            bool retry,
+            HttpClient client) : base(name)
         {
             _retry = retry;
             _url = url;
             _responseValidator = responseValidator;
+            _client = client;
         }
 
+        private HttpClient _client; 
         private Func<HttpResponseMessage,Task<bool>> _responseValidator;
         private Uri _url;
         private HttpResponseMessage? _response;
@@ -52,12 +55,7 @@ namespace Xcepto.SSR
 
             try
             {
-                HttpClient client = new HttpClient()
-                {
-                    Timeout = TimeSpan.FromSeconds(1)
-                };
-
-                _response = await client.GetAsync(_url);
+                _response = await _client.GetAsync(_url);
             }
             catch (Exception e)
             {

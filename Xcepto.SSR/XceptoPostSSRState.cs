@@ -9,13 +9,13 @@ namespace Xcepto.SSR
 {
     public class XceptoPostSSRState : XceptoState
     {
-        public XceptoPostSSRState(string name, 
+        public XceptoPostSSRState(string name,
             HttpContent request,
             Uri url,
-            Func<HttpResponseMessage,Task<bool>> responseValidator,
-            bool retry
-            ) : base(name)
+            Func<HttpResponseMessage, Task<bool>> responseValidator,
+            bool retry, HttpClient client) : base(name)
         {
+            _client = client;
             _retry = retry;
             _url = url;
             _request = request;
@@ -27,6 +27,7 @@ namespace Xcepto.SSR
         private Uri _url;
         private HttpResponseMessage? _response;
         private bool _retry;
+        private HttpClient _client;
 
         public override async Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
@@ -55,12 +56,7 @@ namespace Xcepto.SSR
 
             try
             {
-                HttpClient client = new HttpClient()
-                {
-                    Timeout = TimeSpan.FromSeconds(1)
-                };
-
-                _response = await client.PostAsync(_url, _request);
+                _response = await _client.PostAsync(_url, _request);
             }
             catch (Exception e)
             {

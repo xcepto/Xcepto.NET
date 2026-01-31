@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xcepto.Adapters;
@@ -7,6 +8,28 @@ namespace Xcepto.SSR;
 
 public class XceptoSSRAdapter: XceptoAdapter
 {
+    private HttpClient _client;
+
+    public XceptoSSRAdapter(HttpClient? httpClient = null)
+    {
+        if (httpClient is not null)
+            _client = httpClient;
+        else
+        {
+            var cookieContainer = new CookieContainer();
+
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = cookieContainer,
+                UseCookies = true
+            };
+
+            _client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(1)
+            };
+        }
+    }
     public void Get(Uri url, Func<HttpResponseMessage, bool> responseValidator, bool retry = true) =>
         Get(url, response => Task.FromResult(responseValidator(response)), retry);
 
@@ -15,7 +38,8 @@ public class XceptoSSRAdapter: XceptoAdapter
         AddStep(new XceptoGetSSRState("GetSSRState", 
             url,
             responseValidator,
-            retry
+            retry,
+            _client
         ));
     }
     
@@ -47,7 +71,8 @@ public class XceptoSSRAdapter: XceptoAdapter
             request,
             url,
             responseValidator,
-            retry
+            retry,
+            _client
         ));
     }
 }

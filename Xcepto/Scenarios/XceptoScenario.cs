@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Builder;
 using Xcepto.Data;
+using Xcepto.Interfaces;
 using Xcepto.Internal;
 
 namespace Xcepto.Scenarios
@@ -68,7 +70,15 @@ namespace Xcepto.Scenarios
             var scenarioCleanup = Cleanup(new ScenarioCleanupBuilder(_serviceProvider!));
             foreach (var function in scenarioCleanup.DoTasks)
             {
-                await function();
+                try
+                {
+                    await function();
+                }
+                finally
+                {
+                    var loggingProvider = _serviceProvider?.GetRequiredService<ILoggingProvider>();
+                    loggingProvider?.Flush();
+                }
             }
         }
     }

@@ -101,7 +101,14 @@ internal class TestInstance
         loggingProvider.LogDebug("Cleaning up:");
         foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i + 1)))
         {
-            await adapter.CallCleanup(serviceProvider);
+            try
+            {
+                await adapter.CallCleanup(serviceProvider);
+            }
+            finally
+            {
+                loggingProvider?.Flush();
+            }
             loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
         }
         loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");

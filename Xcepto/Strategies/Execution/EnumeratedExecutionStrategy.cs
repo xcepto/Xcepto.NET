@@ -18,17 +18,17 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 
         var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
         var timeout = _testInstance.GetTimeout();
-        var deadline = DateTime.UtcNow + timeout;
+        var deadline = DateTime.UtcNow + timeout.Total;
 
         // INIT
         var init = _testInstance.InitializeAsync();
         while (!init.IsCompleted)
         {
             yield return null;
-            CheckTimeout(deadline);
+            CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
-        CheckTimeout(deadline);
+        CheckTimeouts(deadline);
         CheckPropagated(propagatedTasksSupplier);
         var serviceProvider = init.GetAwaiter().GetResult();
 
@@ -40,10 +40,10 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
             while (!stepTask.IsCompleted)
             {
                 yield return null;
-                CheckTimeout(deadline);
+                CheckTimeouts(deadline);
                 CheckPropagated(propagatedTasksSupplier);
             }
-            CheckTimeout(deadline);
+            CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
 
             if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
@@ -51,7 +51,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 
             // a frame passes
             yield return null;
-            CheckTimeout(deadline);
+            CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
 
@@ -60,12 +60,12 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
         while (!cleanup.IsCompleted)
         {
             yield return null;
-            CheckTimeout(deadline);
+            CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
         if (cleanup.IsFaulted)
             throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
-        CheckTimeout(deadline);
+        CheckTimeouts(deadline);
         CheckPropagated(propagatedTasksSupplier);
     }
 }

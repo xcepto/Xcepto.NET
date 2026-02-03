@@ -4,6 +4,7 @@ using Compartments.Tests.Scenarios;
 using Compartments.Tests.Service;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
+using Xcepto.Config;
 
 namespace Compartments.Tests.Test;
 
@@ -13,7 +14,7 @@ public class StateCompartmentAccessTests
     [Test]
     public async Task PersonalDependenciesAreDifferent()
     {
-        await XceptoTest.Given(new CompartmentalizationScenario(), TimeSpan.FromSeconds(3), builder =>
+        await XceptoTest.Given(new CompartmentalizationScenario(), TimeoutConfig.FromSeconds(3), builder =>
         {
             var compartmentAccessAdapter = builder.RegisterAdapter(new CompartmentAccessAdapter());
             

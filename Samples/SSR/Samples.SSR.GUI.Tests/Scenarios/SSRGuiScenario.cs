@@ -16,6 +16,7 @@ namespace Samples.SSR.GUI.Tests.Scenarios;
 
 public class SsrGuiScenario: XceptoScenario
 {
+    private Guid identifier = Guid.NewGuid();
     private PostgreSqlContainer? _postgresContainer;
     private IContainer? _guiContainer;
     public ushort GuiPort { get; private set; }
@@ -35,7 +36,7 @@ public class SsrGuiScenario: XceptoScenario
         var testContainerSupport = serviceProvider.GetRequiredService<ITestContainerSupport>();
         
         var network = new NetworkBuilder()
-            .WithName("test-network")
+            .WithName($"test-network-{identifier.ToString()}")
             .Build();
         
         var guiImage = new ImageFromDockerfileBuilder()

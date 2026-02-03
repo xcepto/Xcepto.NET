@@ -17,21 +17,22 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
 
         var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
         var timeout = _testInstance.GetTimeout();
-        var deadline = DateTime.UtcNow + timeout;
+        var totalDeadline = DateTime.UtcNow + timeout.Total;
 
         // INIT
         var init = _testInstance.InitializeAsync();
         while (!init.IsCompleted)
         {
             await Task.Yield();
-            CheckTimeout(deadline);
+            CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
         }
-        CheckTimeout(deadline);
+        CheckTimeouts(totalDeadline);
         CheckPropagated(propagatedTasksSupplier);
         var serviceProvider = init.GetAwaiter().GetResult();;
 
         // EXECUTION LOOP
+        StartTest();
         while (true)
         {
             var stepTask = _testInstance.StepAsync(serviceProvider);
@@ -39,16 +40,19 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
             while (!stepTask.IsCompleted)
             {
                 await Task.Yield();
-                CheckTimeout(deadline);
+                CheckTestTimeout();
+                CheckTimeouts(totalDeadline);
                 CheckPropagated(propagatedTasksSupplier);
             }
-            CheckTimeout(deadline);
+            CheckTestTimeout();
+            CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
             if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
                 break;
 
             await Task.Yield();
-            CheckTimeout(deadline);
+            CheckTestTimeout();
+            CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
         }
 
@@ -57,12 +61,12 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
         while (!cleanup.IsCompleted)
         {
             await Task.Yield();          
-            CheckTimeout(deadline);
+            CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
         }
         if (cleanup.IsFaulted)
             throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
-        CheckTimeout(deadline);
+        CheckTimeouts(totalDeadline);
         CheckPropagated(propagatedTasksSupplier);
     }
 }

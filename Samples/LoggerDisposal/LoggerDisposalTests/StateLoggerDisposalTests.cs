@@ -4,6 +4,7 @@ using LoggerDisposalTests.Scenarios;
 using LoggerDisposalTests.States;
 using Xcepto;
 using Xcepto.Builder;
+using Xcepto.Config;
 using Xcepto.Strategies.Execution;
 using Xcepto.TestRunner;
 
@@ -27,7 +28,7 @@ where T: BaseExecutionStrategy, new()
     {
         MockedLoggingProvider mockedLoggingProvider = new MockedLoggingProvider();
         _xceptoTestRunner.Given(new BareMockedScenario(mockedLoggingProvider), 
-            TimeSpan.FromSeconds(5), builder);
+            TimeoutConfig.FromSeconds(5), builder);
         if (_executionStrategy is AsyncExecutionStrategy asyncExecutionStrategy)
         {
             Assert.ThrowsAsync<DisposalInvokingException>(async () =>

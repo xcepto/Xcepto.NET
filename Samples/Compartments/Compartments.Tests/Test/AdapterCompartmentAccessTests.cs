@@ -5,6 +5,7 @@ using Compartments.Tests.Service;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.Config;
 
 namespace Compartments.Tests.Test;
 
@@ -14,7 +15,7 @@ public class AdapterCompartmentAccessTests
     [Test]
     public async Task PersonalDependenciesAreDifferent()
     {
-        await XceptoTest.Given(new CompartmentalizationScenario(), TimeSpan.FromSeconds(3), builder =>
+        await XceptoTest.Given(new CompartmentalizationScenario(), TimeoutConfig.FromSeconds(3), builder =>
         {
             var compartmentAccessAdapter = builder.RegisterAdapter(new CompartmentAccessAdapter());
 
@@ -32,7 +33,7 @@ public class AdapterCompartmentAccessTests
     [Test]
     public async Task SharedDependenciesAreIdentical()
     {
-        await XceptoTest.Given(new CompartmentalizationScenario(), TimeSpan.FromSeconds(3), builder =>
+        await XceptoTest.Given(new CompartmentalizationScenario(), TimeoutConfig.FromSeconds(3), builder =>
         {
             var compartmentAccessAdapter = builder.RegisterAdapter(new CompartmentAccessAdapter());
 
@@ -52,7 +53,7 @@ public class AdapterCompartmentAccessTests
     {
         Assert.CatchAsync<InvalidOperationException>(async () =>
         {
-            await XceptoTest.Given(new SharedSyncScenario(), TimeSpan.FromSeconds(3), builder =>
+            await XceptoTest.Given(new SharedSyncScenario(), TimeoutConfig.FromSeconds(3), builder =>
             {
                 var compartmentAccessAdapter = builder.RegisterAdapter(new CompartmentAccessAdapter());
                 compartmentAccessAdapter.JoinedCompartmentExpectation("service1", "service2",

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Adapters;
 using Xcepto.Builder;
+using Xcepto.Config;
 using Xcepto.Interfaces;
 using Xcepto.Scenarios;
 using Xcepto.States;
@@ -13,7 +14,7 @@ namespace Xcepto.Internal;
 
 internal class TestInstance
 {
-    private TimeSpan _timeout;
+    private TimeoutConfig _timeout;
     private DateTime _startTime;
     private XceptoScenario _scenario;
     private TransitionBuilder _transitionBuilder;
@@ -24,7 +25,7 @@ internal class TestInstance
     private Func<IEnumerable<Task>>? _propagatedTasksSupplier;
     public IServiceProvider ServiceProvider { get; private set; }
 
-    internal TestInstance(TimeSpan timeout, XceptoScenario scenario, TransitionBuilder transitionBuilder)
+    internal TestInstance(TimeoutConfig timeout, XceptoScenario scenario, TransitionBuilder transitionBuilder)
     {
         _transitionBuilder = transitionBuilder;
         _propagatedTasksSupplier = () => transitionBuilder.PropagatedTasks;
@@ -79,13 +80,24 @@ internal class TestInstance
         return ServiceProvider;
     }
 
+    private bool _firstStep = true;
+    private DateTime _testStart;
     internal async Task<StepResult> StepAsync(IServiceProvider serviceProvider)
     {
+        if(_firstStep)
+        {
+            _firstStep = true;
+            _testStart = DateTime.Now;
+        }
+            
         if (_stateMachine.CurrentXceptoState.Equals(_stateMachine.FinalXceptoState))
             return StepResult.Finished;
 
-        if (DateTime.Now - _startTime >= _timeout)
+        if (DateTime.Now - _startTime >= _timeout.Total)
             return StepResult.Canceled;
+        
+        if (DateTime.Now - _testStart >= _timeout.Test)
+            return StepResult.TestCanceled;
 
         await _stateMachine.TryTransition(serviceProvider);
         return StepResult.Continue;
@@ -127,7 +139,7 @@ internal class TestInstance
         loggingProvider.LogDebug("");
     }
 
-    internal TimeSpan GetTimeout() => _timeout;
+    internal TimeoutConfig GetTimeout() => _timeout;
 
     internal Func<IEnumerable<Task>> GetPropagatedTasksSupplier() => _propagatedTasksSupplier;
 }

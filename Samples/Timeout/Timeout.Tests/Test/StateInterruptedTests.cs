@@ -1,6 +1,8 @@
 using Timeout.Tests.Scenarios;
 using Timeout.Tests.States;
 using Xcepto;
+using Xcepto.Config;
+using Xcepto.Exceptions;
 using Xcepto.States;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
@@ -47,9 +49,9 @@ public class StateInterruptedTests
     [Test]
     public void InterruptedShortlyAfterTimeout()
     {
-        Assert.ThrowsAsync<TimeoutException>(async () =>
+        Assert.ThrowsAsync<TotalTimeoutException>(async () =>
         {
-            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), TimeSpan.FromSeconds(1), builder =>
+            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), TimeoutConfig.FromSeconds(1), builder =>
             {
                 builder.AddStep(_state);
             });

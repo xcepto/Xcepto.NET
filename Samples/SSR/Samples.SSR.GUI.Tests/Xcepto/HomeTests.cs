@@ -20,7 +20,7 @@ public class HomeTests
         {
             var ssr = builder.RegisterAdapter(new XceptoSSRAdapter());
 
-            var guiBaseUrl = new Uri($"http://localhost:8082/");
+            var guiBaseUrl = new Uri($"http://localhost:{scenario.GuiPort}/");
             ssr.Get(guiBaseUrl, async response =>
             {
                 var content = await response.Content.ReadAsStringAsync();

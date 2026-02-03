@@ -24,8 +24,8 @@ public abstract class BaseExecutionStrategy
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (_testInstance is null || _testInstance.ServiceProvider is null) 
             return;
-        var requiredService = _testInstance.ServiceProvider.GetRequiredService<ILoggingProvider>();
-        requiredService.Flush();
+        var loggingProvider = _testInstance.ServiceProvider.GetRequiredService<ILoggingProvider>();
+        loggingProvider.Flush();
     }
 
     protected void CheckPropagated(Func<IEnumerable<Task>> propagatedTasksSupplier)

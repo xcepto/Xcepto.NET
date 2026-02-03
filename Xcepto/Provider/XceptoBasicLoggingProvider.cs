@@ -21,4 +21,6 @@ public class XceptoBasicLoggingProvider: ILoggingProvider
             Console.WriteLine(message);
         }
     }
+
+    public void Dispose() => Flush();
 }

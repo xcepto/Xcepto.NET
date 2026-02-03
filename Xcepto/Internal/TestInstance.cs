@@ -94,6 +94,7 @@ internal class TestInstance
     internal async Task CleanupAsync(IServiceProvider serviceProvider)
     {
         var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+        var disposeProvider = serviceProvider.GetRequiredService<DisposeProvider>();
         loggingProvider.LogDebug("---------------------------------");
         loggingProvider.LogDebug("Test completed ✅");
         loggingProvider.LogDebug("");
@@ -107,7 +108,7 @@ internal class TestInstance
             }
             finally
             {
-                loggingProvider?.Flush();
+                disposeProvider?.DisposeAll();
             }
             loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
         }

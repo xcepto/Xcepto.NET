@@ -7,10 +7,7 @@ public class MockedLoggingProvider: ILoggingProvider
 {
     private ConcurrentQueue<string?> _logs = new();
     private List<string> _flushedLogs = new();
-    public void Dispose()
-    {
-        Flush();
-    }
+    public void Dispose() => Flush();
 
     public void LogDebug(string message)
     {

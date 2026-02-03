@@ -52,9 +52,10 @@ public class ScenarioInterruptedTests
     [Test]
     public void InterruptedShortlyAfterTimeout()
     {
+        var timeoutConfig = new TimeoutConfig(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
         Assert.ThrowsAsync<TotalTimeoutException>(async () =>
         {
-            await _xceptoTest.GivenWithStrategies(_syncScenario, TimeoutConfig.FromSeconds(1), _ => { });
+            await _xceptoTest.GivenWithStrategies(_syncScenario, timeoutConfig, _ => { });
         });
     }
 }

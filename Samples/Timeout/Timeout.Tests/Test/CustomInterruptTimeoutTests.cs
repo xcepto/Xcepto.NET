@@ -22,6 +22,7 @@ public class CustomInterruptTimeoutTests
     [Test]
     public async Task LongRunningOperationDoesntFailWithCustomInterrupt()
     {
-        await _xceptoTest.GivenWithStrategies(new LongInitializationScenario(), TimeoutConfig.FromSeconds(3), _ => { });
+        var timeoutConfig = new TimeoutConfig(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(8));
+        await _xceptoTest.GivenWithStrategies(new LongInitializationScenario(), timeoutConfig, _ => { });
     }
 }

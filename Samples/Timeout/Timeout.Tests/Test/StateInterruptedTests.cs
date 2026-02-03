@@ -49,9 +49,10 @@ public class StateInterruptedTests
     [Test]
     public void InterruptedShortlyAfterTimeout()
     {
+        var timeoutConfig = new TimeoutConfig(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
         Assert.ThrowsAsync<TotalTimeoutException>(async () =>
         {
-            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), TimeoutConfig.FromSeconds(1), builder =>
+            await _xceptoTest.GivenWithStrategies(new InstantaneousScenario(), timeoutConfig, builder =>
             {
                 builder.AddStep(_state);
             });

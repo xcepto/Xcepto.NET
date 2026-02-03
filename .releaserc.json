@@ -37,6 +37,12 @@
       {
         "publishCmd": "./release.sh Xcepto.SSR ${nextRelease.version}"
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh Xcepto.Testcontainers ${nextRelease.version}"
+      }
     ]
   ]
 }

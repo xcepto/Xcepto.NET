@@ -24,6 +24,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Xcepto.SSR\Xcepto.SSR.csproj" />
+        <ProjectReference Include="..\..\..\Xcepto.Testcontainers\Xcepto.Testcontainers.csproj" />
         <ProjectReference Include="..\..\..\Xcepto\Xcepto.csproj" />
         <ProjectReference Include="..\Samples.SSR.GUI\Samples.SSR.GUI.csproj" />
     </ItemGroup>

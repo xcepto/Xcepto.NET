@@ -32,4 +32,6 @@ public class LoggingProvider: ILoggingProvider, ILogger
     {
         public void Dispose() { }
     }
+
+    public void Dispose() => Flush();
 }

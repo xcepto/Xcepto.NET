@@ -1,5 +1,6 @@
 using Timeout.Tests.Scenarios;
 using Xcepto;
+using Xcepto.Config;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
 
@@ -21,6 +22,6 @@ public class CustomInterruptTimeoutTests
     [Test]
     public async Task LongRunningOperationDoesntFailWithCustomInterrupt()
     {
-        await _xceptoTest.GivenWithStrategies(new LongInitializationScenario(), TimeSpan.FromSeconds(3), _ => { });
+        await _xceptoTest.GivenWithStrategies(new LongInitializationScenario(), TimeoutConfig.FromSeconds(3), _ => { });
     }
 }

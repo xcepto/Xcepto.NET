@@ -3,6 +3,7 @@ using EnumeratedExecutionTests.Scenario;
 using EnumeratedExecutionTests.Services;
 using Xcepto;
 using Xcepto.Adapters;
+using Xcepto.Config;
 using Xcepto.Strategies.Execution;
 using Xcepto.TestRunner;
 
@@ -17,7 +18,7 @@ public class XceptoTestRunnerTests
         var enumeratedExecutionStrategy = new EnumeratedExecutionStrategy();
         XceptoTestRunner testRunner = new XceptoTestRunner(enumeratedExecutionStrategy);
 
-        testRunner.Given(new ExampleScenario(), TimeSpan.FromSeconds(5), builder =>
+        testRunner.Given(new ExampleScenario(), TimeoutConfig.FromSeconds(5), builder =>
         {
             var serviceAdapter = builder.RegisterAdapter(new GenericServiceAdapter());
                 

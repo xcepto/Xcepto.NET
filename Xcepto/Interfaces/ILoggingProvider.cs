@@ -1,9 +1,10 @@
+using System;
+
 namespace Xcepto.Interfaces
 {
-    public interface ILoggingProvider
+    public interface ILoggingProvider: IDisposable
     {
         void LogDebug(string message);
-
-        public void Flush();
+        void Flush();
     }
 }

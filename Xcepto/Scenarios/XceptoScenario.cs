@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Builder;
 using Xcepto.Data;
+using Xcepto.Interfaces;
 using Xcepto.Internal;
+using Xcepto.Provider;
 
 namespace Xcepto.Scenarios
 {
@@ -43,7 +46,19 @@ namespace Xcepto.Scenarios
             {
                 await function();
             }
-            _serviceProvider = scenarioSetup.ServiceCollection.BuildServiceProvider(); 
+            _serviceProvider = scenarioSetup.ServiceCollection.BuildServiceProvider();
+            var disposeProvider = _serviceProvider.GetRequiredService<DisposeProvider>();
+            foreach (var disposableType in scenarioSetup.Disposables)
+            {
+                var service = _serviceProvider.GetService(disposableType);
+                if (service is null)
+                    throw new Exception($"Disposable type {disposableType.FullName} was not found in service collection");
+
+                if (service is not IDisposable disposable)
+                    throw new Exception($"Type {disposableType.FullName} was not IDisposable");
+                
+                disposeProvider.Add(disposable);
+            }
             _setup = true;
             return _serviceProvider;
         }
@@ -68,7 +83,15 @@ namespace Xcepto.Scenarios
             var scenarioCleanup = Cleanup(new ScenarioCleanupBuilder(_serviceProvider!));
             foreach (var function in scenarioCleanup.DoTasks)
             {
-                await function();
+                try
+                {
+                    await function();
+                }
+                finally
+                {
+                    var disposeProvider = _serviceProvider?.GetRequiredService<DisposeProvider>();
+                    disposeProvider?.DisposeAll();
+                }
             }
         }
     }

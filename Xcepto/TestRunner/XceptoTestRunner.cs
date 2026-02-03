@@ -1,5 +1,6 @@
 using System;
 using Xcepto.Builder;
+using Xcepto.Config;
 using Xcepto.Internal;
 using Xcepto.Scenarios;
 using Xcepto.Strategies.Execution;
@@ -15,7 +16,7 @@ public class XceptoTestRunner
         _executionStrategy = executionStrategy;
     }
 
-    public void Given(XceptoScenario scenario, TimeSpan timeout, Action<TransitionBuilder> builder)
+    public void Given(XceptoScenario scenario, TimeoutConfig timeout, Action<TransitionBuilder> builder)
     {
         TransitionBuilder transitionBuilder = new TransitionBuilder(builder);
         scenario.AssignBuilder(transitionBuilder);

@@ -4,6 +4,7 @@ using Compartments.Tests.Service;
 using Xcepto;
 using Xcepto.Adapters;
 using Xcepto.Builder;
+using Xcepto.Config;
 
 namespace Compartments.Tests.Test;
 
@@ -26,7 +27,7 @@ public class DifferentServiceTests
     [Test]
     public async Task ServicesDontAffectEachOther()
     {
-        await XceptoTest.Given(new CompartmentalizationScenario(), TimeSpan.FromSeconds(3), Definition);
+        await XceptoTest.Given(new CompartmentalizationScenario(), TimeoutConfig.FromSeconds(3), Definition);
     }
     
     [Test]
@@ -34,7 +35,7 @@ public class DifferentServiceTests
     {
         Assert.CatchAsync<TimeoutException>(async () =>
         {
-            await XceptoTest.Given(new SharedSyncScenario(), TimeSpan.FromSeconds(3), Definition);
+            await XceptoTest.Given(new SharedSyncScenario(), TimeoutConfig.FromSeconds(3), Definition);
         });
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Internal;
 
@@ -12,11 +13,23 @@ namespace Xcepto.Strategies.Execution;
 public abstract class BaseExecutionStrategy
 {
     internal TestInstance? _testInstance;
-    protected void CheckTimeout(DateTime deadline)
+
+    private DateTime _testStartTime;
+    protected void StartTest()
+    {
+        _testStartTime = DateTime.Now;
+    }
+    protected void CheckTestTimeout()
+    {
+        FlushLogs();
+        if (DateTime.UtcNow >= (_testStartTime + _testInstance.GetTimeout().Test))
+            throw new TestTimeoutException($"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test}");
+    }
+    protected void CheckTimeouts(DateTime deadline)
     {
         FlushLogs();
         if (DateTime.UtcNow >= deadline)
-            throw new TimeoutException("Test exceeded timeout.");
+            throw new TotalTimeoutException($"Test exceeded TOTAL timeout: {_testInstance.GetTimeout().Total}/");
     }
 
     private void FlushLogs()
@@ -24,8 +37,8 @@ public abstract class BaseExecutionStrategy
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (_testInstance is null || _testInstance.ServiceProvider is null) 
             return;
-        var requiredService = _testInstance.ServiceProvider.GetRequiredService<ILoggingProvider>();
-        requiredService.Flush();
+        var loggingProvider = _testInstance.ServiceProvider.GetRequiredService<ILoggingProvider>();
+        loggingProvider.Flush();
     }
 
     protected void CheckPropagated(Func<IEnumerable<Task>> propagatedTasksSupplier)

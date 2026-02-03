@@ -4,17 +4,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Data;
+using Xcepto.Interfaces;
+using Xcepto.Internal;
+using Xcepto.Provider;
 
 namespace Xcepto.Builder;
 
 public class ScenarioSetupBuilder
 {
-    internal ScenarioSetupBuilder() { }
+    internal ScenarioSetupBuilder()
+    {
+        _serviceCollection = new ServiceCollection()
+            .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
+            .AddSingleton<DisposeProvider>();
+
+        RegisterDisposable<ILoggingProvider>();
+    }
+    private readonly List<Type> _disposables = new();
     private readonly List<Func<Task>> _tasks = new();
-    private IServiceCollection _serviceCollection = new ServiceCollection();
+    private IServiceCollection _serviceCollection;
     public ScenarioSetup Build()
     {
-        return new ScenarioSetup(_tasks.AsEnumerable(), _serviceCollection);
+        return new ScenarioSetup(_tasks.AsEnumerable(), _serviceCollection, _disposables.AsEnumerable());
     }
 
     public ScenarioSetupBuilder AddServices(Func<IServiceCollection, IServiceCollection> services)
@@ -36,6 +47,12 @@ public class ScenarioSetupBuilder
             task();
             return Task.CompletedTask;
         });
+        return this;
+    }
+
+    public ScenarioSetupBuilder RegisterDisposable<T>()
+    {
+        _disposables.Add(typeof(T));
         return this;
     }
 }

@@ -7,11 +7,14 @@ namespace Xcepto.Data;
 
 public class ScenarioSetup
 {
+    public IEnumerable<Type> Disposables { get; }
     public IEnumerable<Func<Task>> DoTasks { get; }
     internal IServiceCollection ServiceCollection { get; }
 
-    internal ScenarioSetup(IEnumerable<Func<Task>> doTasks, IServiceCollection serviceCollection)
+    internal ScenarioSetup(IEnumerable<Func<Task>> doTasks, IServiceCollection serviceCollection,
+        IEnumerable<Type> asEnumerable)
     {
+        Disposables = asEnumerable;
         DoTasks = doTasks;
         ServiceCollection = serviceCollection;
     }

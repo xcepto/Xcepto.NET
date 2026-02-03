@@ -10,10 +10,10 @@ namespace LoggerDisposalTests.Scenarios;
 
 public class CleanupExceptionScenario: XceptoScenario
 {
-    private MockedLoggingProvider _mockedLoggingProvider;
+    private ILoggingProvider _mockedLoggingProvider;
     private string _message;
 
-    public CleanupExceptionScenario(MockedLoggingProvider mockedLoggingProvider, string message)
+    public CleanupExceptionScenario(ILoggingProvider mockedLoggingProvider, string message)
     {
         _message = message;
         _mockedLoggingProvider = mockedLoggingProvider;

@@ -63,6 +63,8 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
             CheckTimeout(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }
+        if (cleanup.IsFaulted)
+            throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
         CheckTimeout(deadline);
         CheckPropagated(propagatedTasksSupplier);
     }

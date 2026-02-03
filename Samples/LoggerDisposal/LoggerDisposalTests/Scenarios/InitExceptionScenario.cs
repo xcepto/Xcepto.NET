@@ -10,10 +10,10 @@ namespace LoggerDisposalTests.Scenarios;
 
 public class InitExceptionScenario: XceptoScenario
 {
-    private MockedLoggingProvider _mockedLoggingProvider;
+    private ILoggingProvider _mockedLoggingProvider;
     private string _message;
 
-    public InitExceptionScenario(MockedLoggingProvider mockedLoggingProvider, string message)
+    public InitExceptionScenario(ILoggingProvider mockedLoggingProvider, string message)
     {
         _message = message;
         _mockedLoggingProvider = mockedLoggingProvider;

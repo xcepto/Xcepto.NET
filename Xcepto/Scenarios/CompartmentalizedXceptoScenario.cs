@@ -37,6 +37,7 @@ public class CompartmentalizedXceptoScenario: XceptoScenario
         CompartmentRepository compartmentRepository = new CompartmentRepository();
         primaryCollection
             .AddSingleton<ILoggingProvider, XceptoBasicLoggingProvider>()
+            .AddSingleton<DisposeProvider>()
             .AddSingleton<CompartmentRepository>(compartmentRepository);
 
         var setupTask = Setup();

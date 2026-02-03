@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Xcepto.Adapters;
-using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.RabbitMQ.Config;
 using Xcepto.RabbitMQ.Utils;

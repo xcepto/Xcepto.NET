@@ -1,8 +1,9 @@
+using System;
 using Microsoft.Extensions.Logging;
 
-namespace Samples.SSR.GUI.Tests.Util;
+namespace Xcepto.Testcontainers.Internal;
 
-public sealed class TestContainersLogFilter : ILogger
+internal sealed class TestContainersLogFilter : ILogger
 {
     private readonly ILogger _inner;
 
@@ -21,7 +22,7 @@ public sealed class TestContainersLogFilter : ILogger
     {
         var message = formatter(state, exception);
 
-        if (message.Contains("regex cache", StringComparison.OrdinalIgnoreCase))
+        if (message.Contains("regex cache"))
             return;
 
         _inner.Log(logLevel, eventId, state, exception, formatter);

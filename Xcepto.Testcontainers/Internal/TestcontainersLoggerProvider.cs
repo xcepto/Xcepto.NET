@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Xcepto.Interfaces;
 
-namespace Samples.SSR.GUI.Tests.Util;
+namespace Xcepto.Testcontainers.Internal;
 
-public class LoggerProvider: ILoggerProvider
+internal sealed class TestcontainersLoggerProvider: ILoggerProvider
 {
     private ILoggingProvider _loggingProvider;
 
-    public LoggerProvider(ILoggingProvider loggingProvider)
+    public TestcontainersLoggerProvider(ILoggingProvider loggingProvider)
     {
         _loggingProvider = loggingProvider;
     }

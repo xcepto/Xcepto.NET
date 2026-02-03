@@ -1,9 +1,10 @@
+using System;
 using Microsoft.Extensions.Logging;
 using Xcepto.Interfaces;
 
-namespace Samples.SSR.GUI.Tests.Util;
+namespace Xcepto.Testcontainers.Internal;
 
-public sealed class SimpleLogger : ILogger
+internal sealed class SimpleLogger : ILogger
 {
     private readonly ILoggingProvider _provider;
 

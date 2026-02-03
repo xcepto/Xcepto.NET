@@ -13,8 +13,15 @@ public class TimeoutConfig
         Test = test;
     }
 
-    public static TimeoutConfig FromSeconds(int i)
+    public static TimeoutConfig FromSeconds(float total, float test)
     {
-        return new TimeoutConfig(TimeSpan.FromSeconds(i), TimeSpan.FromSeconds(i));
+        return new TimeoutConfig(TimeSpan.FromSeconds(total), TimeSpan.FromSeconds(test));
+    }
+    
+    public static TimeoutConfig FromSeconds(float total)
+    {
+        if(total >= 1)
+            return FromSeconds(total, total - 0.5f);
+        return FromSeconds(total, total);
     }
 }

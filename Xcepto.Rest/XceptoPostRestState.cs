@@ -15,9 +15,11 @@ namespace Xcepto.Rest
             object request,
             Type responseType,
             Uri url,
-            Predicate<object> responseValidator
+            Predicate<object> responseValidator,
+            HttpClient client
             ) : base(name)
         {
+            _client = client;
             _url = url;
             _responseType = responseType;
             _request = request;
@@ -29,6 +31,7 @@ namespace Xcepto.Rest
         private Type _responseType;
         private Uri _url;
         private object _response;
+        private HttpClient _client;
 
         public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
         {
@@ -46,14 +49,9 @@ namespace Xcepto.Rest
         {
             ILoggingProvider loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
 
-            HttpClient client = new HttpClient()
-            {
-                Timeout = TimeSpan.FromSeconds(1)
-            };
-
             var requestBody = new StringContent(JsonConvert.SerializeObject(_request), Encoding.UTF8, "application/json");
             loggingProvider.LogDebug($"Send Post request to {_url}");
-            var responseMessage = await client.PostAsync(_url, requestBody);
+            var responseMessage = await _client.PostAsync(_url, requestBody);
         
             if (!responseMessage.IsSuccessStatusCode)
                 throw new Exception($"http request to {_url} faulted");

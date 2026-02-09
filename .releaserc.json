@@ -43,6 +43,12 @@
       {
         "publishCmd": "./release.sh Xcepto.Testcontainers ${nextRelease.version}"
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh Xcepto.NewtonsoftJson ${nextRelease.version}"
+      }
     ]
   ]
 }

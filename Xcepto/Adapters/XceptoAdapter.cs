@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Xcepto.Builder;
+using Xcepto.Interfaces;
 using Xcepto.States;
 
 namespace Xcepto.Adapters
@@ -11,6 +12,7 @@ namespace Xcepto.Adapters
         protected virtual Task Cleanup(IServiceProvider serviceProvider) => Task.CompletedTask;
 
         private TransitionBuilder? _builder;
+        protected IStateMachineBuilder Builder => _builder;
         internal void AssignBuilder(TransitionBuilder builder)
         {
             _builder = builder;

@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.RestAuth.API", "Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.RestAuth.API.Tests", "Samples\RestAuth\Samples.RestAuth.API.Tests\Samples.RestAuth.API.Tests.csproj", "{B10B888E-F849-4269-A28E-96FBC9CC0FB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto.NewtonsoftJson", "Xcepto.NewtonsoftJson\Xcepto.NewtonsoftJson.csproj", "{052757E3-AC79-455E-A5EF-99850720F49D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -158,6 +160,10 @@ Global
 		{B10B888E-F849-4269-A28E-96FBC9CC0FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B10B888E-F849-4269-A28E-96FBC9CC0FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B10B888E-F849-4269-A28E-96FBC9CC0FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{052757E3-AC79-455E-A5EF-99850720F49D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{052757E3-AC79-455E-A5EF-99850720F49D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{052757E3-AC79-455E-A5EF-99850720F49D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{052757E3-AC79-455E-A5EF-99850720F49D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A6392528-51FA-433E-9CB7-40ABD63C251C} = {1C2E2691-2BCB-4F59-9222-DDA2C58EC928}

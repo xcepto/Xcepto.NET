@@ -1,54 +1,61 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 using Xcepto.Adapters;
+using Xcepto.Interfaces;
+using Xcepto.Rest.Builders;
+using Xcepto.Rest.Data;
+using Xcepto.States;
 
 namespace Xcepto.Rest
 {
     public class XceptoRestAdapter: XceptoAdapter
     {
         private HttpClient _client;
+        private Uri? _baseUrl;
+        private ISerializer? _serializer;
 
-        public XceptoRestAdapter(HttpClient client)
+        internal XceptoRestAdapter(HttpClient client, Uri? baseUrl, ISerializer? serializer)
         {
+            _serializer = serializer;
+            _baseUrl = baseUrl;
             _client = client;
         }
-        public XceptoRestAdapter()
+        
+        public RestStateStateBuilder Get(PathString pathString)
         {
-            _client = new HttpClient()
-            {
-                Timeout = TimeSpan.FromSeconds(1)
-            };
-        }
-        public XceptoRestAdapter(string bearerToken)
-        {
-            _client = new HttpClient()
-            {
-                Timeout = TimeSpan.FromSeconds(1),
-                DefaultRequestHeaders =
-                {
-                    Authorization = new AuthenticationHeaderValue("Bearer", bearerToken)
-                }
-            };
+            return new RestStateStateBuilder(Builder, RestHttpMethod.Get, _client, pathString)
+                .InjectBaseUrl(_baseUrl)
+                .InjectSerializer(_serializer);
         }
         
-        public void PostRequest<TRequest, TResponse>(Uri url, TRequest request, Predicate<TResponse> responseValidator)
+        public RestStateStateBuilder Post(PathString pathString)
         {
-            Predicate<object> validator = response =>
-            {
-                if (response is TResponse castedResponse)
-                    return responseValidator(castedResponse);
-                return false;
-            };
-            AddStep(new XceptoPostRestState($"Post{typeof(TRequest).Name}State", 
-                request,
-                typeof(TResponse),
-                url,
-                validator,
-                _client
-            ));
+            return new RestStateStateBuilder(Builder, RestHttpMethod.Post, _client, pathString)
+                .InjectBaseUrl(_baseUrl)
+                .InjectSerializer(_serializer);
+        }
+        
+        public RestStateStateBuilder Patch(PathString pathString)
+        {
+            return new RestStateStateBuilder(Builder, RestHttpMethod.Patch, _client, pathString)
+                .InjectBaseUrl(_baseUrl)
+                .InjectSerializer(_serializer);
+        }
+        
+        public RestStateStateBuilder Put(PathString pathString)
+        {
+            return new RestStateStateBuilder(Builder, RestHttpMethod.Put, _client, pathString)
+                .InjectBaseUrl(_baseUrl)
+                .InjectSerializer(_serializer);
+        }
+        
+        public RestStateStateBuilder Delete(PathString pathString)
+        {
+            return new RestStateStateBuilder(Builder, RestHttpMethod.Delete, _client, pathString)
+                .InjectBaseUrl(_baseUrl)
+                .InjectSerializer(_serializer);
         }
     }
 }

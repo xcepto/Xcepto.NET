@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Authors>themassiveone</Authors>
         <Company>Xcepto</Company>
-        <PackageId>Xcepto.Rest</PackageId>
-        <Description>REST adapter for Xcepto testing library</Description>
-        <PackageTags>bdd;tdd;acceptance;testing;REST;HTTP;Xcepto;adapter</PackageTags>
+        <PackageId>Xcepto.NewtonsoftJson</PackageId>
+        <Description>Newtonsoft Json.NET serialization adapter for Xcepto testing library</Description>
+        <PackageTags>bdd;tdd;acceptance;testing;serialization;Xcepto;adapter</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageProjectUrl>https://xcepto.org</PackageProjectUrl>
@@ -21,13 +21,13 @@
         <None Include="..\README.md" Pack="true" PackagePath="\"/>
         <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
     </ItemGroup>
-    
+
     <ItemGroup>
       <ProjectReference Include="..\Xcepto\Xcepto.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
 </Project>

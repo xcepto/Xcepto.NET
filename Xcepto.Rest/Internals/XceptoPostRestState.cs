@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Interfaces;
+using Xcepto.Internal.Http.Data;
 using Xcepto.Rest.Data;
 using Xcepto.States;
 
@@ -16,13 +17,13 @@ namespace Xcepto.Rest.Internals
             ResponseValidation? responseValidation,
             Uri url,
             HttpClient client,
-            RestHttpMethod method
+            HttpMethodVerb methodVerb
             ) : base(name)
         {
-            if (_method is RestHttpMethod.Get or RestHttpMethod.Delete && _requestBody is not null)
+            if (_methodVerb is HttpMethodVerb.Get or HttpMethodVerb.Delete && _requestBody is not null)
                 throw new ArgumentException("GET/DELETE dont support request body");
 
-            _method = method;
+            _methodVerb = methodVerb;
             _client = client;
             _url = url;
             _responseValidation = responseValidation;
@@ -33,7 +34,7 @@ namespace Xcepto.Rest.Internals
         private readonly ResponseValidation? _responseValidation;
         private readonly Uri _url;
         private readonly HttpClient _client;
-        private readonly RestHttpMethod _method;
+        private readonly HttpMethodVerb _methodVerb;
         private object _response;
 
         public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
@@ -69,25 +70,25 @@ namespace Xcepto.Rest.Internals
             loggingProvider.LogDebug($"Send Post request to {_url}");
 
             HttpResponseMessage responseMessage;
-            switch (_method)
+            switch (_methodVerb)
             {
-                case RestHttpMethod.Get:
+                case HttpMethodVerb.Get:
                     responseMessage = await _client.GetAsync(_url);
                     break;
-                case RestHttpMethod.Post:
+                case HttpMethodVerb.Post:
                     responseMessage = await _client.PostAsync(_url, requestBody);
                     break;
-                case RestHttpMethod.Patch:
+                case HttpMethodVerb.Patch:
                     var request = new HttpRequestMessage(new HttpMethod("PATCH"), _url)
                     {
                         Content = requestBody
                     };
                     responseMessage = await _client.SendAsync(request);
                     break;
-                case RestHttpMethod.Put:
+                case HttpMethodVerb.Put:
                     responseMessage = await _client.PutAsync(_url, requestBody);
                     break;
-                case RestHttpMethod.Delete:
+                case HttpMethodVerb.Delete:
                     responseMessage = await _client.DeleteAsync(_url);
                     break;
                 default:

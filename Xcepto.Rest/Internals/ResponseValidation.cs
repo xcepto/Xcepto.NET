@@ -2,7 +2,7 @@ using System;
 
 namespace Xcepto.Rest.Data;
 
-public class ResponseValidation
+internal class ResponseValidation
 {
     public ResponseValidation(Type responseType, Predicate<object> validationMethod, Func<string, object> deserializationMethod)
     {

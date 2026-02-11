@@ -40,12 +40,6 @@ jobs:
           name: .NET Tests
           path: "**/test-results.trx"
           reporter: dotnet-trx
-
-
-      - name: stop services
-        run: |
-          cd Samples/Shopping && docker compose -f docker-compose.yaml down
-          
           
   release:
     runs-on: ubuntu-latest

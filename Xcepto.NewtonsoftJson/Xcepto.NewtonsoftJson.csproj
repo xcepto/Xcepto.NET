@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <Authors>themassiveone</Authors>
         <Company>Xcepto</Company>
-        <PackageId>Xcepto.SSR</PackageId>
-        <Description>SSR adapter for Xcepto testing library</Description>
-        <PackageTags>bdd;tdd;acceptance;testing;SSR;HTTP;Xcepto;adapter</PackageTags>
+        <PackageId>Xcepto.NewtonsoftJson</PackageId>
+        <Description>Newtonsoft Json.NET serialization adapter for Xcepto testing library</Description>
+        <PackageTags>bdd;tdd;acceptance;testing;serialization;Xcepto;adapter</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageProjectUrl>https://xcepto.org</PackageProjectUrl>
@@ -23,8 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Internal\Xcepto.Internal.Http\Xcepto.Internal.Http.csproj" />
-        <ProjectReference Include="..\Xcepto\Xcepto.csproj" />
+      <ProjectReference Include="..\Xcepto\Xcepto.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
 </Project>

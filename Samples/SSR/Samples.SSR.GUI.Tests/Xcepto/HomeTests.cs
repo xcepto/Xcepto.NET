@@ -7,6 +7,7 @@ using Xcepto;
 using Xcepto.Config;
 using Xcepto.Interfaces;
 using Xcepto.SSR;
+using Xcepto.SSR.Extensions;
 
 namespace Samples.SSR.GUI.Tests.Xcepto;
 
@@ -23,14 +24,12 @@ public class HomeTests
         );
         await XceptoTest.Given(scenario, timeoutConfig, builder =>
         {
-            var ssr = builder.RegisterAdapter(new XceptoSSRAdapter());
+            var ssr = builder.SsrAdapterBuilder()
+                .WithBaseUrl(new Uri($"http://localhost:{scenario.GuiPort}"))
+                .Build();
 
-            var guiBaseUrl = new Uri($"http://localhost:{scenario.GuiPort}/");
-            ssr.Get(guiBaseUrl, async response =>
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return content.Contains("Welcome");
-            });
+            ssr.Get("/")
+                .AssertThatResponseContentString(Does.Contain("Welcome"));
         });
     }
 }

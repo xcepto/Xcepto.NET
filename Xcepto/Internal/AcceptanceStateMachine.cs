@@ -19,11 +19,6 @@ namespace Xcepto.Internal
             _currentXceptoState.NextXceptoState = newState;
             _currentXceptoState = newState;
         }
-        
-        internal string GetStatus()
-        {
-            return _currentXceptoState.Name;
-        }
 
         readonly XceptoState _startXceptoState;
         XceptoState _currentXceptoState;

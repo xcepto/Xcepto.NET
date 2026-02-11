@@ -17,19 +17,31 @@ public abstract class BaseExecutionStrategy
     private DateTime _testStartTime;
     protected void StartTest()
     {
-        _testStartTime = DateTime.Now;
+        _testStartTime = DateTime.UtcNow;
     }
     protected void CheckTestTimeout()
     {
         FlushLogs();
         if (DateTime.UtcNow >= (_testStartTime + _testInstance.GetTimeout().Test))
-            throw new TestTimeoutException($"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test}");
+        {
+            var failingResult = _testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
+            var timeoutMessage = $"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test}";
+            if(failingResult is null)
+                throw new TestTimeoutException(timeoutMessage);
+            throw new TestTimeoutException(timeoutMessage, new AssertionException(failingResult.FailureDescription));
+        }
     }
     protected void CheckTimeouts(DateTime deadline)
     {
         FlushLogs();
         if (DateTime.UtcNow >= deadline)
-            throw new TotalTimeoutException($"Test exceeded TOTAL timeout: {_testInstance.GetTimeout().Total}/");
+        {
+            var failingResult = _testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
+            var timeoutMessage = $"Test exceeded TOTAL timeout: {_testInstance.GetTimeout().Total}";
+            if(failingResult is null)
+                throw new TotalTimeoutException(timeoutMessage);
+            throw new TotalTimeoutException(timeoutMessage, new AssertionException(failingResult.FailureDescription));
+        }
     }
 
     private void FlushLogs()

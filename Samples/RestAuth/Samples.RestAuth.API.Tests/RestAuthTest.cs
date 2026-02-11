@@ -1,10 +1,14 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Samples.RestAuth.API.Requests;
 using Samples.RestAuth.API.Responses;
 using Samples.RestAuth.API.Tests.Scenarios;
 using Xcepto;
 using Xcepto.Config;
+using Xcepto.NewtonsoftJson;
 using Xcepto.Rest;
+using Xcepto.Rest.Extensions;
 
 namespace Samples.RestAuth.API.Tests;
 
@@ -25,12 +29,22 @@ public class RestAuthTest
         var scenario = new MockedTokenScenario(tokenComponents.hashed);
         await XceptoTest.Given(scenario, timeoutConfig, builder =>
         {
-            var restAdapter = builder.RegisterAdapter(new XceptoRestAdapter(tokenComponents.encoded));
+            var restAdapter = builder.RestAdapterBuilder()
+                .WithHttpClient(new HttpClient()
+                {
+                    DefaultRequestHeaders =
+                    {
+                        Authorization = new AuthenticationHeaderValue("Bearer", tokenComponents.encoded)
+                    }
+                })
+                .WithBaseUrl(new Uri($"http://localhost:{scenario.ApiPort}"))
+                .WithSerializer(new NewtonsoftSerializer())
+                .Build();
             
-            restAdapter.PostRequest<AuthenticatedTestRequest, AuthenticatedTestResponse>(
-                new Uri($"http://localhost:{scenario.ApiPort}/api/authenticated"),
-                new AuthenticatedTestRequest(),
-                _ => true);
+            restAdapter.Post("/api/authenticated")
+                .WithCustomName("Post to /api/authenticated")
+                .WithRequestBody(new AuthenticatedTestRequest())
+                .AssertThatDeserializedResponse<AuthenticatedTestResponse>(Is.Not.Null);
         });
     }
 

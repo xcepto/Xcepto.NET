@@ -1,24 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Interfaces;
 using Xcepto.Internal.Http.Data;
+using Xcepto.Internal.Http.States;
 using Xcepto.Rest.Data;
 using Xcepto.States;
 
 namespace Xcepto.Rest.Internals
 {
-    internal class XceptoPostRestState : XceptoState
+    internal class XceptoRestState : XceptoHttpState
     {
-        public XceptoPostRestState(string name, 
+        public XceptoRestState(string name, 
             RequestBody? requestBody,
-            ResponseValidation? responseValidation,
             Uri url,
             HttpClient client,
-            HttpMethodVerb methodVerb
-            ) : base(name)
+            HttpMethodVerb methodVerb,
+            bool retry,
+            IEnumerable<HttpResponseAssertion> assertions
+            ) : base(name, assertions, retry)
         {
             if (_methodVerb is HttpMethodVerb.Get or HttpMethodVerb.Delete && _requestBody is not null)
                 throw new ArgumentException("GET/DELETE dont support request body");
@@ -26,33 +29,15 @@ namespace Xcepto.Rest.Internals
             _methodVerb = methodVerb;
             _client = client;
             _url = url;
-            _responseValidation = responseValidation;
             _requestBody = requestBody;
         }
 
         private readonly RequestBody? _requestBody;
-        private readonly ResponseValidation? _responseValidation;
         private readonly Uri _url;
         private readonly HttpClient _client;
         private readonly HttpMethodVerb _methodVerb;
-        private object _response;
-
-        public override Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider)
-        {
-            if (_responseValidation is not null)
-            {
-                if (!_responseValidation.ValidationMethod(_response))
-                    throw new Exception("response was not validated successfully");   
-            }
-            return Task.FromResult(true);
-        }
-
-        public override async Task OnEnter(IServiceProvider serviceProvider)
-        {
-            await Execute(serviceProvider);
-        }
         
-        private async Task Execute(IServiceProvider serviceProvider)
+        protected override async Task<HttpResponseMessage> ExecuteRequest(IServiceProvider serviceProvider)
         {
             ILoggingProvider loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
             
@@ -67,44 +52,36 @@ namespace Xcepto.Rest.Internals
                     Encoding.UTF8, "application/json");
             }
             
-            loggingProvider.LogDebug($"Send Post request to {_url}");
+            loggingProvider.LogDebug($"Send {_methodVerb} REST request to {_url}");
 
-            HttpResponseMessage responseMessage;
+            HttpResponseMessage response;
             switch (_methodVerb)
             {
                 case HttpMethodVerb.Get:
-                    responseMessage = await _client.GetAsync(_url);
+                    response = await _client.GetAsync(_url);
                     break;
                 case HttpMethodVerb.Post:
-                    responseMessage = await _client.PostAsync(_url, requestBody);
+                    response = await _client.PostAsync(_url, requestBody);
                     break;
                 case HttpMethodVerb.Patch:
                     var request = new HttpRequestMessage(new HttpMethod("PATCH"), _url)
                     {
                         Content = requestBody
                     };
-                    responseMessage = await _client.SendAsync(request);
+                    response = await _client.SendAsync(request);
                     break;
                 case HttpMethodVerb.Put:
-                    responseMessage = await _client.PutAsync(_url, requestBody);
+                    response = await _client.PutAsync(_url, requestBody);
                     break;
                 case HttpMethodVerb.Delete:
-                    responseMessage = await _client.DeleteAsync(_url);
+                    response = await _client.DeleteAsync(_url);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        
-            if (!responseMessage.IsSuccessStatusCode)
-                throw new Exception($"http request to {_url} faulted");
-
-            if (_responseValidation is not null)
-            {
-                var responseString = await responseMessage.Content.ReadAsStringAsync();
-                _response = _responseValidation.DeserializationMethod(responseString);
-                if (_response == null) 
-                    throw new Exception($"http request to {_url} did not return a proper response");
-            }
+            return response;
         }
+
+        public override Task OnEnter(IServiceProvider serviceProvider) => Task.CompletedTask;
     }
 }

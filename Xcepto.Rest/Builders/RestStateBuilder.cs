@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Http;
+using NUnit.Framework.Constraints;
 using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Internal.Http.Builders;
@@ -83,6 +84,21 @@ public sealed class RestStateStateBuilder: HttpStateBuilder<RestStateStateBuilde
     
     protected override XceptoState Build()
     {
-        return new XceptoPostRestState(Name, _requestBody, _responseValidation, Url, Client, MethodVerb);
+        return new XceptoRestState(Name, _requestBody, Url, Client, MethodVerb, Retry, ResponseAssertions);
     }
+
+    public RestStateStateBuilder AssertThatDeserializedResponse<TResponse>(
+        Func<TResponse, object> selector, IResolveConstraint constraint) =>
+        AssertThatResponse(async responseMessage =>
+        {
+            if(_serializer is null)
+                throw new SerializationException("No serializer defined");
+            var content = await responseMessage.Content.ReadAsStringAsync();
+            var deserialized = _serializer.Deserialize<TResponse>(content);
+            return selector(deserialized);
+        }, constraint);
+    
+    public RestStateStateBuilder AssertThatDeserializedResponse<TResponse>(IResolveConstraint constraint) 
+        where TResponse: notnull =>
+        AssertThatDeserializedResponse<TResponse>(x => x, constraint);
 }

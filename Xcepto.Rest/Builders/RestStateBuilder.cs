@@ -15,7 +15,6 @@ namespace Xcepto.Rest.Builders;
 public sealed class RestStateStateBuilder: HttpStateBuilder<RestStateStateBuilder>
 {
     private RequestBody? _requestBody;
-    private ResponseValidation? _responseValidation;
     private ISerializer? _serializer;
 
 
@@ -42,37 +41,6 @@ public sealed class RestStateStateBuilder: HttpStateBuilder<RestStateStateBuilde
     {
         _requestBody = new RequestBody(typeof(TRequestBody), requestBody, 
             o => customSerialization((TRequestBody)o));
-        return this;
-    }
-    
-    public RestStateStateBuilder WithResponseValidation<TResponseBody>(Predicate<TResponseBody> predicate)
-    {
-        _responseValidation = new ResponseValidation(typeof(TResponseBody),
-            o => predicate((TResponseBody)o),
-            s =>
-            {
-                if (_serializer is null)
-                    throw new SerializationException("No serializer defined");
-                var deserialized = _serializer.Deserialize<TResponseBody>(s);
-                if (deserialized is null)
-                    throw new SerializationException($"Could not deserialize string to {typeof(TResponseBody).FullName} properly: {s}");
-                return deserialized;
-            });
-        return this;
-    }
-    
-    public RestStateStateBuilder WithResponseValidation<TResponseBody>(Predicate<TResponseBody> predicate, 
-        Func<string, TResponseBody> customDeserialization)
-    {
-        _responseValidation = new ResponseValidation(typeof(TResponseBody),
-            o => predicate((TResponseBody)o),
-            s =>
-            {
-                var deserialized = customDeserialization(s);
-                if (deserialized is null)
-                    throw new SerializationException($"Could not deserialize string to {typeof(TResponseBody).FullName} properly: {s}");
-                return deserialized;
-            });
         return this;
     }
     

@@ -8,9 +8,9 @@
 
           <!-- Exclude entire assemblies (projects) -->
           <Exclude>
-            [Samples.Rest.API]*
-            [Samples.SSR.GUI]*
+            [Samples.Rest.API]*,[Samples.SSR.GUI]*
           </Exclude>
+          
 
         </Configuration>
       </DataCollector>

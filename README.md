@@ -1,6 +1,7 @@
 # Xcepto.NET
 
-[![Xcepto .NET release pipeline](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml/badge.svg)](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml)
+[![test pipeline](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml/badge.svg)](https://github.com/xcepto/Xcepto.NET/actions/workflows/cd.yaml)
+[![codecov](https://codecov.io/gh/xcepto/Xcepto.NET/graph/badge.svg?token=LG0UCC95K9)](https://codecov.io/gh/xcepto/Xcepto.NET)
 [![semantic-release: conventional-commits](https://img.shields.io/badge/semantic--release-conventional--commits-e10079?logo=semantic-release)](https://www.conventionalcommits.org/en/v1.0.0/)
 [![dotnet: netstandard2.0](https://img.shields.io/badge/compatibility-%E2%89%A5%20netstandard2.0-5632d5?logo=dotnet)](https://www.nuget.org/packages/Xcepto#supportedframeworks-body-tab)
 

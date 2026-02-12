@@ -22,6 +22,7 @@ jobs:
       - name: run tests
         run: |
           dotnet test \
+            --settings coverlet.runsettings \
             --logger "trx;LogFileName=test-results.trx" \
             --collect:"XPlat Code Coverage"
         env:

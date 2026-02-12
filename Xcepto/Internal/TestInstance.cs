@@ -19,11 +19,11 @@ internal class TestInstance
     private XceptoScenario _scenario;
     private TransitionBuilder _transitionBuilder;
 
-    private AcceptanceStateMachine? _stateMachine;
     private IEnumerable<XceptoState>? _states;
     private IEnumerable<XceptoAdapter>? _adapters;
     private Func<IEnumerable<Task>>? _propagatedTasksSupplier;
     public IServiceProvider ServiceProvider { get; private set; }
+    public AcceptanceStateMachine? StateMachine { get; private set; }
 
     internal TestInstance(TimeoutConfig timeout, XceptoScenario scenario, TransitionBuilder transitionBuilder)
     {
@@ -44,10 +44,10 @@ internal class TestInstance
         loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         
-        _stateMachine = _transitionBuilder.Build();
+        StateMachine = _transitionBuilder.Build();
         _states = _transitionBuilder.GetStates().ToArray();
         _adapters = _transitionBuilder.GetAdapters().ToArray();
-        if (_stateMachine is null
+        if (StateMachine is null
             || _states is null
             || _adapters is null)
             throw new ArgumentException("State Machine was misconfigured");
@@ -76,7 +76,7 @@ internal class TestInstance
         loggingProvider.LogDebug("---------------------------------");
         
         _startTime = DateTime.Now;
-        await _stateMachine.Start(ServiceProvider);
+        await StateMachine.Start(ServiceProvider);
         return ServiceProvider;
     }
 
@@ -90,7 +90,7 @@ internal class TestInstance
             _testStart = DateTime.Now;
         }
             
-        if (_stateMachine.CurrentXceptoState.Equals(_stateMachine.FinalXceptoState))
+        if (StateMachine.CurrentXceptoState.Equals(StateMachine.FinalXceptoState))
             return StepResult.Finished;
 
         if (DateTime.Now - _startTime >= _timeout.Total)
@@ -99,7 +99,7 @@ internal class TestInstance
         if (DateTime.Now - _testStart >= _timeout.Test)
             return StepResult.TestCanceled;
 
-        await _stateMachine.TryTransition(serviceProvider);
+        await StateMachine.TryTransition(serviceProvider);
         return StepResult.Continue;
     }
 

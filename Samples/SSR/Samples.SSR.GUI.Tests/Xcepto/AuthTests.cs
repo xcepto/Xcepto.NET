@@ -17,16 +17,6 @@ public class AuthTests
         var username = "test@test.com";
         var password = "Test1234!";
         
-        Func<HttpResponseMessage,Task<Action[]>> responseValidator = async response =>
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            return
-            [
-                () => Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK)),
-                () => Assert.That(content, Does.Not.Contain("id=\"errors\""))
-            ];
-        };
-
         var scenario = new SsrGuiScenario();
         var timeoutConfig = new TimeoutConfig(
             TimeSpan.FromSeconds(120), 
@@ -34,19 +24,23 @@ public class AuthTests
         );
         await XceptoTest.Given(scenario, timeoutConfig, builder =>
         {
-            var ssr = builder.RegisterAdapter(new XceptoSSRAdapter());
+            var ssr = builder.SsrAdapterBuilder()
+                .WithBaseUrl(new Uri($"http://localhost:{scenario.GuiPort}"))
+                .Build();
+
+            ssr.Post("/auth/register")
+                .WithFormContent(new RegisterRequest(username, password).ToForm())
+                .AssertThatResponseStatus(Is.EqualTo(HttpStatusCode.OK))
+                .AssertThatResponseContentString(Does.Not.Contain("id=\"errors\""));
             
-            ssr.PostAssertions(new Uri($"http://localhost:{scenario.GuiPort}/auth/register"), 
-                new RegisterRequest(username, password).ToForm(), responseValidator);
-            
-            ssr.PostAssertions(new Uri($"http://localhost:{scenario.GuiPort}/auth/login"), 
-                new LoginRequest(username, password).ToForm(), responseValidator);
-            
-            ssr.Get(new Uri($"http://localhost:{scenario.GuiPort}/"), async response =>
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return content.Contains("Welcome") && content.Contains(username);
-            });
+            ssr.Post("/auth/login")
+                .WithFormContent(new LoginRequest(username, password).ToForm())
+                .AssertThatResponseStatus(Is.EqualTo(HttpStatusCode.OK))
+                .AssertThatResponseContentString(Does.Not.Contain("id=\"errors\""));
+
+            ssr.Get("/")
+                .AssertThatResponseContentString(Does.Contain("Welcome"))
+                .AssertThatResponseContentString(Does.Contain(username));
         });
     }
 }

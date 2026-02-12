@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Xcepto.Builder;
+using Xcepto.Data;
 
 namespace Xcepto.States
 {
@@ -20,6 +21,7 @@ namespace Xcepto.States
 
         public string Name { get; }
         public XceptoState? NextXceptoState { get; set; }
+        public ConditionResult? MostRecentFailingResult { get; set; }
 
         public abstract Task<bool> EvaluateConditionsForTransition(IServiceProvider serviceProvider);
 

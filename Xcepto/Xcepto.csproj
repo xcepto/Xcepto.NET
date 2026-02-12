@@ -26,4 +26,9 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Compile Remove="Interfaces\IStateBuilder.cs" />
+      <Compile Remove="Interfaces\IPromise.cs" />
+    </ItemGroup>
 </Project>

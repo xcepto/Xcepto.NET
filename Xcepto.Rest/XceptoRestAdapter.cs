@@ -24,7 +24,7 @@ namespace Xcepto.Rest
             _client = client;
         }
 
-        private RestStateStateBuilder Inject(RestStateStateBuilder builder, HttpMethodVerb verb, PathString pathString)
+        private RestStateBuilder Inject(RestStateBuilder builder, HttpMethodVerb verb, PathString pathString)
         {
             if(_baseUrl is not null)
                 builder.WithCustomBaseUrl(_baseUrl);
@@ -36,29 +36,29 @@ namespace Xcepto.Rest
             return builder;
         }
         
-        public RestStateStateBuilder Get(PathString pathString)
+        public RestStateBuilder Get(PathString pathString)
         {
-            return Inject(new RestStateStateBuilder(Builder), HttpMethodVerb.Get, pathString);
+            return Inject(new RestStateBuilder(Builder), HttpMethodVerb.Get, pathString);
         }
         
-        public RestStateStateBuilder Post(PathString pathString)
+        public RestStateBuilder Post(PathString pathString)
         {
-            return Inject(new RestStateStateBuilder(Builder), HttpMethodVerb.Post, pathString);
+            return Inject(new RestStateBuilder(Builder), HttpMethodVerb.Post, pathString);
         }
         
-        public RestStateStateBuilder Patch(PathString pathString)
+        public RestStateBuilder Patch(PathString pathString)
         {
-            return Inject(new RestStateStateBuilder(Builder), HttpMethodVerb.Patch, pathString);
+            return Inject(new RestStateBuilder(Builder), HttpMethodVerb.Patch, pathString);
         }
         
-        public RestStateStateBuilder Put(PathString pathString)
+        public RestStateBuilder Put(PathString pathString)
         {
-            return Inject(new RestStateStateBuilder(Builder), HttpMethodVerb.Put, pathString);
+            return Inject(new RestStateBuilder(Builder), HttpMethodVerb.Put, pathString);
         }
         
-        public RestStateStateBuilder Delete(PathString pathString)
+        public RestStateBuilder Delete(PathString pathString)
         {
-            return Inject(new RestStateStateBuilder(Builder), HttpMethodVerb.Delete, pathString);
+            return Inject(new RestStateBuilder(Builder), HttpMethodVerb.Delete, pathString);
         }
     }
 }

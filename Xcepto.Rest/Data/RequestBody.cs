@@ -1,8 +1,8 @@
 using System;
 
-namespace Xcepto.Rest.Internals;
+namespace Xcepto.Rest.Data;
 
-internal class RequestBody
+public class RequestBody
 {
 
     public RequestBody(Type requestType, object requestObject, Func<object, string> serializationMethod)

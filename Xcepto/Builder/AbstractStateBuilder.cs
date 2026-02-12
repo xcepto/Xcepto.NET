@@ -8,9 +8,11 @@ where TBuilder : AbstractStateBuilder<TBuilder>
 {
     private string? _name;
     private bool? _retry;
+    protected IStateMachineBuilder StateMachineBuilder;
 
     protected AbstractStateBuilder(IStateMachineBuilder stateMachineBuilder)
     {
+        StateMachineBuilder = stateMachineBuilder;
         stateMachineBuilder.AddFutureStep(Build);
     }
 

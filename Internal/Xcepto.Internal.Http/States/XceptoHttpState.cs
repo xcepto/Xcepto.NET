@@ -13,9 +13,14 @@ namespace Xcepto.Internal.Http.States
     {
         private IEnumerable<HttpResponseAssertion> _assertions;
         private bool _retry;
+        private Func<HttpResponseMessage, Task> _responseAction;
 
-        protected XceptoHttpState(string name, IEnumerable<HttpResponseAssertion> assertions, bool retry) : base(name)
+        protected XceptoHttpState(string name, 
+            IEnumerable<HttpResponseAssertion> assertions, 
+            bool retry,
+            Func<HttpResponseMessage, Task> responseAction) : base(name)
         {
+            _responseAction = responseAction;
             _retry = retry;
             _assertions = assertions;
         }
@@ -41,8 +46,11 @@ namespace Xcepto.Internal.Http.States
             if (_retry)
             {
                 var response = await ExecuteRequest(serviceProvider);
-                if (await CheckAssertions(response)) 
+                if (await CheckAssertions(response))
+                {
+                    await _responseAction(response);
                     return true;
+                }
                 return false;
             }
             else
@@ -50,8 +58,11 @@ namespace Xcepto.Internal.Http.States
                 var response = await ExecuteRequest(serviceProvider);
                 if (response is null)
                     throw new Exception("Request did not succeed");
-                if (await CheckAssertions(response)) 
+                if (await CheckAssertions(response))
+                {
+                    await _responseAction(response);
                     return true;
+                }
                 return false;
             }
         }

@@ -44,7 +44,8 @@ public class RestAuthTest
             restAdapter.Post("/api/authenticated")
                 .WithCustomName("Post to /api/authenticated")
                 .WithRequestBody(new AuthenticatedTestRequest())
-                .AssertThatDeserializedResponse<AuthenticatedTestResponse>(Is.Not.Null);
+                .WithResponseType<AuthenticatedTestResponse>()
+                .AssertThatResponse(Is.Not.Null);
         });
     }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
-PACKAGE=./$1/$1.csproj
-VERSION=$2
+PACKAGE=$1/$2/$2.csproj
+VERSION=$3
 
 dotnet build $PACKAGE -c Release -p:Version=$VERSION
 dotnet pack $PACKAGE -c Release -p:Version=$VERSION -o ./nupkg

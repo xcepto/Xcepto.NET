@@ -17,31 +17,38 @@
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "./release.sh Xcepto ${nextRelease.version}"
+        "publishCmd": "./release.sh ./ Xcepto ${nextRelease.version}"
       }
     ],
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "./release.sh Xcepto.Rest ${nextRelease.version}"
+        "publishCmd": "./release.sh ./ Xcepto.Rest ${nextRelease.version}"
       }
     ],
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "./release.sh Xcepto.SSR ${nextRelease.version}"
+        "publishCmd": "./release.sh ./ Xcepto.SSR ${nextRelease.version}"
       }
     ],
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "./release.sh Xcepto.Testcontainers ${nextRelease.version}"
+        "publishCmd": "./release.sh ./ Xcepto.Testcontainers ${nextRelease.version}"
       }
     ],
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "./release.sh Xcepto.NewtonsoftJson ${nextRelease.version}"
+        "publishCmd": "./release.sh ./ Xcepto.NewtonsoftJson ${nextRelease.version}"
+      }
+    ],
+    "@semantic-release/github",
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "./release.sh ./Internal Xcepto.Internal.Http ${nextRelease.version}"
       }
     ]
   ]

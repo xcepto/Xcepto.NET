@@ -5,9 +5,9 @@ using Xcepto.States;
 
 namespace Xcepto.Rest.Builders;
 
-public sealed class RestStateBuilder: RestStateBuilder<RestStateBuilder>
+public sealed class RestStateBuilderIdentity: RestStateBuilderIdentity<RestStateBuilderIdentity>
 {
-    internal RestStateBuilder(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder)
+    internal RestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder)
     {
     }
     

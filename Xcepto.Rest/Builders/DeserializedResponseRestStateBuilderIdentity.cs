@@ -4,21 +4,22 @@ using NUnit.Framework.Constraints;
 using Xcepto.Data;
 using Xcepto.Exceptions;
 using Xcepto.Interfaces;
+using Xcepto.Rest.Data;
 using Xcepto.Rest.Internals;
 using Xcepto.States;
 
 namespace Xcepto.Rest.Builders;
 
-public class DeserializedResponseRestStateBuilder<TResponse>: RestStateBuilder<DeserializedResponseRestStateBuilder<TResponse>>
+public class DeserializedResponseRestStateBuilderIdentity<TResponse>: RestStateBuilderIdentity<DeserializedResponseRestStateBuilderIdentity<TResponse>>
 where TResponse: notnull
 {
     private Promise<TResponse>? _promisedResponse;
 
-    public DeserializedResponseRestStateBuilder(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder)
+    public DeserializedResponseRestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity)
     {
     }
 
-    public DeserializedResponseRestStateBuilder<TResponse> AssertThatResponse(
+    public DeserializedResponseRestStateBuilderIdentity<TResponse> AssertThatResponse(
         Func<TResponse, object> selector, IResolveConstraint constraint) =>
         AssertThatResponse(async responseMessage =>
         {
@@ -29,9 +30,14 @@ where TResponse: notnull
             return selector(deserialized);
         }, constraint);
     
-    public DeserializedResponseRestStateBuilder<TResponse> AssertThatResponse(IResolveConstraint constraint) =>
+    public DeserializedResponseRestStateBuilderIdentity<TResponse> AssertThatResponse(IResolveConstraint constraint) =>
         AssertThatResponse(x => x, constraint);
 
+    internal DeserializedResponseRestStateBuilderIdentity<TResponse> InjectRequestBody(RequestBody requestBody)
+    {
+        RequestBody = requestBody;
+        return this;
+    }
 
     public Promise<TResponse> PromiseResponse()
     {

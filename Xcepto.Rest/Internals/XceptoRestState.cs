@@ -48,7 +48,7 @@ namespace Xcepto.Rest.Internals
             }
             else
             {
-                requestBody = new StringContent(_requestBody.SerializationMethod(_requestBody.RequestObject),
+                requestBody = new StringContent(_requestBody.SerializationMethod(_requestBody.RequestObjectPromise()),
                     Encoding.UTF8, "application/json");
             }
             

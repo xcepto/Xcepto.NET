@@ -10,24 +10,24 @@ using Xcepto.States;
 
 namespace Xcepto.SSR.Builders;
 
-public class SsrStateBuilder: HttpStateBuilder<SsrStateBuilder>
+public class SsrStateBuilderIdentity: HttpStateBuilderIdentity<SsrStateBuilderIdentity>
 {
     private Func<HttpContent>? _formContent;
     private Promise<string>? _promise;
 
-    public SsrStateBuilder(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder)
+    public SsrStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder)
     {
     }
 
     protected override string DefaultName => $"SSR {MethodVerb} state";
 
-    public SsrStateBuilder WithFormContent(FormUrlEncodedContent formContent)
+    public SsrStateBuilderIdentity WithFormContent(FormUrlEncodedContent formContent)
     {
         _formContent = () => formContent;
         return this;
     }
     
-    public SsrStateBuilder WithFormContent(Func<FormUrlEncodedContent> formContentProducer)
+    public SsrStateBuilderIdentity WithFormContent(Func<FormUrlEncodedContent> formContentProducer)
     {
         _formContent = formContentProducer;
         return this;

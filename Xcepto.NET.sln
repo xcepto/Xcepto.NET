@@ -43,11 +43,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerDisposalTests", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto.Testcontainers", "Xcepto.Testcontainers\Xcepto.Testcontainers.csproj", "{EE8C57AE-7B11-4D26-8250-FF4C5905FD7C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RestAuth", "RestAuth", "{BEF5440C-B055-4C75-9295-BC18BADD2578}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{BEF5440C-B055-4C75-9295-BC18BADD2578}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.RestAuth.API", "Samples\RestAuth\Samples.RestAuth.API\Samples.RestAuth.API.csproj", "{88DEA142-374E-4EF6-8AE5-3767B1F11E6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Rest.API", "Samples\RestAuth\Samples.Rest.API\Samples.Rest.API.csproj", "{88DEA142-374E-4EF6-8AE5-3767B1F11E6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.RestAuth.API.Tests", "Samples\RestAuth\Samples.RestAuth.API.Tests\Samples.RestAuth.API.Tests.csproj", "{B10B888E-F849-4269-A28E-96FBC9CC0FB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Rest.API.Tests", "Samples\RestAuth\Samples.Rest.API.Tests\Samples.Rest.API.Tests.csproj", "{B10B888E-F849-4269-A28E-96FBC9CC0FB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcepto.NewtonsoftJson", "Xcepto.NewtonsoftJson\Xcepto.NewtonsoftJson.csproj", "{052757E3-AC79-455E-A5EF-99850720F49D}"
 EndProject

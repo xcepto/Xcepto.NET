@@ -5,15 +5,15 @@ namespace Xcepto.Rest.Data;
 public class RequestBody
 {
 
-    public RequestBody(Type requestType, object requestObject, Func<object, string> serializationMethod)
+    public RequestBody(Type requestType, Func<object> requestObjectPromise, Func<object, string> serializationMethod)
     {
         RequestType = requestType;
-        RequestObject = requestObject;
+        RequestObjectPromise = requestObjectPromise;
         SerializationMethod = serializationMethod;
     }
 
     public Type RequestType { get; }
-    public object RequestObject { get; }
+    public Func<object> RequestObjectPromise { get; }
     public Func<object, string> SerializationMethod { get; }
 
 }

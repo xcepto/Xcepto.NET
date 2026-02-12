@@ -7,7 +7,7 @@ using Xcepto.Scenarios;
 using Xcepto.Testcontainers.Extensions;
 using Xcepto.Testcontainers.Interfaces;
 
-namespace Samples.RestAuth.API.Tests.Scenarios;
+namespace Samples.Rest.API.Tests.Scenarios;
 
 public class MockedTokenScenario(byte[] tokenHash) : XceptoScenario
 {
@@ -21,20 +21,21 @@ public class MockedTokenScenario(byte[] tokenHash) : XceptoScenario
     protected override ScenarioInitialization Initialize(ScenarioInitializationBuilder builder) => builder
         .Do(async x =>
         {
+            var identifier = Convert.ToHexString(Guid.NewGuid().ToByteArray());
             var support = x.GetRequiredService<ITestContainerSupport>();
 
             var apiImage = new ImageFromDockerfileBuilder()
                 .WithName("samples-restauth-api:test")
                 .WithCleanUp(false)
                 .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), Path.Combine("Samples", "RestAuth"))
-                .WithDockerfile("Samples.RestAuth.API/Dockerfile")
+                .WithDockerfile("Samples.Rest.API/Dockerfile")
                 .WithLogger(support.CreateLogger("api-image-builder", false))
                 .Build();
 
             await apiImage.CreateAsync();
             
             _api = new ContainerBuilder(apiImage)
-                .WithName("api")
+                .WithName($"api-{identifier}")
                 .WithPortBinding(8080, true)
                 .WithEnvironment("TOKENHASH", Convert.ToHexString(tokenHash))
                 .WithOutputConsumer(support.CreateOutputConsumer("api", true))

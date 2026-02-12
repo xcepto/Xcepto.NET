@@ -20,25 +20,25 @@ public class XceptoSsrAdapter: XceptoAdapter
         _client = httpClient;
     }
 
-    private SsrStateBuilder Inject(SsrStateBuilder builder, PathString pathString, HttpMethodVerb httpMethodVerb)
+    private SsrStateBuilderIdentity Inject(SsrStateBuilderIdentity builderIdentity, PathString pathString, HttpMethodVerb httpMethodVerb)
     {
         if (_baseUrl is not null)
-            builder.WithCustomBaseUrl(_baseUrl);
+            builderIdentity.WithCustomBaseUrl(_baseUrl);
         
-        builder.WithCustomClient(_client);
-        builder.WithPathString(pathString);
-        builder.WithHttpVerb(httpMethodVerb);
+        builderIdentity.WithCustomClient(_client);
+        builderIdentity.WithPathString(pathString);
+        builderIdentity.WithHttpVerb(httpMethodVerb);
 
-        return builder;
+        return builderIdentity;
     }
 
-    public SsrStateBuilder Get(PathString pathString)
+    public SsrStateBuilderIdentity Get(PathString pathString)
     {
-        return Inject(new SsrStateBuilder(Builder), pathString, HttpMethodVerb.Get);
+        return Inject(new SsrStateBuilderIdentity(Builder), pathString, HttpMethodVerb.Get);
     }
     
-    public SsrStateBuilder Post(PathString pathString)
+    public SsrStateBuilderIdentity Post(PathString pathString)
     {
-        return Inject(new SsrStateBuilder(Builder), pathString, HttpMethodVerb.Post);
+        return Inject(new SsrStateBuilderIdentity(Builder), pathString, HttpMethodVerb.Post);
     }
 }

@@ -13,41 +13,34 @@ using Xcepto.States;
 
 namespace Xcepto.Rest.Builders;
 
-public abstract class RestStateBuilder<TBuilder>: HttpStateBuilder<TBuilder>
-where TBuilder: RestStateBuilder<TBuilder>
+public abstract class RestStateBuilderIdentity<TBuilder>: HttpStateBuilderIdentity<TBuilder>
+where TBuilder: RestStateBuilderIdentity<TBuilder>
 {
     protected RequestBody? RequestBody;
     protected ISerializer? Serializer;
 
-    internal RestStateBuilder(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
+    internal RestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
+    internal RestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
 
     protected override string DefaultName => $"REST {MethodVerb} request state to {PathString}";
     
-    public TBuilder WithRequestBody<TRequestBody>(TRequestBody requestBody)
+    public TBuilder WithRequestBody<TRequestBody>(Func<TRequestBody> requestBodyProducer)
     where TRequestBody: notnull
     {
-        RequestBody = new RequestBody(typeof(TRequestBody), requestBody,
-            o =>
-            {
-                if (Serializer is null)
-                    throw new SerializationException("No serializer defined"); 
-                return Serializer.Serialize((TRequestBody)o);
-            });
-        return (TBuilder)this;
+        return WithRequestBody<TRequestBody>(requestBodyProducer, o =>
+        {
+            if (Serializer is null)
+                throw new SerializationException("No serializer defined"); 
+            return Serializer.Serialize((TRequestBody)o);
+        });
     }
     
-    public TBuilder WithRequestBody<TRequestBody>(TRequestBody requestBody, 
+    public TBuilder WithRequestBody<TRequestBody>(Func<TRequestBody> requestBodyProducer, 
         Func<TRequestBody, string> customSerialization)
         where TRequestBody: notnull
     {
-        RequestBody = new RequestBody(typeof(TRequestBody), requestBody, 
+        RequestBody = new RequestBody(typeof(TRequestBody), () => requestBodyProducer(), 
             o => customSerialization((TRequestBody)o));
-        return (TBuilder)this;
-    }
-    
-    public TBuilder WithRequestBody(Type requestType, object requestBody, Func<object, string> customSerialization)
-    {
-        RequestBody = new RequestBody(requestType, requestBody, customSerialization);
         return (TBuilder)this;
     }
     
@@ -57,10 +50,10 @@ where TBuilder: RestStateBuilder<TBuilder>
         return (TBuilder)this;
     }
 
-    public DeserializedResponseRestStateBuilder<TResponse> WithResponseType<TResponse>()
+    public DeserializedResponseRestStateBuilderIdentity<TResponse> WithResponseType<TResponse>()
     where TResponse: notnull
     {
-        var builder = new DeserializedResponseRestStateBuilder<TResponse>(StateMachineBuilder)
+        var builder = new DeserializedResponseRestStateBuilderIdentity<TResponse>(StateMachineBuilder, this)
             .WithRetry(Retry)
             .WithCustomName(Name)
             .WithCustomClient(Client)
@@ -71,7 +64,7 @@ where TBuilder: RestStateBuilder<TBuilder>
         if (Serializer is not null)
             builder.WithSerializer(Serializer);
         if (RequestBody is not null)
-            builder.WithRequestBody(RequestBody.RequestType, RequestBody.RequestObject, RequestBody.SerializationMethod);
+            builder.InjectRequestBody(RequestBody);
         foreach (var pair in QueryArgs)
         {
             builder.AddQueryArgument(pair.Key, pair.Value);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xcepto.Adapters;
 using Xcepto.Interfaces;
@@ -15,7 +16,8 @@ namespace Xcepto.Builder
         private List<XceptoState> _states = new();
         private List<Task> _propagatedTasks = new();
         private Action<TransitionBuilder> _arrange;
-        private List<Func<XceptoState>> _futureStates = new();
+        private List<IStateBuilderIdentity> _futureStates = new();
+        private Dictionary<IStateBuilderIdentity, Func<XceptoState>> _stateProducers = new();
 
         public TransitionBuilder(Action<TransitionBuilder> arrange)
         {
@@ -26,7 +28,9 @@ namespace Xcepto.Builder
 
         public void AddStep(XceptoState newState)
         {
-            _futureStates.Add(() => newState);
+            var stateBuilder = new AnonymousStateBuilderIdentity();
+            _futureStates.Add(stateBuilder);
+            _stateProducers[stateBuilder] = () => newState;
         }
 
         internal AcceptanceStateMachine Build()
@@ -34,7 +38,9 @@ namespace Xcepto.Builder
             _arrange(this);
             foreach (var futureState in _futureStates)
             {
-                var xceptoState = futureState();
+                if (!_stateProducers.TryGetValue(futureState, out var producer) || producer is null)
+                    throw new Exception("StateMachine construction failed: invalid state producer");
+                var xceptoState = producer();
                 xceptoState.AssignBuilder(this);
                 _states.Add(xceptoState);
                 _stateMachine.AddTransition(xceptoState);
@@ -59,9 +65,11 @@ namespace Xcepto.Builder
             _propagatedTasks.Add(task);
         }
 
-        public void AddFutureStep(Func<XceptoState> futureState)
+        public void AddFutureStep(Func<XceptoState> futureState, IStateBuilderIdentity stateBuilderIdentity)
         {
-            _futureStates.Add(futureState);
+            if(!_stateProducers.ContainsKey(stateBuilderIdentity))
+                _futureStates.Add(stateBuilderIdentity);
+            _stateProducers[stateBuilderIdentity] = futureState;
         }
     }
 }

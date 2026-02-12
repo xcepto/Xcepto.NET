@@ -27,7 +27,7 @@
       <ProjectReference Include="..\..\..\Xcepto.NewtonsoftJson\Xcepto.NewtonsoftJson.csproj" />
       <ProjectReference Include="..\..\..\Xcepto.Rest\Xcepto.Rest.csproj" />
       <ProjectReference Include="..\..\..\Xcepto\Xcepto.csproj" />
-      <ProjectReference Include="..\Samples.RestAuth.API\Samples.RestAuth.API.csproj" />
+      <ProjectReference Include="..\Samples.Rest.API\Samples.Rest.API.csproj" />
     </ItemGroup>
 
 </Project>

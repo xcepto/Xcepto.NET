@@ -12,8 +12,8 @@ using Xcepto.Internal.Http.Data;
 
 namespace Xcepto.Internal.Http.Builders
 {
-    public abstract class HttpStateBuilder<TBuilder> : AbstractStateBuilder<TBuilder>
-    where TBuilder: HttpStateBuilder<TBuilder>
+    public abstract class HttpStateBuilderIdentity<TBuilder> : AbstractStateBuilderIdentity<TBuilder>
+    where TBuilder: HttpStateBuilderIdentity<TBuilder>
     {
         
         protected HttpClient Client = new();
@@ -23,7 +23,8 @@ namespace Xcepto.Internal.Http.Builders
         protected readonly List<KeyValuePair<string, string>> QueryArgs = new();
         protected readonly List<HttpResponseAssertion> ResponseAssertions = new();
 
-        protected HttpStateBuilder(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
+        protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
+        protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
         
         /// <summary>
         /// Based on Http Verb idempotency

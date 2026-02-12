@@ -1,6 +1,7 @@
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
-using Samples.RestAuth.API.Responses;
+using Samples.Rest.API.Requests;
+using Samples.Rest.API.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,16 @@ var tokenHashHexString = Environment.GetEnvironmentVariable("TOKENHASH");
 app.MapGet("/api/ping", () =>
 {
     Results.Ok();
+});
+
+
+app.MapGet("/api/A", () => Results.Json(new AResponse(7)));
+
+app.MapPost("/api/B", (BRequest bRequest) =>
+{
+    if(bRequest.Number == 7)
+        return Results.StatusCode(200);
+    return Results.StatusCode(400);
 });
 
 

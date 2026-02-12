@@ -7,7 +7,7 @@ namespace Xcepto.Interfaces;
 
 public interface IStateMachineBuilder
 {
-    public void AddFutureStep(Func<XceptoState> futureState);
+    public void AddFutureStep(Func<XceptoState> futureState, IStateBuilderIdentity stateBuilderIdentity);
 
     public TXceptoAdapter RegisterAdapter<TXceptoAdapter>(TXceptoAdapter adapter)
         where TXceptoAdapter : XceptoAdapter;

@@ -20,11 +20,13 @@ namespace Xcepto.SSR
     {
         public XceptoSsrState(string name, 
             Uri url,
-            HttpContent? requestBody,
+            Func<HttpContent>? requestBody,
             IEnumerable<HttpResponseAssertion> assertions,
             bool retry,
             HttpClient client,
-            HttpMethodVerb methodVerb) : base(name, assertions, retry)
+            HttpMethodVerb methodVerb,
+            Func<HttpResponseMessage, Task> responseAction) 
+            : base(name, assertions, retry, responseAction)
         {
             _methodVerb = methodVerb;
             _requestBody = requestBody;
@@ -34,7 +36,7 @@ namespace Xcepto.SSR
 
         private readonly HttpClient _client; 
         private readonly Uri _url;
-        private readonly HttpContent? _requestBody;
+        private readonly Func<HttpContent>? _requestBody;
 
         private HttpMethodVerb _methodVerb;
 
@@ -42,7 +44,8 @@ namespace Xcepto.SSR
         {
             var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
 
-            HttpContent requestBody = _requestBody ?? new StringContent("", Encoding.Default);
+            HttpContent requestBody = _requestBody is not null ? _requestBody() 
+                : new StringContent("", Encoding.Default);
 
             loggingProvider.LogDebug($"Send {_methodVerb} SSR request to {_url}");
 

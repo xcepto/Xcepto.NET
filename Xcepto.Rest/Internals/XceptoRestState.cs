@@ -14,14 +14,14 @@ namespace Xcepto.Rest.Internals
 {
     internal class XceptoRestState : XceptoHttpState
     {
-        public XceptoRestState(string name, 
+        public XceptoRestState(string name,
             RequestBody? requestBody,
             Uri url,
             HttpClient client,
             HttpMethodVerb methodVerb,
             bool retry,
-            IEnumerable<HttpResponseAssertion> assertions
-            ) : base(name, assertions, retry)
+            IEnumerable<HttpResponseAssertion> assertions, 
+            Func<HttpResponseMessage, Task> responseAction) : base(name, assertions, retry, responseAction)
         {
             if (_methodVerb is HttpMethodVerb.Get or HttpMethodVerb.Delete && _requestBody is not null)
                 throw new ArgumentException("GET/DELETE dont support request body");
@@ -36,7 +36,7 @@ namespace Xcepto.Rest.Internals
         private readonly Uri _url;
         private readonly HttpClient _client;
         private readonly HttpMethodVerb _methodVerb;
-        
+
         protected override async Task<HttpResponseMessage> ExecuteRequest(IServiceProvider serviceProvider)
         {
             ILoggingProvider loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
@@ -48,7 +48,7 @@ namespace Xcepto.Rest.Internals
             }
             else
             {
-                requestBody = new StringContent(_requestBody.SerializationMethod(_requestBody.RequestObject),
+                requestBody = new StringContent(_requestBody.SerializationMethod(_requestBody.RequestObjectPromise()),
                     Encoding.UTF8, "application/json");
             }
             

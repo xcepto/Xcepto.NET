@@ -1,4 +1,4 @@
-namespace Samples.RestAuth.API.Responses;
+namespace Samples.Rest.API.Responses;
 
 public class AuthenticatedTestResponse
 {

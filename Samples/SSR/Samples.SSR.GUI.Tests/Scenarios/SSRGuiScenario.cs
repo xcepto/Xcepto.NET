@@ -3,6 +3,7 @@ using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Samples.SSR.GUI.Tests.Images;
 using Testcontainers.PostgreSql;
 using Xcepto.Builder;
 using Xcepto.Data;
@@ -39,14 +40,6 @@ public class SsrGuiScenario: XceptoScenario
             .WithName($"test-network-{identifier.ToString()}")
             .Build();
         
-        var guiImage = new ImageFromDockerfileBuilder()
-            .WithName("samples-ssr-gui:test")
-            .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), Path.Combine("Samples", "SSR"))
-            .WithDockerfile("Samples.SSR.GUI/Dockerfile")
-            .WithLogger(testContainerSupport.CreateLogger("gui-image-builder"))
-            .Build();
-        await guiImage.CreateAsync();
-        
         _postgresContainer = new PostgreSqlBuilder("postgres:18")
             .WithDatabase("test")
             .WithUsername("test")
@@ -60,7 +53,7 @@ public class SsrGuiScenario: XceptoScenario
             .Build();
         await _postgresContainer.StartAsync();
         
-        _guiContainer = new ContainerBuilder(guiImage)
+        _guiContainer = new ContainerBuilder(await ImageSingleton.CreateApiImageOnce())
             .WithPortBinding(8080, true)
             .WithEnvironment("POSTGRES_HOST", "postgres")
             .WithEnvironment("POSTGRES_PORT", "5432")

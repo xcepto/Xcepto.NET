@@ -63,7 +63,11 @@ namespace Xcepto.Internal.Http.States
                     await _responseAction(response);
                     return true;
                 }
-                return false;
+
+                if (MostRecentFailingResult is null)
+                    throw new Exception("Request did not succeed, unknown error");
+
+                throw new Exception($"Request did not succeed: {MostRecentFailingResult.FailureDescription}");
             }
         }
 

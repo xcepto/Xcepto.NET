@@ -13,6 +13,6 @@ public sealed class RestStateBuilderIdentity: RestStateBuilderIdentity<RestState
     
     protected override XceptoState Build()
     {
-        return new XceptoRestState(Name, RequestBody, Url, Client, MethodVerb, Retry, ResponseAssertions, _ => Task.CompletedTask);
+        return new XceptoRestState(Name, RequestBody, Url, ClientProducer, MethodVerb, Retry, ResponseAssertions, _ => Task.CompletedTask);
     }
 }

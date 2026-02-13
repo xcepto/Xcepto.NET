@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -101,6 +102,21 @@ namespace Xcepto.Internal.Http.Builders
         public TBuilder AssertThatResponseStatus(IResolveConstraint constraint)
         {
             return AssertThatResponse(x => x.StatusCode, constraint);
+        }
+        
+        public TBuilder AssertSuccess()
+        {
+            return AssertThatResponse(x => x.StatusCode, Is.GreaterThanOrEqualTo(HttpStatusCode.OK).And.LessThan(300));
+        }
+        
+        public TBuilder AssertClientFailure()
+        {
+            return AssertThatResponse(x => x.StatusCode, Is.GreaterThanOrEqualTo(HttpStatusCode.BadRequest).And.LessThan(500));
+        }
+        
+        public TBuilder AssertServerFailure()
+        {
+            return AssertThatResponse(x => x.StatusCode, Is.GreaterThanOrEqualTo(HttpStatusCode.InternalServerError).And.LessThan(600));
         }
     
         public TBuilder AssertThatResponseContentString(IResolveConstraint constraint)

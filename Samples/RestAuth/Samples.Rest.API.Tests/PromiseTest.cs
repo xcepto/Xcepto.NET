@@ -31,12 +31,12 @@ public class PromiseTest: BaseTest
 
             var promiseResponse = rest.Get("/api/A")
                 .WithResponseType<AResponse>()
-                .AssertThatResponseStatus(Is.EqualTo(HttpStatusCode.OK))
+                .AssertSuccess()
                 .PromiseResponse();
 
             rest.Post("/api/B")
                 .WithRequestBody(() => new BRequest(promiseResponse.Resolve().Number))
-                .AssertThatResponseStatus(Is.EqualTo(HttpStatusCode.OK));
+                .AssertSuccess();
         });
     }
 }

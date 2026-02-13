@@ -41,7 +41,7 @@ public class SsrStateBuilderIdentity: HttpStateBuilderIdentity<SsrStateBuilderId
     
     protected override XceptoState Build()
     {
-        return new XceptoSsrState(Name, Url, _formContent, ResponseAssertions, Retry, Client, MethodVerb, async response =>
+        return new XceptoSsrState(Name, Url, _formContent, ResponseAssertions, Retry, ClientProducer, MethodVerb, async response =>
         {
             if(_promise is null)
                 return;

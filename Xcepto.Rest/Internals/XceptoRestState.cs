@@ -17,7 +17,7 @@ namespace Xcepto.Rest.Internals
         public XceptoRestState(string name,
             RequestBody? requestBody,
             Uri url,
-            HttpClient client,
+            Func<HttpClient> clientProducer,
             HttpMethodVerb methodVerb,
             bool retry,
             IEnumerable<HttpResponseAssertion> assertions, 
@@ -27,14 +27,14 @@ namespace Xcepto.Rest.Internals
                 throw new ArgumentException("GET/DELETE dont support request body");
 
             _methodVerb = methodVerb;
-            _client = client;
+            _clientProducer = clientProducer;
             _url = url;
             _requestBody = requestBody;
         }
 
         private readonly RequestBody? _requestBody;
         private readonly Uri _url;
-        private readonly HttpClient _client;
+        private readonly Func<HttpClient> _clientProducer;
         private readonly HttpMethodVerb _methodVerb;
 
         protected override async Task<HttpResponseMessage> ExecuteRequest(IServiceProvider serviceProvider)
@@ -54,27 +54,28 @@ namespace Xcepto.Rest.Internals
             
             loggingProvider.LogDebug($"Send {_methodVerb} REST request to {_url}");
 
+            HttpClient client = _clientProducer();
             HttpResponseMessage response;
             switch (_methodVerb)
             {
                 case HttpMethodVerb.Get:
-                    response = await _client.GetAsync(_url);
+                    response = await client.GetAsync(_url);
                     break;
                 case HttpMethodVerb.Post:
-                    response = await _client.PostAsync(_url, requestBody);
+                    response = await client.PostAsync(_url, requestBody);
                     break;
                 case HttpMethodVerb.Patch:
                     var request = new HttpRequestMessage(new HttpMethod("PATCH"), _url)
                     {
                         Content = requestBody
                     };
-                    response = await _client.SendAsync(request);
+                    response = await client.SendAsync(request);
                     break;
                 case HttpMethodVerb.Put:
-                    response = await _client.PutAsync(_url, requestBody);
+                    response = await client.PutAsync(_url, requestBody);
                     break;
                 case HttpMethodVerb.Delete:
-                    response = await _client.DeleteAsync(_url);
+                    response = await client.DeleteAsync(_url);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

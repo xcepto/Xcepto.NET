@@ -1,4 +1,6 @@
 using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework.Constraints;
@@ -35,6 +37,18 @@ where TBuilder: RestStateBuilderIdentity<TBuilder>
         });
     }
     
+    public TBuilder WithBearerTokenClient(Func<string> tokenSelector)
+    {
+        ClientProducer = () => new HttpClient()
+        {
+            DefaultRequestHeaders =
+            {
+                Authorization = new AuthenticationHeaderValue("Bearer", tokenSelector())
+            }
+        };
+        return (TBuilder)this;
+    }
+    
     public TBuilder WithRequestBody<TRequestBody>(Func<TRequestBody> requestBodyProducer, 
         Func<TRequestBody, string> customSerialization)
         where TRequestBody: notnull
@@ -56,7 +70,7 @@ where TBuilder: RestStateBuilderIdentity<TBuilder>
         var builder = new DeserializedResponseRestStateBuilderIdentity<TResponse>(StateMachineBuilder, this)
             .WithRetry(Retry)
             .WithCustomName(Name)
-            .WithCustomClient(Client)
+            .WithCustomClient(ClientProducer)
             .WithHttpVerb(MethodVerb)
             .WithPathString(PathString)
             .WithCustomBaseUrl(Url);

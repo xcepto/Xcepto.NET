@@ -47,7 +47,7 @@ where TResponse: notnull
 
     protected override XceptoState Build()
     {
-        return new XceptoRestState(Name, RequestBody, Url, Client, MethodVerb, Retry, ResponseAssertions, async response =>
+        return new XceptoRestState(Name, RequestBody, Url, ClientProducer, MethodVerb, Retry, ResponseAssertions, async response =>
         {
             if(_promisedResponse is null)
                 return;

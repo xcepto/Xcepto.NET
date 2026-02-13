@@ -17,7 +17,7 @@ namespace Xcepto.Internal.Http.Builders
     where TBuilder: HttpStateBuilderIdentity<TBuilder>
     {
         
-        protected HttpClient Client = new();
+        protected Func<HttpClient> ClientProducer = () => new();
         protected Uri BaseUrl = new("http://localhost:8080");
         protected HttpMethodVerb MethodVerb = HttpMethodVerb.Get;
         protected PathString PathString = "/";
@@ -61,7 +61,13 @@ namespace Xcepto.Internal.Http.Builders
         
         public TBuilder WithCustomClient(HttpClient client)
         {
-            Client = client;
+            ClientProducer = () => client;
+            return (TBuilder)this;
+        }
+        
+        public TBuilder WithCustomClient(Func<HttpClient> clientProducer)
+        {
+            ClientProducer = clientProducer;
             return (TBuilder)this;
         }
 

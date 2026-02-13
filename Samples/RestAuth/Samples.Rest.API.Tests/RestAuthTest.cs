@@ -45,4 +45,33 @@ public class RestAuthTest: BaseTest
                 .AssertThatResponse(Is.Not.Null);
         });
     }
+    
+    
+    [Test]
+    public async Task AuthWithPromisedToken_Works()
+    {
+        var tokenComponents = CreateToken();
+        Console.WriteLine($"Using TOKENHASH={Convert.ToHexString(tokenComponents.hashed)}");
+        Console.WriteLine($"Using TOKEN={tokenComponents.encoded}");
+        
+        TimeoutConfig timeoutConfig = new TimeoutConfig(
+            TimeSpan.FromSeconds(60), 
+            TimeSpan.FromSeconds(10)
+        );
+        var scenario = new MockedTokenScenario(tokenComponents.hashed);
+        await XceptoTest.Given(scenario, timeoutConfig, builder =>
+        {
+            var restAdapter = builder.RestAdapterBuilder()
+                .WithBaseUrl(new Uri($"http://localhost:{scenario.ApiPort}"))
+                .WithSerializer(new NewtonsoftSerializer())
+                .Build();
+            
+            restAdapter.Post("/api/authenticated")
+                .WithCustomName("Post to /api/authenticated")
+                .WithBearerTokenClient(() => tokenComponents.encoded)
+                .WithRequestBody(() => new AuthenticatedTestRequest())
+                .WithResponseType<AuthenticatedTestResponse>()
+                .AssertThatResponse(Is.Not.Null);
+        });
+    }
 }

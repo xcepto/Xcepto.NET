@@ -1,16 +1,8 @@
-﻿using System.Net;
-using System.Text.RegularExpressions;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
-using Microsoft.Extensions.DependencyInjection;
-using Samples.SSR.GUI.Requests;
+﻿using System.Text.RegularExpressions;
 using Samples.SSR.GUI.Tests.Scenarios;
-using Testcontainers.PostgreSql;
 using Xcepto;
 using Xcepto.Config;
-using Xcepto.Interfaces;
 using Xcepto.Internal.Http.Data;
-using Xcepto.SSR;
 using Xcepto.SSR.Extensions;
 
 namespace Samples.SSR.GUI.Tests.Xcepto;
@@ -43,7 +35,7 @@ public class StaticPathTests
                 .WithBaseUrl(new Uri($"http://localhost:{_scenario.GuiPort}"))
                 .Build();
 
-            ssr.Get(() => "/path/validate/get")
+            ssr.Get("/path/validate/get")
                 .AssertSuccess();
         });
     }
@@ -57,7 +49,7 @@ public class StaticPathTests
                 .WithBaseUrl(new Uri($"http://localhost:{_scenario.GuiPort}"))
                 .Build();
 
-            ssr.Post(() => "/path/validate/post")
+            ssr.Post("/path/validate/post")
                 .AssertSuccess();
         });
     }
@@ -71,7 +63,7 @@ public class StaticPathTests
                 .WithBaseUrl(new Uri($"http://localhost:{_scenario.GuiPort}"))
                 .Build();
 
-            ssr.Request(() => "/path/validate/patch", HttpMethodVerb.Patch)
+            ssr.Request("/path/validate/patch", HttpMethodVerb.Patch)
                 .AssertSuccess();
         });
     }
@@ -85,7 +77,7 @@ public class StaticPathTests
                 .WithBaseUrl(new Uri($"http://localhost:{_scenario.GuiPort}"))
                 .Build();
 
-            ssr.Request(() => "/path/validate/put", HttpMethodVerb.Put)
+            ssr.Request("/path/validate/put", HttpMethodVerb.Put)
                 .AssertSuccess();
         });
     }
@@ -99,7 +91,7 @@ public class StaticPathTests
                 .WithBaseUrl(new Uri($"http://localhost:{_scenario.GuiPort}"))
                 .Build();
 
-            ssr.Request(() => "/path/validate/delete", HttpMethodVerb.Delete)
+            ssr.Request("/path/validate/delete", HttpMethodVerb.Delete)
                 .AssertSuccess();
         });
     }

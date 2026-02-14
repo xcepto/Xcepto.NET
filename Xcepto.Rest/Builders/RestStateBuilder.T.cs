@@ -81,7 +81,7 @@ where TBuilder: RestStateBuilderIdentity<TBuilder>
             builder.InjectRequestBody(RequestBody);
         foreach (var pair in QueryArgs)
         {
-            builder.AddQueryArgument(pair.Key, pair.Value);
+            builder.AddQueryArgument(pair);
         }
         foreach (var assertion in ResponseAssertions)
         {

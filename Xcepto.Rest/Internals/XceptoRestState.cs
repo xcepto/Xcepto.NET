@@ -16,7 +16,7 @@ namespace Xcepto.Rest.Internals
     {
         public XceptoRestState(string name,
             RequestBody? requestBody,
-            Uri url,
+            Func<Uri> urlProducer,
             Func<HttpClient> clientProducer,
             HttpMethodVerb methodVerb,
             bool retry,
@@ -28,12 +28,12 @@ namespace Xcepto.Rest.Internals
 
             _methodVerb = methodVerb;
             _clientProducer = clientProducer;
-            _url = url;
+            _urlProducer = urlProducer;
             _requestBody = requestBody;
         }
 
         private readonly RequestBody? _requestBody;
-        private readonly Uri _url;
+        private readonly Func<Uri> _urlProducer;
         private readonly Func<HttpClient> _clientProducer;
         private readonly HttpMethodVerb _methodVerb;
 
@@ -51,31 +51,32 @@ namespace Xcepto.Rest.Internals
                 requestBody = new StringContent(_requestBody.SerializationMethod(_requestBody.RequestObjectPromise()),
                     Encoding.UTF8, "application/json");
             }
-            
-            loggingProvider.LogDebug($"Send {_methodVerb} REST request to {_url}");
+
+            var url = _urlProducer();
+            loggingProvider.LogDebug($"Send {_methodVerb} REST request to {url}");
 
             HttpClient client = _clientProducer();
             HttpResponseMessage response;
             switch (_methodVerb)
             {
                 case HttpMethodVerb.Get:
-                    response = await client.GetAsync(_url);
+                    response = await client.GetAsync(url);
                     break;
                 case HttpMethodVerb.Post:
-                    response = await client.PostAsync(_url, requestBody);
+                    response = await client.PostAsync(url, requestBody);
                     break;
                 case HttpMethodVerb.Patch:
-                    var request = new HttpRequestMessage(new HttpMethod("PATCH"), _url)
+                    var request = new HttpRequestMessage(new HttpMethod("PATCH"), url)
                     {
                         Content = requestBody
                     };
                     response = await client.SendAsync(request);
                     break;
                 case HttpMethodVerb.Put:
-                    response = await client.PutAsync(_url, requestBody);
+                    response = await client.PutAsync(url, requestBody);
                     break;
                 case HttpMethodVerb.Delete:
-                    response = await client.DeleteAsync(_url);
+                    response = await client.DeleteAsync(url);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

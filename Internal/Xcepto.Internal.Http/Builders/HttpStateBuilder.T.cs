@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,10 +19,10 @@ namespace Xcepto.Internal.Http.Builders
     {
         
         protected Func<HttpClient> ClientProducer = () => new();
-        protected Uri BaseUrl = new("http://localhost:8080");
+        protected Func<Uri> BaseUrl = () => new("http://localhost:8080");
         protected HttpMethodVerb MethodVerb = HttpMethodVerb.Get;
-        protected PathString PathString = "/";
-        protected readonly List<KeyValuePair<string, string>> QueryArgs = new();
+        protected Func<PathString> PathString = () => "/";
+        protected readonly List<Func<KeyValuePair<string, string>>> QueryArgs = new();
         protected readonly List<HttpResponseAssertion> ResponseAssertions = new();
 
         protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
@@ -47,15 +48,18 @@ namespace Xcepto.Internal.Http.Builders
         }
 
 
-        protected Uri Url
+        protected Func<Uri> Url
         {
             get
             {
                 if (BaseUrl is null)
                     throw new BuilderException("no Url defined");
-                if (!Uri.TryCreate(BaseUrl, PathString + QueryString.Create(QueryArgs), out var uri))
-                    throw new ArgumentException("Url creation failed");
-                return uri;
+                return () =>
+                {
+                    if (!Uri.TryCreate(BaseUrl(), PathString() + QueryString.Create(QueryArgs.Select(x=> x())), out var uri))
+                        throw new ArgumentException("Url creation failed");
+                    return uri;
+                };
             }
         } 
         
@@ -73,13 +77,25 @@ namespace Xcepto.Internal.Http.Builders
 
         public TBuilder WithCustomBaseUrl(Uri uri)
         {
+            BaseUrl = () => uri;
+            return (TBuilder)this;
+        }
+        
+        public TBuilder WithCustomBaseUrl(Func<Uri> uri)
+        {
             BaseUrl = uri;
             return (TBuilder)this;
         }
     
         public TBuilder AddQueryArgument(string key, string value)
         {
-            QueryArgs.Add(new KeyValuePair<string, string>(key, value));
+            QueryArgs.Add(() => new KeyValuePair<string, string>(key, value));
+            return (TBuilder)this;
+        }
+        
+        public TBuilder AddQueryArgument(Func<KeyValuePair<string, string>> argument)
+        {
+            QueryArgs.Add(argument);
             return (TBuilder)this;
         }
         
@@ -91,7 +107,13 @@ namespace Xcepto.Internal.Http.Builders
         
         public TBuilder WithPathString(PathString pathString)
         {
-            PathString = pathString;
+            PathString = () => pathString;
+            return (TBuilder)this;
+        }
+        
+        public TBuilder WithPathString(Func<PathString> pathStringPromise)
+        {
+            PathString = pathStringPromise;
             return (TBuilder)this;
         }
         

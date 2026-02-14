@@ -44,6 +44,11 @@ app.MapPost("/api/authenticated", (HttpContext httpContext) =>
     return Results.Json(new AuthenticatedTestResponse());
 });
 
+
+app.MapGet("/api/APath", () => Results.Json(new APathResponse("/api/BPath/validate")));
+
+app.MapPost("/api/BPath/validate", (BRequest _) => Results.StatusCode(200));
+
 static byte[] UrlDecode(string s)
 {
     s = s.Replace("-", "+").Replace("_", "/");

@@ -24,7 +24,7 @@ namespace Xcepto.Rest
             _client = client;
         }
 
-        private RestStateBuilderIdentity Inject(RestStateBuilderIdentity builderIdentity, HttpMethodVerb verb, PathString pathString)
+        private RestStateBuilderIdentity Inject(RestStateBuilderIdentity builderIdentity, HttpMethodVerb verb, Func<PathString> pathString)
         {
             if(_baseUrl is not null)
                 builderIdentity.WithCustomBaseUrl(_baseUrl);
@@ -38,25 +38,50 @@ namespace Xcepto.Rest
         
         public RestStateBuilderIdentity Get(PathString pathString)
         {
+            return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Get, () => pathString);
+        }
+        
+        public RestStateBuilderIdentity Get(Func<PathString> pathString)
+        {
             return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Get, pathString);
         }
         
         public RestStateBuilderIdentity Post(PathString pathString)
+        {
+            return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Post, () => pathString);
+        }
+        
+        public RestStateBuilderIdentity Post(Func<PathString> pathString)
         {
             return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Post, pathString);
         }
         
         public RestStateBuilderIdentity Patch(PathString pathString)
         {
+            return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Patch, () => pathString);
+        }
+        
+        public RestStateBuilderIdentity Patch(Func<PathString> pathString)
+        {
             return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Patch, pathString);
         }
         
         public RestStateBuilderIdentity Put(PathString pathString)
         {
+            return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Put, () => pathString);
+        }
+        
+        public RestStateBuilderIdentity Put(Func<PathString> pathString)
+        {
             return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Put, pathString);
         }
         
         public RestStateBuilderIdentity Delete(PathString pathString)
+        {
+            return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Delete, () => pathString);
+        }
+        
+        public RestStateBuilderIdentity Delete(Func<PathString> pathString)
         {
             return Inject(new RestStateBuilderIdentity(Builder), HttpMethodVerb.Delete, pathString);
         }

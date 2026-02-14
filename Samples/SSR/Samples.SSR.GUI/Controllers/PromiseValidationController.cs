@@ -4,7 +4,7 @@ using Samples.SSR.GUI.Requests;
 namespace Samples.SSR.GUI.Controllers;
 
 [Route("validate")]
-public class PromiseValidationController
+public class PromiseValidationController: Controller
 {
     [HttpPost]
     public IActionResult Index(ValidationRequest validationRequest)

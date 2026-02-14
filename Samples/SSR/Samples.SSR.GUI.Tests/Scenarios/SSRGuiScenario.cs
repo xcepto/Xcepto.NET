@@ -46,7 +46,6 @@ public class SsrGuiScenario: XceptoScenario
             .WithPassword("test")
             .WithPortBinding(5432, true)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready -U test -d test"))
-            .WithLogger(testContainerSupport.CreateLogger("postres"))
             .WithNetwork(network)
             .WithOutputConsumer(testContainerSupport.CreateOutputConsumer("postgres", false))
             .WithNetworkAliases("postgres")

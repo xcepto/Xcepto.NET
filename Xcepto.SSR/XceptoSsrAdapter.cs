@@ -20,7 +20,7 @@ public class XceptoSsrAdapter: XceptoAdapter
         _client = httpClient;
     }
 
-    private SsrStateBuilderIdentity Inject(SsrStateBuilderIdentity builderIdentity, PathString pathString, HttpMethodVerb httpMethodVerb)
+    private SsrStateBuilderIdentity Inject(SsrStateBuilderIdentity builderIdentity, Func<PathString> pathString, HttpMethodVerb httpMethodVerb)
     {
         if (_baseUrl is not null)
             builderIdentity.WithCustomBaseUrl(_baseUrl);
@@ -32,12 +32,32 @@ public class XceptoSsrAdapter: XceptoAdapter
         return builderIdentity;
     }
 
+    public SsrStateBuilderIdentity Request(PathString pathString, HttpMethodVerb verb)
+    {
+        return Inject(new SsrStateBuilderIdentity(Builder), () => pathString, verb);
+    }
+    
+    public SsrStateBuilderIdentity Request(Func<PathString> pathString, HttpMethodVerb verb)
+    {
+        return Inject(new SsrStateBuilderIdentity(Builder), pathString, verb);
+    }
+    
     public SsrStateBuilderIdentity Get(PathString pathString)
+    {
+        return Inject(new SsrStateBuilderIdentity(Builder), () => pathString, HttpMethodVerb.Get);
+    }
+    
+    public SsrStateBuilderIdentity Post(PathString pathString)
+    {
+        return Inject(new SsrStateBuilderIdentity(Builder), () => pathString, HttpMethodVerb.Post);
+    }
+    
+    public SsrStateBuilderIdentity Get(Func<PathString> pathString)
     {
         return Inject(new SsrStateBuilderIdentity(Builder), pathString, HttpMethodVerb.Get);
     }
     
-    public SsrStateBuilderIdentity Post(PathString pathString)
+    public SsrStateBuilderIdentity Post(Func<PathString> pathString)
     {
         return Inject(new SsrStateBuilderIdentity(Builder), pathString, HttpMethodVerb.Post);
     }

@@ -44,10 +44,21 @@ app.MapPost("/api/authenticated", (HttpContext httpContext) =>
     return Results.Json(new AuthenticatedTestResponse());
 });
 
+app.MapGet("/api/GetPath", () => Results.Json(new PathResponse("/api/GetPath/validate")));
+app.MapGet("/api/GetPath/validate", () => Results.StatusCode(204));
 
-app.MapGet("/api/APath", () => Results.Json(new APathResponse("/api/BPath/validate")));
+app.MapGet("/api/PostPath", () => Results.Json(new PathResponse("/api/PostPath/validate")));
+app.MapPost("/api/PostPath/validate", () => Results.StatusCode(204));
 
-app.MapPost("/api/BPath/validate", (BRequest _) => Results.StatusCode(200));
+app.MapGet("/api/PatchPath", () => Results.Json(new PathResponse("/api/PatchPath/validate")));
+app.MapPatch("/api/PatchPath/validate", () => Results.StatusCode(204));
+
+app.MapGet("/api/DeletePath", () => Results.Json(new PathResponse("/api/DeletePath/validate")));
+app.MapDelete("/api/DeletePath/validate", () => Results.StatusCode(204));
+
+app.MapGet("/api/PutPath", () => Results.Json(new PathResponse("/api/PutPath/validate")));
+app.MapPut("/api/PutPath/validate", () => Results.StatusCode(204));
+
 
 static byte[] UrlDecode(string s)
 {

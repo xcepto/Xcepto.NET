@@ -4,7 +4,7 @@ namespace Samples.Rest.API.Tests;
 
 public class BaseTest
 {
-    protected (string encoded, byte[] hashed) CreateToken()
+    protected static (string encoded, byte[] hashed) CreateToken()
     {
         byte[] bytes = new byte[32];
         var randomNumberGenerator = RandomNumberGenerator.Create();

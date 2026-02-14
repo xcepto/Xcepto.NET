@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Xcepto.Internal.Http.Builders
         protected Func<Uri> BaseUrl = () => new("http://localhost:8080");
         protected HttpMethodVerb MethodVerb = HttpMethodVerb.Get;
         protected Func<PathString> PathString = () => "/";
-        protected readonly List<KeyValuePair<string, string>> QueryArgs = new();
+        protected readonly List<Func<KeyValuePair<string, string>>> QueryArgs = new();
         protected readonly List<HttpResponseAssertion> ResponseAssertions = new();
 
         protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
@@ -55,7 +56,7 @@ namespace Xcepto.Internal.Http.Builders
                     throw new BuilderException("no Url defined");
                 return () =>
                 {
-                    if (!Uri.TryCreate(BaseUrl(), PathString() + QueryString.Create(QueryArgs), out var uri))
+                    if (!Uri.TryCreate(BaseUrl(), PathString() + QueryString.Create(QueryArgs.Select(x=> x())), out var uri))
                         throw new ArgumentException("Url creation failed");
                     return uri;
                 };
@@ -88,7 +89,13 @@ namespace Xcepto.Internal.Http.Builders
     
         public TBuilder AddQueryArgument(string key, string value)
         {
-            QueryArgs.Add(new KeyValuePair<string, string>(key, value));
+            QueryArgs.Add(() => new KeyValuePair<string, string>(key, value));
+            return (TBuilder)this;
+        }
+        
+        public TBuilder AddQueryArgument(Func<KeyValuePair<string, string>> argument)
+        {
+            QueryArgs.Add(argument);
             return (TBuilder)this;
         }
         

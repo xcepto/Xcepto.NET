@@ -10,16 +10,6 @@ namespace Samples.SSR.GUI.Tests.Xcepto;
 [TestFixture]
 public class StaticPathTests
 {
-    private static string ParsePath(string html)
-    {
-        var regex = new Regex(@"Path:\s*([^<]+)");
-        var match = regex.Match(html);
-
-        if (!match.Success)
-            throw new Exception($"Path not found in response: {html}"); 
-        return match.Groups[1].Value;
-    }
-
     readonly SsrGuiScenario _scenario = new();
     readonly TimeoutConfig _timeoutConfig = new(
         TimeSpan.FromSeconds(120), 

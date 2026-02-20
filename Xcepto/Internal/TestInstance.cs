@@ -82,7 +82,14 @@ internal class TestInstance
         loggingProvider.LogDebug($"State initialized: Start (1/{_states.Count()+2})");
         foreach (var (state, counter) in _states.Select((state, counter) => (state, counter+2)))
         {
-            await state.Initialize(ServiceProvider);
+            try
+            {
+                await state.Initialize(ServiceProvider);
+            }
+            catch (Exception e)
+            {
+                throw new StateInitException($"State failed to initialize: [{state.Name}] ({state.GetType().Name}, state #{counter})").Promote(e);
+            }
             loggingProvider.LogDebug($"State initialized: {state} ({counter}/{_states.Count()+2})");
         }
         loggingProvider.LogDebug($"State initialized: Final ({_states.Count()+2}/{_states.Count()+2})");

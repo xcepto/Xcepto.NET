@@ -51,7 +51,7 @@ public class AdapterCompartmentAccessTests
     [Test]
     public void CompartmentRepositoryDoesNotExist()
     {
-        Assert.CatchAsync<InvalidOperationException>(async () =>
+        Assert.That(async () =>
         {
             await XceptoTest.Given(new SharedSyncScenario(), TimeoutConfig.FromSeconds(3), builder =>
             {
@@ -59,7 +59,7 @@ public class AdapterCompartmentAccessTests
                 compartmentAccessAdapter.JoinedCompartmentExpectation("service1", "service2",
                     (_, _) => true);
             });
-        });
+        }, Throws.InnerException.TypeOf<InvalidOperationException>());
     }
 
     

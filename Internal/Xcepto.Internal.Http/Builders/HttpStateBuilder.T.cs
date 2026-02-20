@@ -28,6 +28,8 @@ namespace Xcepto.Internal.Http.Builders
         protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
         protected HttpStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
         
+        protected override string DefaultName => $"Http {MethodVerb} request to {Url()}";
+        
         /// <summary>
         /// Based on Http Verb idempotency
         /// </summary>

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Adapters;
 using Xcepto.Builder;
 using Xcepto.Config;
+using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Scenarios;
 using Xcepto.States;
@@ -35,12 +36,26 @@ internal class TestInstance
 
     internal async Task<IServiceProvider> InitializeAsync()
     {
-        ServiceProvider = await _scenario.CallSetup();
+        try
+        {
+            ServiceProvider = await _scenario.CallSetup();
+        }
+        catch (Exception e)
+        {
+            throw new ScenarioSetupException($"Scenario setup failed: {_scenario.GetType().Name}", e);
+        }
         var loggingProvider = ServiceProvider.GetRequiredService<ILoggingProvider>();
         loggingProvider.LogDebug("Setting up acceptance test");
         
         loggingProvider.LogDebug("");
-        await _scenario.CallInitialize();
+        try
+        {
+            await _scenario.CallInitialize();
+        }
+        catch (Exception e)
+        {
+            throw new ScenarioInitException($"Scenario initialization failed: {_scenario.GetType().Name}", e);
+        }
         loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         
@@ -126,7 +141,14 @@ internal class TestInstance
         }
         loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
 
-        await _scenario.CallCleanup();
+        try
+        {
+            await _scenario.CallCleanup();
+        }
+        catch (Exception e)
+        {
+            throw new ScenarioCleanupException($"Scenario cleanup failed: {_scenario.GetType().Name}", e);
+        }
         
         loggingProvider.LogDebug("");
         loggingProvider.LogDebug("");

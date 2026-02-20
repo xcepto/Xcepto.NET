@@ -2,4 +2,4 @@ using System;
 
 namespace Xcepto.Exceptions;
 
-public class XceptoStageException(string message): Exception(message);
+public abstract class XceptoStageException(string message): Exception(message);

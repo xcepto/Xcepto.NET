@@ -4,7 +4,7 @@ using Xcepto.Exceptions;
 using Xcepto.Strategies;
 using Xcepto.Strategies.Execution;
 
-namespace Samples.ExceptionDetail.Tests
+namespace Samples.ExceptionDetail.Tests.Test
 {
     [TestFixtureSource(typeof(StrategyCombinations), nameof(StrategyCombinations.AllCombinations))]
     public class ScenarioExceptionTests
@@ -15,11 +15,14 @@ namespace Samples.ExceptionDetail.Tests
             _xceptoTest = new XceptoTest(executionStrategy);
         }
 
-                    
+                            
         [Test]
-        public async Task Test()
+        public void TestCatchInner()
         {
-            await _xceptoTest.GivenWithStrategies(new FailingCleanupScenario(), _ => { });
+            Assert.That(async () =>
+            {
+                await _xceptoTest.GivenWithStrategies(new FailingCleanupScenario(), _ => { });
+            }, Throws.Exception.InnerException.TypeOf<IOException>());
         }
         
             

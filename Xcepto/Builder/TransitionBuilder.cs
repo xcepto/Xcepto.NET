@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xcepto.Adapters;
+using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Internal;
 using Xcepto.States;

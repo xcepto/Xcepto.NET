@@ -4,12 +4,7 @@ using Xcepto.Scenarios;
 
 namespace Samples.ExceptionDetail.Tests.Scenarios;
 
-public class FailingCleanupScenario: XceptoScenario
+public class CleanScenario: XceptoScenario
 {
     protected override ScenarioSetup Setup(ScenarioSetupBuilder builder) => builder.Build();
-
-    protected override ScenarioCleanup Cleanup(ScenarioCleanupBuilder builder)
-    {
-        throw new IOException();
-    }
 }

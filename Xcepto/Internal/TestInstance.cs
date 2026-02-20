@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Adapters;
@@ -10,6 +13,7 @@ using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Scenarios;
 using Xcepto.States;
+using Xcepto.Util;
 
 namespace Xcepto.Internal;
 
@@ -42,7 +46,7 @@ internal class TestInstance
         }
         catch (Exception e)
         {
-            throw new ScenarioSetupException($"Scenario setup failed: {_scenario.GetType().Name}", e);
+            throw new ScenarioSetupException($"Scenario setup failed: {_scenario.GetType().Name}").Promote(e);
         }
         var loggingProvider = ServiceProvider.GetRequiredService<ILoggingProvider>();
         loggingProvider.LogDebug("Setting up acceptance test");
@@ -54,12 +58,19 @@ internal class TestInstance
         }
         catch (Exception e)
         {
-            throw new ScenarioInitException($"Scenario initialization failed: {_scenario.GetType().Name}", e);
+            throw new ScenarioInitException($"Scenario initialization failed: {_scenario.GetType().Name}").Promote(e);
         }
         loggingProvider.LogDebug("Initialized scenario successfully ✅");
         loggingProvider.LogDebug("");
         
-        StateMachine = _transitionBuilder.Build();
+        try
+        {
+            StateMachine = _transitionBuilder.Build();
+        }
+        catch (Exception e)
+        {
+            throw new ArrangeTestException("Failed arranging the test").Promote(e);
+        }
         _states = _transitionBuilder.GetStates().ToArray();
         _adapters = _transitionBuilder.GetAdapters().ToArray();
         if (StateMachine is null
@@ -81,7 +92,14 @@ internal class TestInstance
         loggingProvider.LogDebug("Initializing adapters:");
         foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i+1)))
         {
-            await adapter.CallInitialize(ServiceProvider);
+            try
+            {
+                await adapter.CallInitialize(ServiceProvider);
+            }
+            catch (Exception e)
+            {
+                throw new AdapterInitException($"Adapter #{counter} failed to initialize: {adapter.GetType().Name}").Promote(e);
+            }
             loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
         }
         
@@ -133,6 +151,11 @@ internal class TestInstance
             {
                 await adapter.CallCleanup(serviceProvider);
             }
+            catch (Exception e)
+            {
+                throw new AdapterCleanupException($"Failed to cleanup adapter #{counter}: {adapter.GetType().Name}")
+                    .Promote(e);
+            }
             finally
             {
                 disposeProvider?.DisposeAll();
@@ -147,7 +170,7 @@ internal class TestInstance
         }
         catch (Exception e)
         {
-            throw new ScenarioCleanupException($"Scenario cleanup failed: {_scenario.GetType().Name}", e);
+            throw new ScenarioCleanupException($"Scenario cleanup failed: {_scenario.GetType().Name}").Promote(e);
         }
         
         loggingProvider.LogDebug("");

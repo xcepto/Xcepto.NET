@@ -2,4 +2,4 @@ using System;
 
 namespace Xcepto.Exceptions;
 
-public class ScenarioCleanupException(string message, Exception inner) : XceptoStageException(message, inner);
+public class ScenarioCleanupException(string message) : XceptoStageException(message);

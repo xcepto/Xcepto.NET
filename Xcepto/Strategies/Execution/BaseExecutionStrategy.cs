@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xcepto.Exceptions;
 using Xcepto.Interfaces;
 using Xcepto.Internal;
+using Xcepto.Util;
 
 namespace Xcepto.Strategies.Execution;
 
@@ -25,10 +26,11 @@ public abstract class BaseExecutionStrategy
         if (DateTime.UtcNow >= (_testStartTime + _testInstance.GetTimeout().Test))
         {
             var failingResult = _testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
-            var timeoutMessage = $"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test}";
+            string currentState = _testInstance?.StateMachine?.CurrentXceptoState.Name ?? "";
+            var timeoutMessage = $"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test} during [{currentState}]";
             if(failingResult is null)
                 throw new TestTimeoutException(timeoutMessage);
-            throw new TestTimeoutException(timeoutMessage, new AssertionException(failingResult.FailureDescription));
+            throw new TestTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
         }
     }
     protected void CheckTimeouts(DateTime deadline)
@@ -40,7 +42,7 @@ public abstract class BaseExecutionStrategy
             var timeoutMessage = $"Test exceeded TOTAL timeout: {_testInstance.GetTimeout().Total}";
             if(failingResult is null)
                 throw new TotalTimeoutException(timeoutMessage);
-            throw new TotalTimeoutException(timeoutMessage, new AssertionException(failingResult.FailureDescription));
+            throw new TotalTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
         }
     }
 

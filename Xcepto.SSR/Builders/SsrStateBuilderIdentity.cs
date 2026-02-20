@@ -19,7 +19,7 @@ public class SsrStateBuilderIdentity: HttpStateBuilderIdentity<SsrStateBuilderId
     {
     }
 
-    protected override string DefaultName => $"SSR {MethodVerb} state";
+    protected override string DefaultName => "SSR " + base.DefaultName;
 
     public SsrStateBuilderIdentity WithFormContent(FormUrlEncodedContent formContent)
     {

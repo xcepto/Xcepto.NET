@@ -23,8 +23,8 @@ where TBuilder: RestStateBuilderIdentity<TBuilder>
 
     internal RestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder) : base(stateMachineBuilder) { }
     internal RestStateBuilderIdentity(IStateMachineBuilder stateMachineBuilder, IStateBuilderIdentity stateBuilderIdentity) : base(stateMachineBuilder, stateBuilderIdentity) { }
-
-    protected override string DefaultName => $"REST {MethodVerb} request state to {PathString}";
+    
+    protected override string DefaultName => "REST " + base.DefaultName;
     
     public TBuilder WithRequestBody<TRequestBody>(Func<TRequestBody> requestBodyProducer)
     where TRequestBody: notnull

@@ -33,6 +33,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
         var serviceProvider = init.GetAwaiter().GetResult();
 
         // EXECUTION LOOP
+        StartTest();
         while (true)
         {
             var stepTask = _testInstance.StepAsync(serviceProvider);
@@ -40,9 +41,11 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
             while (!stepTask.IsCompleted)
             {
                 yield return null;
+                CheckTestTimeout();
                 CheckTimeouts(deadline);
                 CheckPropagated(propagatedTasksSupplier);
             }
+            CheckTestTimeout();
             CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
 
@@ -51,6 +54,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 
             // a frame passes
             yield return null;
+            CheckTestTimeout();
             CheckTimeouts(deadline);
             CheckPropagated(propagatedTasksSupplier);
         }

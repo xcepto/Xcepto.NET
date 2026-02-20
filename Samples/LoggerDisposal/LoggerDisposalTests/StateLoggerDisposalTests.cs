@@ -31,17 +31,17 @@ where T: BaseExecutionStrategy, new()
             TimeoutConfig.FromSeconds(5), builder);
         if (_executionStrategy is AsyncExecutionStrategy asyncExecutionStrategy)
         {
-            Assert.ThrowsAsync<DisposalInvokingException>(async () =>
+            Assert.That(async () =>
             {
                 await asyncExecutionStrategy.RunAsync();
-            });
+            }, Throws.InnerException.TypeOf<DisposalInvokingException>());
         }
         else if (_executionStrategy is EnumeratedExecutionStrategy enumeratedExecutionStrategy)
         {
-            Assert.Throws<DisposalInvokingException>(() =>
+            Assert.That(() =>
             {
                 EnumeratedTestRunner.RunEnumerator(enumeratedExecutionStrategy.RunEnumerated());   
-            });
+            }, Throws.InnerException.TypeOf<DisposalInvokingException>());
         }
         
         Assert.That(mockedLoggingProvider.Flushed(_message));

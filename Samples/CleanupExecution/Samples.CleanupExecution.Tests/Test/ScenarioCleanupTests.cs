@@ -32,7 +32,7 @@ public class ScenarioCleanupTests
         Assert.That(async () =>
         {
             await _test.GivenWithStrategies(scenario, _ => { });
-        }, Throws.InstanceOf<XceptoStageException>());
+        }, Throws.InstanceOf<ScenarioInitException>());
         
         Assert.That(scenario.CleanupRan, Is.True);
     }
@@ -45,7 +45,7 @@ public class ScenarioCleanupTests
         Assert.That(async () =>
         {
             await _test.GivenWithStrategies(scenario, _ => { });
-        }, Throws.InstanceOf<XceptoStageException>());
+        }, Throws.InstanceOf<ScenarioInitException>());
         
         Assert.That(scenario.CleanupRan, Is.True);
     }

@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using Xcepto.Data;
 using Xcepto.Internal;
 
 namespace Xcepto.Strategies.Execution;
@@ -30,54 +27,59 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
         CheckPropagated(propagatedTasksSupplier);
         serviceProvider = setup.GetAwaiter().GetResult();
 
-        // INIT
-        var init = testInstance.InitializeAsync(serviceProvider);
-        while (!init.IsCompleted)
+        try
         {
-            await Task.Yield();
+            // INIT
+            var init = testInstance.InitializeAsync(serviceProvider);
+            while (!init.IsCompleted)
+            {
+                await Task.Yield();
+                CheckTimeouts(totalDeadline);
+                CheckPropagated(propagatedTasksSupplier);
+            }
             CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
-        }
-        CheckTimeouts(totalDeadline);
-        CheckPropagated(propagatedTasksSupplier);
-        init.GetAwaiter().GetResult();
+            init.GetAwaiter().GetResult();
 
-        // EXECUTION LOOP
-        StartTest();
-        while (true)
-        {
-            var stepTask = testInstance.StepAsync(serviceProvider);
-
-            while (!stepTask.IsCompleted)
+            // EXECUTION LOOP
+            StartTest();
+            while (true)
             {
+                var stepTask = testInstance.StepAsync(serviceProvider);
+
+                while (!stepTask.IsCompleted)
+                {
+                    await Task.Yield();
+                    CheckTestTimeout();
+                    CheckTimeouts(totalDeadline);
+                    CheckPropagated(propagatedTasksSupplier);
+                }
+                CheckTestTimeout();
+                CheckTimeouts(totalDeadline);
+                CheckPropagated(propagatedTasksSupplier);
+                if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
+                    break;
+
                 await Task.Yield();
                 CheckTestTimeout();
                 CheckTimeouts(totalDeadline);
                 CheckPropagated(propagatedTasksSupplier);
             }
-            CheckTestTimeout();
-            CheckTimeouts(totalDeadline);
-            CheckPropagated(propagatedTasksSupplier);
-            if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
-                break;
-
-            await Task.Yield();
-            CheckTestTimeout();
-            CheckTimeouts(totalDeadline);
-            CheckPropagated(propagatedTasksSupplier);
         }
-        
-        // CLEANUP
-        var cleanup = testInstance.CleanupAsync(serviceProvider);
-        while (!cleanup.IsCompleted)
+        finally
         {
-            await Task.Yield();          
+            // CLEANUP
+            var cleanup = testInstance.CleanupAsync(serviceProvider);
+            while (!cleanup.IsCompleted)
+            {
+                await Task.Yield();          
+                CheckTimeouts(totalDeadline);
+                CheckPropagated(propagatedTasksSupplier);
+            }
+            if (cleanup.IsFaulted)
+                throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
             CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
         }
-        if (cleanup.IsFaulted)
-            throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
-        CheckTimeouts(totalDeadline);
-        CheckPropagated(propagatedTasksSupplier);
     }
 }

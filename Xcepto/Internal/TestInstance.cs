@@ -153,24 +153,27 @@ internal class TestInstance
         loggingProvider.LogDebug("");
         
         loggingProvider.LogDebug("Cleaning up:");
-        foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i + 1)))
+        if (_adapters is not null)
         {
-            try
+            foreach (var (adapter, counter) in _adapters.Select((adapter, i) => (adapter, i + 1)))
             {
-                await adapter.CallCleanup(serviceProvider);
+                try
+                {
+                    await adapter.CallCleanup(serviceProvider);
+                }
+                catch (Exception e)
+                {
+                    throw new AdapterCleanupException($"Failed to cleanup adapter #{counter}: {adapter.GetType().Name}")
+                        .Promote(e);
+                }
+                finally
+                {
+                    disposeProvider?.DisposeAll();
+                }
+                loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
             }
-            catch (Exception e)
-            {
-                throw new AdapterCleanupException($"Failed to cleanup adapter #{counter}: {adapter.GetType().Name}")
-                    .Promote(e);
-            }
-            finally
-            {
-                disposeProvider?.DisposeAll();
-            }
-            loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
+            loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
         }
-        loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
 
         try
         {

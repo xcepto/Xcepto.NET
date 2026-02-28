@@ -29,6 +29,12 @@ public abstract class BaseExecutionStrategy
             var failingResult = testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
             string currentState = testInstance?.StateMachine?.CurrentXceptoState.Name ?? "";
             var timeoutMessage = $"Test exceeded TEST timeout: {testInstance.GetTimeout().Test} during [{currentState}]";
+            if (serviceProvider is not null)
+            {
+                var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+                loggingProvider.LogDebug(timeoutMessage);
+                FlushLogs();
+            }
             if(failingResult is null)
                 throw new TestTimeoutException(timeoutMessage);
             throw new TestTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
@@ -41,6 +47,12 @@ public abstract class BaseExecutionStrategy
         {
             var failingResult = testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
             var timeoutMessage = $"Test exceeded TOTAL timeout: {testInstance.GetTimeout().Total}";
+            if (serviceProvider is not null)
+            {
+                var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+                loggingProvider.LogDebug(timeoutMessage);
+                FlushLogs();
+            }
             if(failingResult is null)
                 throw new TotalTimeoutException(timeoutMessage);
             throw new TotalTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
@@ -65,10 +77,16 @@ public abstract class BaseExecutionStrategy
 
         if (firstFaulted is null)
             return;
-
+        
         // Unwrap AggregateException EXACTLY like before
         var ex = firstFaulted.Exception;
         var inner = ex.InnerException ?? ex;
+        if (serviceProvider is not null)
+        {
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+            loggingProvider.LogDebug($"Propagated task failed: {inner}");
+            FlushLogs();
+        }
         ExceptionDispatchInfo.Capture(inner).Throw();
     }
 

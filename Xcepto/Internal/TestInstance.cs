@@ -60,9 +60,11 @@ internal class TestInstance
         }
         catch (Exception e)
         {
-            throw new ScenarioInitException($"Scenario initialization failed: {_scenario.GetType().Name}").Promote(e);
+            var message = $"Scenario initialization failed: {_scenario.GetType().Name}";
+            loggingProvider.LogDebug(message);
+            throw new ScenarioInitException(message).Promote(e);
         }
-        loggingProvider.LogDebug("Initialized scenario successfully ✅");
+        loggingProvider.LogDebug($"Initialized scenario ({_scenario.GetType().Name}) successfully ✅");
         loggingProvider.LogDebug("");
         
         try
@@ -71,7 +73,9 @@ internal class TestInstance
         }
         catch (Exception e)
         {
-            throw new ArrangeTestException("Failed arranging the test").Promote(e);
+            var message = "Failed arranging the test";
+            loggingProvider.LogDebug(message);
+            throw new ArrangeTestException(message).Promote(e);
         }
         _states = _transitionBuilder.GetStates().ToArray();
         _adapters = _transitionBuilder.GetAdapters().ToArray();
@@ -90,7 +94,9 @@ internal class TestInstance
             }
             catch (Exception e)
             {
-                throw new StateInitException($"State failed to initialize: [{state.Name}] ({state.GetType().Name}, state #{counter})").Promote(e);
+                string message = $"State failed to initialize: [{state.Name}] ({state.GetType().Name}, state #{counter})";
+                loggingProvider.LogDebug(message);
+                throw new StateInitException(message).Promote(e);
             }
             loggingProvider.LogDebug($"State initialized: {state} ({counter}/{_states.Count()+2})");
         }
@@ -107,7 +113,9 @@ internal class TestInstance
             }
             catch (Exception e)
             {
-                throw new AdapterInitException($"Adapter #{counter} failed to initialize: {adapter.GetType().Name}").Promote(e);
+                string message = $"Adapter #{counter} failed to initialize: {adapter.GetType().Name}";
+                loggingProvider.LogDebug(message);
+                throw new AdapterInitException(message).Promote(e);
             }
             loggingProvider.LogDebug($"Adapter initialized: {adapter} ({counter}/{_adapters.Count()})");
         }
@@ -149,9 +157,6 @@ internal class TestInstance
         var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
         var disposeProvider = serviceProvider.GetRequiredService<DisposeProvider>();
         loggingProvider.LogDebug("---------------------------------");
-        loggingProvider.LogDebug("Test completed ✅");
-        loggingProvider.LogDebug("");
-        
         loggingProvider.LogDebug("Cleaning up:");
         if (_adapters is not null)
         {
@@ -163,8 +168,9 @@ internal class TestInstance
                 }
                 catch (Exception e)
                 {
-                    throw new AdapterCleanupException($"Failed to cleanup adapter #{counter}: {adapter.GetType().Name}")
-                        .Promote(e);
+                    string message = $"Failed to cleanup adapter #{counter}: {adapter.GetType().Name}";
+                    loggingProvider.LogDebug(message);
+                    throw new AdapterCleanupException(message).Promote(e);
                 }
                 finally
                 {
@@ -172,16 +178,19 @@ internal class TestInstance
                 }
                 loggingProvider.LogDebug($"Adapter cleanup: {adapter} ({counter}/{_adapters.Count()})");
             }
-            loggingProvider.LogDebug($"All {_adapters.Count()} adapters were successfully cleaned up ✅");
         }
+        loggingProvider.LogDebug($"All {(_adapters is not null ? _adapters.Count() : "0")} adapters were successfully cleaned up ✅");
 
         try
         {
             await _scenario.CallCleanup();
+            loggingProvider.LogDebug($"Scenario ({_scenario.GetType().Name}) was successfully cleaned up ✅");
         }
         catch (Exception e)
         {
-            throw new ScenarioCleanupException($"Scenario cleanup failed: {_scenario.GetType().Name}").Promote(e);
+            string message = $"Scenario cleanup failed: {_scenario.GetType().Name}";
+            loggingProvider.LogDebug(message);
+            throw new ScenarioCleanupException(message).Promote(e);
         }
         
         loggingProvider.LogDebug("");

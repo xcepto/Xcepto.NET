@@ -34,7 +34,7 @@ public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 
         try
         {
-// INIT
+            // INIT
             var init = testInstance.InitializeAsync(serviceProvider);
             while (!init.IsCompleted)
             {

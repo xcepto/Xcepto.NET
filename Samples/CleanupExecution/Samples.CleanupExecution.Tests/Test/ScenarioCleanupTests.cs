@@ -18,7 +18,7 @@ public class ScenarioCleanupTests
     [Test]
     public async Task CleanupHappens_OnSuccessfulRun()
     {
-        TrackableCleanupScenario scenario = new TrackableCleanupScenario();
+        SuccessfulScenario scenario = new SuccessfulScenario();
         await _test.GivenWithStrategies(scenario, _ => { });
         
         Assert.That(scenario.CleanupRan, Is.True);
@@ -27,7 +27,20 @@ public class ScenarioCleanupTests
     [Test]
     public void CleanupHappens_OnFailingScenarioInitDo()
     {
-        FailingInitDoTrackableCleanupScenario scenario = new FailingInitDoTrackableCleanupScenario();
+        FailingInitDoScenario scenario = new FailingInitDoScenario();
+        
+        Assert.That(async () =>
+        {
+            await _test.GivenWithStrategies(scenario, _ => { });
+        }, Throws.InstanceOf<XceptoStageException>());
+        
+        Assert.That(scenario.CleanupRan, Is.True);
+    }
+    
+    [Test]
+    public void CleanupHappens_OnFailingScenarioInitFire()
+    {
+        FailingInitFireScenario scenario = new FailingInitFireScenario();
         
         Assert.That(async () =>
         {

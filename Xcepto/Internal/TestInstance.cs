@@ -27,7 +27,6 @@ internal class TestInstance
     private IEnumerable<XceptoState>? _states;
     private IEnumerable<XceptoAdapter>? _adapters;
     private Func<IEnumerable<Task>>? _propagatedTasksSupplier;
-    public IServiceProvider ServiceProvider { get; private set; }
     public AcceptanceStateMachine? StateMachine { get; private set; }
 
     internal TestInstance(TimeoutConfig timeout, XceptoScenario scenario, TransitionBuilder transitionBuilder)
@@ -38,17 +37,20 @@ internal class TestInstance
         _timeout = timeout;
     }
 
-    internal async Task<IServiceProvider> InitializeAsync()
+    internal async Task<IServiceProvider> SetupAsync()
     {
         try
         {
-            ServiceProvider = await _scenario.CallSetup();
+            return await _scenario.CallSetup();
         }
         catch (Exception e)
         {
             throw new ScenarioSetupException($"Scenario setup failed: {_scenario.GetType().Name}").Promote(e);
         }
-        var loggingProvider = ServiceProvider.GetRequiredService<ILoggingProvider>();
+    }
+    internal async Task InitializeAsync(IServiceProvider serviceProvider)
+    {
+        var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
         loggingProvider.LogDebug("Setting up acceptance test");
         
         loggingProvider.LogDebug("");
@@ -84,7 +86,7 @@ internal class TestInstance
         {
             try
             {
-                await state.Initialize(ServiceProvider);
+                await state.Initialize(serviceProvider);
             }
             catch (Exception e)
             {
@@ -101,7 +103,7 @@ internal class TestInstance
         {
             try
             {
-                await adapter.CallInitialize(ServiceProvider);
+                await adapter.CallInitialize(serviceProvider);
             }
             catch (Exception e)
             {
@@ -116,8 +118,7 @@ internal class TestInstance
         loggingProvider.LogDebug("---------------------------------");
         
         _startTime = DateTime.Now;
-        await StateMachine.Start(ServiceProvider);
-        return ServiceProvider;
+        await StateMachine.Start(serviceProvider);
     }
 
     private bool _firstStep = true;

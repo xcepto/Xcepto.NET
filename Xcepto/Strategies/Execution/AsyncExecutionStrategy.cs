@@ -12,15 +12,26 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
 {
     public async Task RunAsync()
     {
-        if (_testInstance is null)
+        if (testInstance is null)
             throw new Exception("Execution strategy not primed yet");
 
-        var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
-        var timeout = _testInstance.GetTimeout();
+        var propagatedTasksSupplier = testInstance.GetPropagatedTasksSupplier();
+        var timeout = testInstance.GetTimeout();
         var totalDeadline = DateTime.UtcNow + timeout.Total;
 
+        var setup = testInstance.SetupAsync();
+        while (!setup.IsCompleted)
+        {
+            await Task.Yield();
+            CheckTimeouts(totalDeadline);
+            CheckPropagated(propagatedTasksSupplier);
+        }
+        CheckTimeouts(totalDeadline);
+        CheckPropagated(propagatedTasksSupplier);
+        serviceProvider = setup.GetAwaiter().GetResult();
+
         // INIT
-        var init = _testInstance.InitializeAsync();
+        var init = testInstance.InitializeAsync(serviceProvider);
         while (!init.IsCompleted)
         {
             await Task.Yield();
@@ -29,13 +40,13 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
         }
         CheckTimeouts(totalDeadline);
         CheckPropagated(propagatedTasksSupplier);
-        var serviceProvider = init.GetAwaiter().GetResult();;
+        init.GetAwaiter().GetResult();
 
         // EXECUTION LOOP
         StartTest();
         while (true)
         {
-            var stepTask = _testInstance.StepAsync(serviceProvider);
+            var stepTask = testInstance.StepAsync(serviceProvider);
 
             while (!stepTask.IsCompleted)
             {
@@ -55,9 +66,9 @@ public sealed class AsyncExecutionStrategy : BaseExecutionStrategy
             CheckTimeouts(totalDeadline);
             CheckPropagated(propagatedTasksSupplier);
         }
-
+        
         // CLEANUP
-        var cleanup = _testInstance.CleanupAsync(serviceProvider);
+        var cleanup = testInstance.CleanupAsync(serviceProvider);
         while (!cleanup.IsCompleted)
         {
             await Task.Yield();          

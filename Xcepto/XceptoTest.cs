@@ -53,12 +53,7 @@ namespace Xcepto
             return xceptoTest.GivenEnumeratedWithStrategies(scenario, timeout, builder);
         }
 
-        public static IEnumerator GivenEnumerated(XceptoScenario scenario, Action<TransitionBuilder> builder) => 
-            GivenEnumerated(scenario, DefaultTimeout, builder);
-        
-        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, Action<TransitionBuilder> builder) =>
-            GivenEnumeratedWithStrategies(scenario, DefaultTimeout, builder);
-        public IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, TimeoutConfig timeout, Action<TransitionBuilder> builder)
+        private IEnumerator GivenEnumeratedWithStrategies(XceptoScenario scenario, TimeoutConfig timeout, Action<TransitionBuilder> builder)
         {
             if (_executionStrategy is not EnumeratedExecutionStrategy enumeratedExecutionStrategy)
                 throw new ArgumentException("Only enumerated strategy allowed");

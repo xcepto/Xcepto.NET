@@ -11,65 +11,94 @@ namespace Xcepto.Strategies.Execution;
 
 public sealed class EnumeratedExecutionStrategy: BaseExecutionStrategy
 {
+    private DateTime _deadline;
+    private Func<IEnumerable<Task>> _propagatedTasksSupplier;
+
     public IEnumerator RunEnumerated()
     {
-        if (_testInstance is null)
+        if (testInstance is null)
             throw new Exception("Execution strategy not primed yet");
 
-        var propagatedTasksSupplier = _testInstance.GetPropagatedTasksSupplier();
-        var timeout = _testInstance.GetTimeout();
-        var deadline = DateTime.UtcNow + timeout.Total;
+        _propagatedTasksSupplier = testInstance.GetPropagatedTasksSupplier();
+        var timeout = testInstance.GetTimeout();
+        _deadline = DateTime.UtcNow + timeout.Total;
 
-        // INIT
-        var init = _testInstance.InitializeAsync();
-        while (!init.IsCompleted)
+        var setup = testInstance.SetupAsync();
+        while (!setup.IsCompleted)
         {
             yield return null;
-            CheckTimeouts(deadline);
-            CheckPropagated(propagatedTasksSupplier);
+            CheckTimeouts(_deadline);
         }
-        CheckTimeouts(deadline);
-        CheckPropagated(propagatedTasksSupplier);
-        var serviceProvider = init.GetAwaiter().GetResult();
+        CheckTimeouts(_deadline);
+        serviceProvider = setup.GetAwaiter().GetResult();
 
-        // EXECUTION LOOP
-        StartTest();
-        while (true)
+        try
         {
-            var stepTask = _testInstance.StepAsync(serviceProvider);
-
-            while (!stepTask.IsCompleted)
+            // INIT
+            var init = testInstance.InitializeAsync(serviceProvider);
+            while (!init.IsCompleted)
             {
                 yield return null;
-                CheckTestTimeout();
-                CheckTimeouts(deadline);
-                CheckPropagated(propagatedTasksSupplier);
+                CheckTimeouts(_deadline);
+                CheckPropagated(_propagatedTasksSupplier);
             }
-            CheckTestTimeout();
-            CheckTimeouts(deadline);
-            CheckPropagated(propagatedTasksSupplier);
+            CheckTimeouts(_deadline);
+            CheckPropagated(_propagatedTasksSupplier);
+            init.GetAwaiter().GetResult();
 
-            if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
-                break;
+            // EXECUTION LOOP
+            StartTest();
+            while (true)
+            {
+                var stepTask = testInstance.StepAsync(serviceProvider);
 
-            // a frame passes
-            yield return null;
-            CheckTestTimeout();
-            CheckTimeouts(deadline);
-            CheckPropagated(propagatedTasksSupplier);
+                while (!stepTask.IsCompleted)
+                {
+                    yield return null;
+                    CheckTestTimeout();
+                    CheckTimeouts(_deadline);
+                    CheckPropagated(_propagatedTasksSupplier);
+                }
+                CheckTestTimeout();
+                CheckTimeouts(_deadline);
+                CheckPropagated(_propagatedTasksSupplier);
+
+                if (stepTask.GetAwaiter().GetResult() == StepResult.Finished)
+                    break;
+
+                // a frame passes
+                yield return null;
+                CheckTestTimeout();
+                CheckTimeouts(_deadline);
+                CheckPropagated(_propagatedTasksSupplier);
+            }
         }
+        finally
+        {
+            var enumerator = Cleanup();
+            while (enumerator.MoveNext())
+            {
+                CheckTimeouts(_deadline);
+                CheckPropagated(_propagatedTasksSupplier);
+            }
+            CheckTimeouts(_deadline);
+            CheckPropagated(_propagatedTasksSupplier);
+        }
+    }
 
+    private IEnumerator Cleanup()
+    {
         // CLEANUP
-        var cleanup = _testInstance.CleanupAsync(serviceProvider);
+        var cleanup = testInstance.CleanupAsync(serviceProvider);
         while (!cleanup.IsCompleted)
         {
             yield return null;
-            CheckTimeouts(deadline);
-            CheckPropagated(propagatedTasksSupplier);
+            CheckTimeouts(_deadline);
+            CheckPropagated(_propagatedTasksSupplier);
         }
         if (cleanup.IsFaulted)
             throw cleanup.Exception?.InnerExceptions.First() ?? new Exception("cleanup task failed without exception");
-        CheckTimeouts(deadline);
-        CheckPropagated(propagatedTasksSupplier);
+        CheckTimeouts(_deadline);
+        CheckPropagated(_propagatedTasksSupplier);
     }
 }

@@ -13,7 +13,8 @@ namespace Xcepto.Strategies.Execution;
 
 public abstract class BaseExecutionStrategy
 {
-    internal TestInstance? _testInstance;
+    internal TestInstance? testInstance;
+    internal IServiceProvider? serviceProvider;
 
     private DateTime _testStartTime;
     protected void StartTest()
@@ -23,11 +24,17 @@ public abstract class BaseExecutionStrategy
     protected void CheckTestTimeout()
     {
         FlushLogs();
-        if (DateTime.UtcNow >= (_testStartTime + _testInstance.GetTimeout().Test))
+        if (DateTime.UtcNow >= (_testStartTime + testInstance.GetTimeout().Test))
         {
-            var failingResult = _testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
-            string currentState = _testInstance?.StateMachine?.CurrentXceptoState.Name ?? "";
-            var timeoutMessage = $"Test exceeded TEST timeout: {_testInstance.GetTimeout().Test} during [{currentState}]";
+            var failingResult = testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
+            string currentState = testInstance?.StateMachine?.CurrentXceptoState.Name ?? "";
+            var timeoutMessage = $"Test exceeded TEST timeout: {testInstance.GetTimeout().Test} during [{currentState}]";
+            if (serviceProvider is not null)
+            {
+                var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+                loggingProvider.LogDebug(timeoutMessage);
+                FlushLogs();
+            }
             if(failingResult is null)
                 throw new TestTimeoutException(timeoutMessage);
             throw new TestTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
@@ -38,8 +45,14 @@ public abstract class BaseExecutionStrategy
         FlushLogs();
         if (DateTime.UtcNow >= deadline)
         {
-            var failingResult = _testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
-            var timeoutMessage = $"Test exceeded TOTAL timeout: {_testInstance.GetTimeout().Total}";
+            var failingResult = testInstance.StateMachine?.CurrentXceptoState.MostRecentFailingResult;
+            var timeoutMessage = $"Test exceeded TOTAL timeout: {testInstance.GetTimeout().Total}";
+            if (serviceProvider is not null)
+            {
+                var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+                loggingProvider.LogDebug(timeoutMessage);
+                FlushLogs();
+            }
             if(failingResult is null)
                 throw new TotalTimeoutException(timeoutMessage);
             throw new TotalTimeoutException(timeoutMessage).Promote(new AssertionException(failingResult.FailureDescription));
@@ -49,9 +62,9 @@ public abstract class BaseExecutionStrategy
     private void FlushLogs()
     {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (_testInstance is null || _testInstance.ServiceProvider is null) 
+        if (testInstance is null || serviceProvider is null) 
             return;
-        var loggingProvider = _testInstance.ServiceProvider.GetRequiredService<ILoggingProvider>();
+        var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
         loggingProvider.Flush();
     }
 
@@ -64,15 +77,21 @@ public abstract class BaseExecutionStrategy
 
         if (firstFaulted is null)
             return;
-
+        
         // Unwrap AggregateException EXACTLY like before
         var ex = firstFaulted.Exception;
         var inner = ex.InnerException ?? ex;
+        if (serviceProvider is not null)
+        {
+            var loggingProvider = serviceProvider.GetRequiredService<ILoggingProvider>();
+            loggingProvider.LogDebug($"Propagated task failed: {inner}");
+            FlushLogs();
+        }
         ExceptionDispatchInfo.Capture(inner).Throw();
     }
 
     internal void Prime(TestInstance testInstance)
     {
-        _testInstance = testInstance;
+        this.testInstance = testInstance;
     }
 }

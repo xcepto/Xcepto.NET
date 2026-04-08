@@ -34,7 +34,7 @@ The test passes, if the `Final` state was reached before a **timeout**.
 ## Getting Started
 
 ```bash
-dotnet add package Xcepto.NET
+dotnet add package Xcepto
 ```
 
 ### Given

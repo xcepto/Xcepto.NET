@@ -1,7 +1,7 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Images;
 
-namespace Samples.SSR.GUI.Tests.Images;
+namespace Samples.Rest.API.Tests.Images;
 
 public class ImageSingleton
 {
@@ -12,9 +12,10 @@ public class ImageSingleton
         if (_apiImage is not null)
             return _apiImage;
         _apiImage = new ImageFromDockerfileBuilder()
-            .WithName("samples-ssr-gui:test")
-            .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), Path.Combine("Samples", "SSR"))
-            .WithDockerfile("Samples.SSR.GUI/Dockerfile")
+            .WithName("examples-restauth-api:test")
+            .WithCleanUp(false)
+            .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), Path.Combine("Examples", "RestAuth"))
+            .WithDockerfile("Samples.Rest.API/Dockerfile")
             .Build();
 
         await _apiImage.CreateAsync();

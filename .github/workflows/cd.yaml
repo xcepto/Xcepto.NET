@@ -17,7 +17,7 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: run tests
         run: |
@@ -53,9 +53,9 @@ jobs:
           node-version: 20
       - run: npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/exec conventional-changelog-conventionalcommits
 
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - run: semantic-release
         env:

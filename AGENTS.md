@@ -1,6 +1,6 @@
 # Xcepto.NET — Agent Guide
 
-C# / .NET implementation of the Xcepto system testing framework. Targets net9.0.
+C# / .NET implementation of the Xcepto system testing framework. Targets net10.0.
 
 ## Solution structure
 
